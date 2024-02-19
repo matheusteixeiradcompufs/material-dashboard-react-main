@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "*": ["public/src/*"]
+    }
+  },
+  "exclude": ["node_modules", ".next"],
+  "resolve": {
+    "fallback": {
+      "fs": false,
+      "stream": false,
+      "zlib": false
+    }
+  }
+}
