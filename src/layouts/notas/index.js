@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Grid, Select, Switch, MenuItem } from "@mui/material";
+import { Card, Grid, Select, MenuItem } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -7,11 +7,8 @@ import DataTable from "examples/Tables/DataTable";
 import notasTableData from "layouts/notas/data/notasTableData";
 import notasAlunoTableData from "layouts/notas/data/notasAlunoTableData";
 import { useParams } from "react-router-dom";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import { api } from "services/apiClient";
-import { format } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Audio } from "react-loader-spinner";
@@ -111,7 +108,11 @@ function Notas() {
               <MDBox pt={3} px={2}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={12} sm={6}>
-                    <Select value={selectedTurma} onChange={handleTurmaChange} fullWidth>
+                    <Select
+                      value={selectedTurma}
+                      onChange={handleTurmaChange}
+                      style={{ width: "100%", height: 45 }}
+                    >
                       <MenuItem value="Selecione uma turma">Selecione uma turma</MenuItem>
                       {turmas &&
                         turmas.map((turma, index) => (
@@ -125,7 +126,7 @@ function Notas() {
                     <MDButton
                       variant="gradient"
                       color="secondary"
-                      size="small"
+                      size="medium"
                       onClick={handleCarregarBoletins}
                     >
                       Carregar
@@ -153,23 +154,25 @@ function Notas() {
 function NotasAluno() {
   const { id } = useParams(); // Obtendo o ID do aluno da URL
 
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [switchChecked, setSwitchChecked] = useState(false);
-
-  const [frequencia, setFrequencia] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [avaliacoes, setAvaliacoes] = useState([]);
+  const [medias, setMedias] = useState([]);
+  const [situacoes, setSituacoes] = useState([]);
 
   const loadBoletim = async () => {
     setLoading(true);
     try {
       const response = await api.get(`/pessoas/aluno/boletim/api/v1/${id}/`);
-      const { objeto_frequencia } = response.data;
-      setFrequencia(objeto_frequencia);
-      const { colunas, linhas } = objeto_frequencia
-        ? await notasAlunoTableData(objeto_frequencia.objetos_diasletivos, loadBoletim)
-        : await notasAlunoTableData(undefined, loadBoletim);
+      const { objetos_avaliacoes, objetos_medias, objetos_situacoes } = response.data;
+      setAvaliacoes(objetos_avaliacoes);
+      setMedias(objetos_medias);
+      setSituacoes(objetos_situacoes);
+      const { colunas, linhas } =
+        objetos_avaliacoes && objetos_medias && objetos_situacoes
+          ? await notasAlunoTableData(objetos_avaliacoes, objetos_medias, objetos_situacoes)
+          : await notasAlunoTableData();
       setColumns(colunas);
       setRows(linhas);
       setLoading(false);
@@ -186,34 +189,6 @@ function NotasAluno() {
     loadBoletim();
     setLoading(false);
   }, [id]);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleSwitchChange = () => {
-    setSwitchChecked(!switchChecked);
-  };
-
-  const handleAddButtonClick = async () => {
-    setLoading(true);
-    const formattedDate = format(selectedDate, "yyyy-MM-dd");
-    try {
-      await api.post("/pessoas/aluno/frequencia/dialetivo/api/v1/", {
-        data: formattedDate,
-        presenca: switchChecked,
-        frequencia: frequencia.id,
-      });
-      loadBoletim();
-      toast.success("Presença cadastrada com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao incluir presença!");
-      console.error("Erro ao incluir dia letivo:", error);
-      setLoading(false);
-      // logout();
-    }
-  };
 
   if (loading) {
     return (
@@ -258,7 +233,7 @@ function NotasAluno() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Lista de Presenças do Aluno {id}
+                  Notas do Aluno
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -270,58 +245,6 @@ function NotasAluno() {
                   noEndBorder
                 />
               </MDBox>
-            </Card>
-            <MDBox mt={2} />
-            <Card>
-              <Grid
-                container
-                justifyContent="center"
-                paddingLeft={3}
-                paddingRight={2}
-                paddingTop={1}
-              >
-                <Grid item xs={12} sm={7.2} container justifyContent="flex-start">
-                  <MDTypography variant="h6" align="left"></MDTypography>
-                </Grid>
-                <Grid item xs={12} sm={2.4} container justifyContent="center">
-                  <MDTypography variant="h6" align="center">
-                    Presente
-                  </MDTypography>
-                </Grid>
-                <Grid item xs={12} sm={2.4} container justifyContent="center">
-                  <MDTypography variant="h6" align="center"></MDTypography>
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                justifyContent="space-between"
-                paddingLeft={3}
-                paddingRight={2}
-                paddingBottom={2}
-              >
-                <Grid item xs={12} sm={7.2} container justifyContent="flex-start">
-                  <DatePicker
-                    label="Data"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    align="left"
-                    renderInput={(params) => <MDInput {...params} />}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={2.4} container justifyContent="center">
-                  <Switch checked={switchChecked} onChange={handleSwitchChange} />
-                </Grid>
-                <Grid item xs={12} sm={2.4} container justifyContent="center">
-                  <MDButton
-                    variant="gradient"
-                    color="success"
-                    size="small"
-                    onClick={handleAddButtonClick}
-                  >
-                    Add
-                  </MDButton>
-                </Grid>
-              </Grid>
             </Card>
           </Grid>
         </Grid>

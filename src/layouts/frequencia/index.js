@@ -112,7 +112,11 @@ function Frequencia() {
               <MDBox pt={3} px={2}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item xs={12} sm={6}>
-                    <Select value={selectedTurma} onChange={handleTurmaChange} fullWidth>
+                    <Select
+                      value={selectedTurma}
+                      onChange={handleTurmaChange}
+                      style={{ width: "100%", height: 45 }}
+                    >
                       <MenuItem value="Selecione uma turma">Selecione uma turma</MenuItem>
                       {turmas &&
                         turmas.map((turma, index) => (
@@ -126,7 +130,7 @@ function Frequencia() {
                     <MDButton
                       variant="gradient"
                       color="secondary"
-                      size="small"
+                      size="medium"
                       onClick={handleCarregarFrequencias}
                     >
                       Carregar
@@ -161,7 +165,6 @@ function FrequenciaAluno() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [usuario, setUsuario] = useState(null);
 
   const loadBoletim = async () => {
     setLoading(true);
@@ -214,7 +217,6 @@ function FrequenciaAluno() {
       toast.error("Erro ao incluir presença!");
       console.error("Erro ao incluir dia letivo:", error);
       setLoading(false);
-      // logout();
     }
   };
 
