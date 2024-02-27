@@ -9,6 +9,8 @@ import Icon from "@mui/material/Icon";
 import { Frequencia, FrequenciaAluno } from "layouts/frequencia";
 import { Notas, NotasAluno } from "layouts/notas";
 import { AgendaEscolar } from "layouts/agendaescolar";
+import Escolas from "layouts/escolas";
+import EscolaEdit from "layouts/escolaedit";
 
 const routes = [
   {
@@ -42,6 +44,21 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/login",
     component: <Login />,
+  },
+  {
+    type: "collapse",
+    name: "Escolas",
+    key: "escolas",
+    icon: <Icon fontSize="small">house</Icon>,
+    route: "/escola",
+    component: <Escolas />,
+  },
+  {
+    type: "item",
+    name: "Escola",
+    key: "escolaedit",
+    route: "/escola/:id",
+    component: <EscolaEdit />,
   },
   {
     type: "collapse",
