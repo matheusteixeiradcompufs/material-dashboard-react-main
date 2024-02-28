@@ -11,6 +11,9 @@ import { Notas, NotasAluno } from "layouts/notas";
 import { AgendaEscolar } from "layouts/agendaescolar";
 import Escolas from "layouts/escolas";
 import EscolaEdit from "layouts/escolaedit";
+import TurmasSala from "layouts/turmassala";
+import TurmaDetail from "layouts/turmadetail";
+import Disciplinas from "layouts/disciplina";
 
 const routes = [
   {
@@ -92,11 +95,34 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Turmas da Sala",
+    key: "turmas_sala",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/turmas/:id",
+    component: <TurmasSala />,
+  },
+  {
+    type: "item",
+    name: "Turma",
+    key: "turma",
+    route: "/turma/:id", // Rota dinâmica com parâmetro ':id'
+    component: <TurmaDetail />, // Escondendo esta rota para que não apareça no menu principal
+  },
+  {
+    type: "collapse",
     name: "Agenda Escolar",
     key: "agendaescolar",
     icon: <Icon fontSize="small">pending_actions</Icon>,
     route: "/agendaescolar",
     component: <AgendaEscolar />,
+  },
+  {
+    type: "collapse",
+    name: "Disciplinas",
+    key: "disciplinas",
+    icon: <Icon fontSize="small">pending_actions</Icon>,
+    route: "/disciplinas",
+    component: <Disciplinas />,
   },
 ];
 
