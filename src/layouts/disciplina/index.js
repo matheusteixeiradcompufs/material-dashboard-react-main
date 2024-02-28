@@ -13,6 +13,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import MDInput from "components/MDInput";
+import Listar from "./components/Listar";
+import Add from "./components/Add";
+import Editar from "./components/Editar";
 
 function Disciplinas() {
   const [loading, setLoading] = useState(false);
@@ -78,59 +81,6 @@ function Disciplinas() {
     setListarDisciplina(false);
   };
 
-  const handleAddDisciplina = async () => {
-    setLoading(true);
-    try {
-      await api.post("/escolas/disciplina/api/v1/", {
-        nome: nomeDisciplina,
-      });
-      const response = await api.get("/escolas/disciplina/api/v1/");
-      setDisciplinas(response.data);
-      setLoading(false);
-      handleOnListarDisciplina();
-    } catch (error) {
-      toast.error("Erro ao adicionar nova disciplina!");
-      console.log("Erro ao adicionar nova disciplina!", error);
-      setLoading(false);
-    }
-  };
-
-  const handleExcluir = async (disciplinaid) => {
-    setLoading(true);
-    try {
-      await api.delete(`/escolas/disciplina/api/v1/${disciplinaid}/`);
-      const response = await api.get("/escolas/disciplina/api/v1/");
-      setDisciplinas(response.data);
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao excluir disciplina!");
-      console.log("Erro ao excluir disciplina!", error);
-      setLoading(false);
-    }
-  };
-
-  const handleEditarDisciplina = async () => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/disciplina/api/v1/${disciplina.id}/`, {
-        nome: nomeDisciplina,
-      });
-      const response = await api.get("/escolas/disciplina/api/v1/");
-      setDisciplinas(response.data);
-      handleOnListarDisciplina();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao alterar disciplina!");
-      console.log("Erro ao alterar disciplina!", error);
-      setLoading(false);
-    }
-  };
-
-  const columns = [
-    { Header: "nome", accessor: "nome", width: "80%", align: "left" },
-    { Header: "opções", accessor: "opcoes", align: "center" },
-  ];
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -163,179 +113,35 @@ function Disciplinas() {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {listarDisciplina ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Disciplinas
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3} px={2}>
-                  <DataTable
-                    table={{
-                      columns,
-                      rows: disciplinas
-                        ? disciplinas.map((disciplina, index) => ({
-                            nome: disciplina.nome,
-                            opcoes: (
-                              <Grid
-                                container
-                                spacing={2}
-                                alignItems="center"
-                                justifyContent="space-between"
-                              >
-                                <Grid item xs={12} sm={6} container>
-                                  <MDButton
-                                    variant="gradient"
-                                    color="info"
-                                    size="small"
-                                    onClick={() => handleOnEditarDisciplina(index)}
-                                  >
-                                    Editar
-                                  </MDButton>
-                                </Grid>
-                                <Grid item xs={12} sm={6} container>
-                                  <MDButton
-                                    variant="gradient"
-                                    color="error"
-                                    size="small"
-                                    onClick={() => handleExcluir(disciplina.id)}
-                                  >
-                                    Excluir
-                                  </MDButton>
-                                </Grid>
-                              </Grid>
-                            ),
-                          }))
-                        : [],
-                    }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
+              <Listar
+                disciplinas={disciplinas}
+                setDisciplinas={setDisciplinas}
+                setLoading={setLoading}
+                handleOnEditarDisciplina={handleOnEditarDisciplina}
+              />
             ) : (
               <MDBox></MDBox>
             )}
             {addDisciplina ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="success"
-                  borderRadius="lg"
-                  coloredShadow="success"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Cadastrar Nova Disciplina
-                  </MDTypography>
-                </MDBox>
-                <Grid container spacing={3} mb={2}>
-                  <Grid item xs={12} sm={12}>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="text"
-                        variant="outlined"
-                        label="Nome da Disciplina"
-                        value={nomeDisciplina}
-                        onChange={handleChangeNomeDisciplina}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={3} mb={2}>
-                  <Grid item xs={12} sm={12}>
-                    <MDBox display="flex" flexDirection="row" justifyContent="center">
-                      <MDBox justifyContent="center">
-                        <MDButton variant="contained" color="success" onClick={handleAddDisciplina}>
-                          Cadastrar
-                        </MDButton>
-                      </MDBox>
-                      <MDBox justifyContent="center" ml={2}>
-                        <MDButton
-                          variant="contained"
-                          color="error"
-                          onClick={handleOnListarDisciplina}
-                        >
-                          Cancelar
-                        </MDButton>
-                      </MDBox>
-                    </MDBox>
-                  </Grid>
-                </Grid>
-              </Card>
+              <Add
+                nomeDisciplina={nomeDisciplina}
+                setDisciplinas={setDisciplinas}
+                setLoading={setLoading}
+                handleChangeNomeDisciplina={handleChangeNomeDisciplina}
+                handleOnListarDisciplina={handleOnListarDisciplina}
+              />
             ) : (
               <MDBox></MDBox>
             )}
             {editarDisciplina ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="success"
-                  borderRadius="lg"
-                  coloredShadow="success"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Editar Disciplina
-                  </MDTypography>
-                </MDBox>
-                <Grid container spacing={3} mb={2}>
-                  <Grid item xs={12} sm={12}>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="text"
-                        variant="outlined"
-                        label="Nome da Disciplina"
-                        value={nomeDisciplina}
-                        onChange={handleChangeNomeDisciplina}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={3} mb={2}>
-                  <Grid item xs={12} sm={12}>
-                    <MDBox display="flex" flexDirection="row" justifyContent="center">
-                      <MDBox justifyContent="center">
-                        <MDButton
-                          variant="contained"
-                          color="success"
-                          onClick={handleEditarDisciplina}
-                        >
-                          Salvar
-                        </MDButton>
-                      </MDBox>
-                      <MDBox justifyContent="center" ml={2}>
-                        <MDButton
-                          variant="contained"
-                          color="error"
-                          onClick={handleOnListarDisciplina}
-                        >
-                          Cancelar
-                        </MDButton>
-                      </MDBox>
-                    </MDBox>
-                  </Grid>
-                </Grid>
-              </Card>
+              <Editar
+                nomeDisciplina={nomeDisciplina}
+                disciplina={disciplina}
+                setDisciplinas={setDisciplinas}
+                setLoading={setLoading}
+                handleChangeNomeDisciplina={handleChangeNomeDisciplina}
+                handleOnListarDisciplina={handleOnListarDisciplina}
+              />
             ) : (
               <MDBox></MDBox>
             )}
