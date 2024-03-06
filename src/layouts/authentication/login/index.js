@@ -30,11 +30,14 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/Escola.png";
 import { AuthContext } from "context/AuthContext";
+import { Audio } from "react-loader-spinner";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Basic() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { user, login, logout } = useContext(AuthContext);
+  const { user, login, loading, logout } = useContext(AuthContext);
 
   const handleSetUsername = (e) => {
     setUsername(e.target.value);
@@ -46,12 +49,45 @@ function Basic() {
 
   const handleLogin = async () => {
     await login({ username, password });
-
-    console.log(user);
   };
 
+  if (loading) {
+    return (
+      <BasicLayout image={bgImage}>
+        <Card>
+          <MDBox
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+            mx={2}
+            mt={-3}
+            p={2}
+            mb={1}
+            textAlign="center"
+          >
+            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
+              Login
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={4} pb={3} px={3}>
+            <Audio
+              height="80"
+              width="80"
+              radius="9"
+              color="#3089ec"
+              ariaLabel="three-dots-loading"
+              wrapperStyle
+              wrapperClass
+            />
+          </MDBox>
+        </Card>
+      </BasicLayout>
+    );
+  }
   return (
     <BasicLayout image={bgImage}>
+      <ToastContainer />
       <Card>
         <MDBox
           variant="gradient"

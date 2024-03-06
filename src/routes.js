@@ -1,10 +1,7 @@
-// Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import Billing from "layouts/billing";
 import Profile from "layouts/profile";
-import Login from "layouts/authentication/login";
 
-// @mui icons
 import Icon from "@mui/material/Icon";
 import { Frequencia, FrequenciaAluno } from "layouts/frequencia";
 import { Notas, NotasAluno } from "layouts/notas";
@@ -14,6 +11,10 @@ import EscolaEdit from "layouts/escolaedit";
 import TurmasSala from "layouts/turmassala";
 import TurmaDetail from "layouts/turmadetail";
 import Disciplinas from "layouts/disciplina";
+import Logout from "layouts/authentication/logout";
+import TurmaDisciplinas from "layouts/turmadisciplinas";
+import ProfessorAgenda from "layouts/professoragenda";
+import TurmaAgenda from "layouts/turmaagenda";
 
 const routes = [
   {
@@ -21,7 +22,7 @@ const routes = [
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
+    route: "/",
     component: <Dashboard />,
   },
   {
@@ -39,14 +40,6 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Login",
-    key: "login",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/login",
-    component: <Login />,
   },
   {
     type: "collapse",
@@ -109,12 +102,26 @@ const routes = [
     component: <TurmaDetail />, // Escondendo esta rota para que não apareça no menu principal
   },
   {
+    type: "item",
+    name: "Disciplinas da Turma",
+    key: "turma_disciplinas",
+    route: "/turma/:id/disciplinas", // Rota dinâmica com parâmetro ':id'
+    component: <TurmaDisciplinas />, // Escondendo esta rota para que não apareça no menu principal
+  },
+  {
+    type: "item",
+    name: "Agenda da Turma",
+    key: "turma_agenda",
+    route: "/turma/:id/agenda", // Rota dinâmica com parâmetro ':id'
+    component: <TurmaAgenda />, // Escondendo esta rota para que não apareça no menu principal
+  },
+  {
     type: "collapse",
-    name: "Agenda Escolar",
-    key: "agendaescolar",
+    name: "Professor Agenda Escolar",
+    key: "professor_agendaescolar",
     icon: <Icon fontSize="small">pending_actions</Icon>,
-    route: "/agendaescolar",
-    component: <AgendaEscolar />,
+    route: "/professor/agendaescolar",
+    component: <ProfessorAgenda />,
   },
   {
     type: "collapse",
@@ -123,6 +130,14 @@ const routes = [
     icon: <Icon fontSize="small">pending_actions</Icon>,
     route: "/disciplinas",
     component: <Disciplinas />,
+  },
+  {
+    type: "collapse",
+    name: "Logout",
+    key: "logout",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/logout",
+    component: <Logout />,
   },
 ];
 
