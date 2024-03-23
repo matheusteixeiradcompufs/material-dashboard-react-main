@@ -115,7 +115,6 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-  console.log(isAuthenticated);
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />

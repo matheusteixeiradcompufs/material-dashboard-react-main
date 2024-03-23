@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Card, Fab } from "@mui/material"; // Importe o componente Fab
+import { Grid, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import DataTable from "examples/Tables/DataTable"; // Importando o componente DataTable
 import { api } from "services/apiClient";
 import { Audio } from "react-loader-spinner";
-import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link } from "react-router-dom";
+import List from "./components/List";
+import View from "./components/View";
+import Edit from "./components/Edit";
+import Add from "./components/Add";
+import Menu from "./components/Menu";
 
 function Escolas() {
   const [escolas, setEscolas] = useState([]);
+  const [escola, setEscola] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [cadastrar, setCadastrar] = useState(false);
+  const [add, setAdd] = useState(false);
+  const [listar, setListar] = useState(true);
+  const [editar, setEditar] = useState(false);
+  const [view, setView] = useState(false);
   const [cnpjEscola, setCnpjEscola] = useState("");
   const [nomeEscola, setNomeEscola] = useState("");
   const [enderecoEscola, setEnderecoEscola] = useState("");
@@ -37,6 +41,45 @@ function Escolas() {
     fetchEscolas();
   }, []);
 
+  const handleOnListarEscolas = () => {
+    setEscola(null);
+    setCnpjEscola("");
+    setNomeEscola("");
+    setEnderecoEscola("");
+    setDescricaoEscola("");
+    setAdd(false);
+    setEditar(false);
+    setView(false);
+    setListar(true);
+  };
+
+  const handleOnViewEscolas = (escolaid) => {
+    const escolaView = escolas.find((objeto) => objeto.id === escolaid);
+    setEscola(escolaView);
+    setCnpjEscola(escolaView.cnpj);
+    setNomeEscola(escolaView.nome);
+    setEnderecoEscola(escolaView.endereco);
+    setDescricaoEscola(escolaView.descricao);
+    setAdd(false);
+    setEditar(false);
+    setListar(false);
+    setView(true);
+  };
+
+  const handleOnEditarEscolas = () => {
+    setAdd(false);
+    setView(false);
+    setListar(false);
+    setEditar(true);
+  };
+
+  const handleOnAddEscolas = () => {
+    setEditar(false);
+    setView(false);
+    setListar(false);
+    setAdd(true);
+  };
+
   const handleSetCnpjEscola = (e) => {
     setCnpjEscola(e.target.value);
   };
@@ -51,20 +94,6 @@ function Escolas() {
 
   const handleSetDescricaoEscola = (e) => {
     setDescricaoEscola(e.target.value);
-  };
-
-  const handleSetCadastrar = (value) => {
-    setCadastrar(value);
-    if (!value) {
-      setCnpjEscola("");
-      setNomeEscola("");
-      setEnderecoEscola("");
-      setDescricaoEscola("");
-    }
-  };
-
-  const handleVisualizar = (id) => {
-    // Lógica para visualizar detalhes da escola com o id fornecido
   };
 
   const handleExcluir = async (escolaid) => {
@@ -92,22 +121,34 @@ function Escolas() {
       });
       const response = await api.get("/escolas/api/v1/");
       setEscolas(response.data);
+      handleOnListarEscolas();
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao cadastrar escola");
       console.log("Erro ao cadastrar escola", error);
       setLoading(false);
     }
-    handleSetCadastrar(false);
   };
 
-  const columns = [
-    { Header: "cnpj", accessor: "cnpj", align: "left" },
-    { Header: "nome", accessor: "nome", align: "left" },
-    { Header: "num_salas", accessor: "num_salas", align: "center" },
-    { Header: "quantidade_alunos", accessor: "quantidade_alunos", align: "center" },
-    { Header: "opcoes", accessor: "opcoes", align: "center" },
-  ];
+  const handleEditarEscola = async (escolaid) => {
+    setLoading(true);
+    try {
+      await api.patch(`/escolas/api/v1/${escolaid}/`, {
+        cnpj: cnpjEscola,
+        nome: nomeEscola,
+        endereco: enderecoEscola,
+        descricao: descricaoEscola,
+      });
+      const response = await api.get("/escolas/api/v1/");
+      setEscolas(response.data);
+      handleOnListarEscolas();
+      setLoading(false);
+    } catch (error) {
+      toast.error("Erro ao cadastrar escola");
+      console.log("Erro ao cadastrar escola", error);
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -140,152 +181,86 @@ function Escolas() {
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Lista de Escolas
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3} px={2}>
-                <DataTable
-                  table={{
-                    columns,
-                    rows: escolas.map((escola) => ({
-                      cnpj: escola.cnpj,
-                      nome: escola.nome,
-                      num_salas: escola.num_salas,
-                      quantidade_alunos: escola.quantidade_alunos,
-                      opcoes: (
-                        <Grid
-                          container
-                          spacing={2}
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <Grid item xs={12} sm={6} container>
-                            <Link to={`/escola/${escola.id}`}>
-                              <MDButton variant="gradient" color="info" size="small">
-                                Visualizar
-                              </MDButton>
-                            </Link>
-                          </Grid>
-                          <Grid item xs={12} sm={6} container>
-                            <MDButton
-                              variant="gradient"
-                              color="error"
-                              size="small"
-                              onClick={() => handleExcluir(escola.id)}
-                            >
-                              Excluir
-                            </MDButton>
-                          </Grid>
-                        </Grid>
-                      ),
-                    })),
-                  }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
-          <Grid item xs={12} mt={6}>
-            {cadastrar ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="success"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Cadastrar Nova Escola
-                  </MDTypography>
-                </MDBox>
-                <Grid container spacing={3} mb={2}>
-                  <Grid item xs={12} sm={12}>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="number"
-                        variant="outlined"
-                        label="CNPJ"
-                        value={cnpjEscola}
-                        onChange={handleSetCnpjEscola}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="text"
-                        variant="outlined"
-                        label="Nome"
-                        value={nomeEscola}
-                        onChange={handleSetNomeEscola}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="text"
-                        variant="outlined"
-                        label="Endereço"
-                        value={enderecoEscola}
-                        onChange={handleSetEnderecoEscola}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDInput
-                        type="text"
-                        variant="outlined"
-                        label="Descrição"
-                        value={descricaoEscola}
-                        onChange={handleSetDescricaoEscola}
-                        multiline
-                        rows={3}
-                        style={{ width: "100%" }}
-                      />
-                    </MDBox>
-                    <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                      <MDButton variant="contained" color="success" onClick={handleAddEscola}>
-                        Cadastrar
-                      </MDButton>
-                    </MDBox>
-                  </Grid>
-                </Grid>
-              </Card>
+            {listar ? (
+              <List
+                escolas={escolas}
+                handleOnViewEscolas={handleOnViewEscolas}
+                handleExcluir={handleExcluir}
+              />
             ) : (
-              <MDBox></MDBox>
+              <></>
+            )}
+            {view ? (
+              <>
+                <MDBox>
+                  <View
+                    escola={escola}
+                    cnpjEscola={cnpjEscola}
+                    nomeEscola={nomeEscola}
+                    enderecoEscola={enderecoEscola}
+                    descricaoEscola={descricaoEscola}
+                    handleSetCnpjEscola={handleSetCnpjEscola}
+                    handleSetNomeEscola={handleSetNomeEscola}
+                    handleSetEnderecoEscola={handleSetEnderecoEscola}
+                    handleSetDescricaoEscola={handleSetDescricaoEscola}
+                    handleOnEditarEscolas={handleOnEditarEscolas}
+                    handleOnListarEscolas={handleOnListarEscolas}
+                  />
+                </MDBox>
+                <MDBox mt={6}>
+                  <Menu escola={escola} />
+                </MDBox>
+              </>
+            ) : (
+              <></>
+            )}
+            {editar ? (
+              <Edit
+                escola={escola}
+                cnpjEscola={cnpjEscola}
+                nomeEscola={nomeEscola}
+                enderecoEscola={enderecoEscola}
+                descricaoEscola={descricaoEscola}
+                handleSetCnpjEscola={handleSetCnpjEscola}
+                handleSetNomeEscola={handleSetNomeEscola}
+                handleSetEnderecoEscola={handleSetEnderecoEscola}
+                handleSetDescricaoEscola={handleSetDescricaoEscola}
+                handleEditarEscola={handleEditarEscola}
+                handleOnViewEscolas={handleOnViewEscolas}
+              />
+            ) : (
+              <></>
+            )}
+            {add ? (
+              <Add
+                cnpjEscola={cnpjEscola}
+                nomeEscola={nomeEscola}
+                enderecoEscola={enderecoEscola}
+                descricaoEscola={descricaoEscola}
+                handleSetCnpjEscola={handleSetCnpjEscola}
+                handleSetNomeEscola={handleSetNomeEscola}
+                handleSetEnderecoEscola={handleSetEnderecoEscola}
+                handleSetDescricaoEscola={handleSetDescricaoEscola}
+                handleAddEscola={handleAddEscola}
+                handleOnListarEscolas={handleOnListarEscolas}
+              />
+            ) : (
+              <></>
             )}
           </Grid>
-          {!cadastrar ? (
+          {listar ? (
             <Grid item xs={12} mt={6}>
-              <Fab // Adicione o componente Fab para o botão flutuante
+              <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={() => handleSetCadastrar(true)}
+                onClick={handleOnAddEscolas}
               >
                 <AddIcon color="white" />
               </Fab>
             </Grid>
           ) : (
-            <MDBox></MDBox>
+            <></>
           )}
         </Grid>
       </MDBox>

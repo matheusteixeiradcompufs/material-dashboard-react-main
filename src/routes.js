@@ -5,18 +5,29 @@ import Profile from "layouts/profile";
 import Icon from "@mui/material/Icon";
 import { Frequencia, FrequenciaAluno } from "layouts/frequencia";
 import { Notas, NotasAluno } from "layouts/notas";
-import { AgendaEscolar } from "layouts/agendaescolar";
 import Escolas from "layouts/escolas";
-import EscolaEdit from "layouts/escolaedit";
-import TurmasSala from "layouts/turmassala";
-import TurmaDetail from "layouts/turmadetail";
 import Disciplinas from "layouts/disciplina";
 import Logout from "layouts/authentication/logout";
-import TurmaDisciplinas from "layouts/turmadisciplinas";
 import ProfessorAgenda from "layouts/professoragenda";
-import TurmaAgenda from "layouts/turmaagenda";
+import Itens from "layouts/itens";
+import Alunos from "layouts/alunos";
+import Funcionarios from "layouts/funcionarios";
+import EscolaTelefones from "layouts/escolas/telefones";
+import EscolaEmails from "layouts/escolas/emails";
+import EscolaSalas from "layouts/escolas/salas";
+import EscolaMurais from "layouts/escolas/murais";
+import EscolaCardapios from "layouts/escolas/cardapios";
+import CardapioItens from "layouts/escolas/cardapios/itens";
+import MuralAvisos from "layouts/escolas/murais/avisos";
+import SalaTurmas from "layouts/escolas/salas/turmas";
+import TurmaAlunos from "layouts/escolas/salas/turmas/alunos";
+import TurmaDisciplinas from "layouts/escolas/salas/turmas/disciplinas";
+import TurmaAgenda from "layouts/escolas/salas/turmas/agenda";
+import GerenciarDisciplinas from "layouts/escolas/salas/turmas/agenda/gerenciar";
+import DiaAgenda from "layouts/escolas/salas/turmas/agenda/diaagenda";
 
 const routes = [
+  //DASHBOARD
   {
     type: "collapse",
     name: "Dashboard",
@@ -25,44 +36,213 @@ const routes = [
     route: "/",
     component: <Dashboard />,
   },
+  //DASHBOARD
+  //------------------------
+  //ESCOLAS
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Escolas",
+    name: "Gestão de Escolas",
     key: "escolas",
     icon: <Icon fontSize="small">house</Icon>,
-    route: "/escola",
+    route: "/escolas",
     component: <Escolas />,
   },
   {
     type: "item",
-    name: "Escola",
-    key: "escolaedit",
-    route: "/escola/:id",
-    component: <EscolaEdit />,
+    name: "Telefones da Escola",
+    key: "escolatelefones",
+    route: "/escolas/:escolaid/telefones",
+    component: <EscolaTelefones />,
   },
   {
+    type: "item",
+    name: "Emails da Escola",
+    key: "escolaemails",
+    route: "/escolas/:escolaid/emails",
+    component: <EscolaEmails />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas",
+    component: <EscolaSalas />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas",
+    component: <SalaTurmas />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas/:turmaid/alunos",
+    component: <TurmaAlunos />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas/:turmaid/disciplinas",
+    component: <TurmaDisciplinas />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas/:turmaid/agenda",
+    component: <TurmaAgenda />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas/:turmaid/agenda/gerenciar",
+    component: <GerenciarDisciplinas />,
+  },
+  {
+    type: "item",
+    name: "Salas da Escola",
+    key: "escolasalas",
+    route: "/escolas/:escolaid/salas/:salaid/turmas/:turmaid/agenda/diaagenda",
+    component: <DiaAgenda />,
+  },
+  {
+    type: "item",
+    name: "Murais da Escola",
+    key: "escolamurais",
+    route: "/escolas/:escolaid/murais",
+    component: <EscolaMurais />,
+  },
+  {
+    type: "item",
+    name: "Murais da Escola",
+    key: "escolamurais",
+    route: "/escolas/:escolaid/murais/:muralid/avisos",
+    component: <MuralAvisos />,
+  },
+  {
+    type: "item",
+    name: "Cardápios da Escola",
+    key: "escolacardapios",
+    route: "/escolas/:escolaid/cardapios",
+    component: <EscolaCardapios />,
+  },
+  {
+    type: "item",
+    name: "Cardápios do Dia",
+    key: "escolacardapioitens",
+    route: "/escolas/:escolaid/cardapios/:cardapioid/itens",
+    component: <CardapioItens />,
+  },
+  //ESCOLAS
+  //------------------------
+  //PESSOAS
+  {
     type: "collapse",
-    name: "Frequência",
-    key: "frequencia",
-    icon: <Icon fontSize="small">pending_actions</Icon>,
-    route: "/frequencia",
-    component: <Frequencia />,
+    name: "Gestão de Pessoas",
+    key: "pessoas",
+    icon: <Icon fontSize="small">person</Icon>,
+    collapse: [
+      {
+        type: "collapse",
+        name: "Alunos",
+        key: "pessoas_alunos",
+        route: "/pessoas/alunos",
+        component: <Alunos />,
+      },
+      {
+        type: "collapse",
+        name: "Funcionários",
+        key: "pessoas_funcionarios",
+        route: "/pessoas/funcionarios",
+        component: <Funcionarios />,
+      },
+    ],
+  },
+  //PESSOAS
+  //------------------------
+  //DISCIPLINAS
+  {
+    type: "collapse",
+    name: "Disciplinas",
+    key: "disciplinas",
+    icon: <Icon fontSize="small">menu_book</Icon>,
+    route: "/disciplinas",
+    component: <Disciplinas />,
+  },
+  //DISCIPLINAS
+  //------------------------
+  //ITENS DA MERENDA
+  {
+    type: "collapse",
+    name: "Ítens da Merenda",
+    key: "itensmerenda",
+    icon: <Icon fontSize="small">restaurant</Icon>,
+    route: "/itensmerenda",
+    component: <Itens />,
+  },
+  //ITENS DA MERENDA
+  //------------------------
+  //LOGOUT
+  {
+    type: "collapse",
+    name: "Logout",
+    key: "logout",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/logout",
+    component: <Logout />,
+  },
+  //LOGOUT
+  //------------------------
+  //REFATORANDO
+  // {
+  //   type: "item",
+  //   name: "Billing",
+  //   key: "billing",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/billing",
+  //   component: <Billing />,
+  // },
+  // {
+  //   type: "item",
+  //   name: "Profile",
+  //   key: "profile",
+  //   icon: <Icon fontSize="small">person</Icon>,
+  //   route: "/profile",
+  //   component: <Profile />,
+  // },
+  {
+    type: "collapse",
+    name: "Professor",
+    key: "professor",
+    icon: <Icon fontSize="small">school</Icon>,
+    collapse: [
+      {
+        type: "collapse",
+        name: "Frequência",
+        key: "professor_frequencia",
+        route: "/professor/frequencia",
+        component: <Frequencia />,
+      },
+      {
+        type: "collapse",
+        name: "Notas",
+        key: "professor_notas",
+        route: "/professor/notas",
+        component: <Notas />,
+      },
+      {
+        type: "collapse",
+        name: "Agenda Escolar",
+        key: "professor_agendaescolar",
+        route: "/professor/agendaescolar",
+        component: <ProfessorAgenda />,
+      },
+    ],
   },
   {
     type: "item",
@@ -72,72 +252,11 @@ const routes = [
     component: <FrequenciaAluno />, // Escondendo esta rota para que não apareça no menu principal
   },
   {
-    type: "collapse",
-    name: "Notas",
-    key: "notas",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/notas",
-    component: <Notas />,
-  },
-  {
     type: "item",
     name: "Notas do Aluno",
     key: "notas_aluno",
     route: "/notas/aluno/:id", // Rota dinâmica com parâmetro ':id'
     component: <NotasAluno />, // Escondendo esta rota para que não apareça no menu principal
-  },
-  {
-    type: "collapse",
-    name: "Turmas da Sala",
-    key: "turmas_sala",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/turmas/:id",
-    component: <TurmasSala />,
-  },
-  {
-    type: "item",
-    name: "Turma",
-    key: "turma",
-    route: "/turma/:id", // Rota dinâmica com parâmetro ':id'
-    component: <TurmaDetail />, // Escondendo esta rota para que não apareça no menu principal
-  },
-  {
-    type: "item",
-    name: "Disciplinas da Turma",
-    key: "turma_disciplinas",
-    route: "/turma/:id/disciplinas", // Rota dinâmica com parâmetro ':id'
-    component: <TurmaDisciplinas />, // Escondendo esta rota para que não apareça no menu principal
-  },
-  {
-    type: "item",
-    name: "Agenda da Turma",
-    key: "turma_agenda",
-    route: "/turma/:id/agenda", // Rota dinâmica com parâmetro ':id'
-    component: <TurmaAgenda />, // Escondendo esta rota para que não apareça no menu principal
-  },
-  {
-    type: "collapse",
-    name: "Professor Agenda Escolar",
-    key: "professor_agendaescolar",
-    icon: <Icon fontSize="small">pending_actions</Icon>,
-    route: "/professor/agendaescolar",
-    component: <ProfessorAgenda />,
-  },
-  {
-    type: "collapse",
-    name: "Disciplinas",
-    key: "disciplinas",
-    icon: <Icon fontSize="small">pending_actions</Icon>,
-    route: "/disciplinas",
-    component: <Disciplinas />,
-  },
-  {
-    type: "collapse",
-    name: "Logout",
-    key: "logout",
-    icon: <Icon fontSize="small">logout</Icon>,
-    route: "/authentication/logout",
-    component: <Logout />,
   },
 ];
 
