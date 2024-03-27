@@ -89,7 +89,7 @@ function EscolaCardapios() {
       await api.post("/escolas/cardapio/api/v1/", {
         data: data,
         turno: turno,
-        escola: id,
+        escola: escolaid,
       });
       const response = await api.get(`/escolas/api/v1/${escolaid}/`);
       setEscola(response.data);

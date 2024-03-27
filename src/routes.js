@@ -3,15 +3,15 @@ import Billing from "layouts/billing";
 import Profile from "layouts/profile";
 
 import Icon from "@mui/material/Icon";
-import { Frequencia, FrequenciaAluno } from "layouts/frequencia";
+// import { Frequencia, FrequenciaAluno } from "layouts/frequencia";
 import { Notas, NotasAluno } from "layouts/notas";
 import Escolas from "layouts/escolas";
 import Disciplinas from "layouts/disciplina";
 import Logout from "layouts/authentication/logout";
 import ProfessorAgenda from "layouts/professoragenda";
 import Itens from "layouts/itens";
-import Alunos from "layouts/alunos";
-import Funcionarios from "layouts/funcionarios";
+import Alunos from "layouts/pessoas/alunos";
+import Funcionarios from "layouts/pessoas/funcionarios";
 import EscolaTelefones from "layouts/escolas/telefones";
 import EscolaEmails from "layouts/escolas/emails";
 import EscolaSalas from "layouts/escolas/salas";
@@ -25,6 +25,13 @@ import TurmaDisciplinas from "layouts/escolas/salas/turmas/disciplinas";
 import TurmaAgenda from "layouts/escolas/salas/turmas/agenda";
 import GerenciarDisciplinas from "layouts/escolas/salas/turmas/agenda/gerenciar";
 import DiaAgenda from "layouts/escolas/salas/turmas/agenda/diaagenda";
+import AlunoTelefones from "layouts/pessoas/alunos/telefones";
+import AlunoEmails from "layouts/pessoas/alunos/emails";
+import AlunoResponsaveis from "layouts/pessoas/alunos/responsaveis";
+import AlunoBoletins from "layouts/pessoas/alunos/boletins";
+import BoletimFrequencia from "layouts/pessoas/alunos/boletins/frequencia";
+import BoletimNotas from "layouts/pessoas/alunos/boletins/notas";
+import BoletimRecados from "layouts/pessoas/alunos/boletins/recados";
 
 const routes = [
   //DASHBOARD
@@ -163,6 +170,55 @@ const routes = [
       },
     ],
   },
+  {
+    type: "item",
+    name: "Telefones do Aluno",
+    key: "telefones_aluno",
+    route: "/pessoas/alunos/:alunoid/telefones",
+    component: <AlunoTelefones />,
+  },
+  {
+    type: "item",
+    name: "Telefones do Aluno",
+    key: "telefones_aluno",
+    route: "/pessoas/alunos/:alunoid/emails",
+    component: <AlunoEmails />,
+  },
+  {
+    type: "item",
+    name: "Telefones do Aluno",
+    key: "telefones_aluno",
+    route: "/pessoas/alunos/:alunoid/responsaveis",
+    component: <AlunoResponsaveis />,
+  },
+  {
+    type: "item",
+    name: "Telefones do Aluno",
+    key: "telefones_aluno",
+    route: "/pessoas/alunos/:alunoid/matriculas",
+    component: <AlunoBoletins />,
+  },
+  {
+    type: "item",
+    name: "Frequência do Aluno",
+    key: "frequencia_aluno",
+    route: "/pessoas/alunos/:alunoid/matriculas/:boletimid/frequencia",
+    component: <BoletimFrequencia />,
+  },
+  {
+    type: "item",
+    name: "Boletim do Aluno",
+    key: "boletim_aluno",
+    route: "/pessoas/alunos/:alunoid/matriculas/:boletimid/Notas",
+    component: <BoletimNotas />,
+  },
+  {
+    type: "item",
+    name: "Agenda de Recados do Aluno",
+    key: "boletim_recados",
+    route: "/pessoas/alunos/:alunoid/matriculas/:boletimid/Recados",
+    component: <BoletimRecados />,
+  },
   //PESSOAS
   //------------------------
   //DISCIPLINAS
@@ -221,13 +277,13 @@ const routes = [
     key: "professor",
     icon: <Icon fontSize="small">school</Icon>,
     collapse: [
-      {
-        type: "collapse",
-        name: "Frequência",
-        key: "professor_frequencia",
-        route: "/professor/frequencia",
-        component: <Frequencia />,
-      },
+      // {
+      //   type: "collapse",
+      //   name: "Frequência",
+      //   key: "professor_frequencia",
+      //   route: "/professor/frequencia",
+      //   component: <Frequencia />,
+      // },
       {
         type: "collapse",
         name: "Notas",
@@ -244,13 +300,13 @@ const routes = [
       },
     ],
   },
-  {
-    type: "item",
-    name: "Aluno",
-    key: "frequencia_aluno",
-    route: "/frequencia/aluno/:id", // Rota dinâmica com parâmetro ':id'
-    component: <FrequenciaAluno />, // Escondendo esta rota para que não apareça no menu principal
-  },
+  // {
+  //   type: "item",
+  //   name: "Aluno",
+  //   key: "frequencia_aluno",
+  //   route: "/frequencia/aluno/:id", // Rota dinâmica com parâmetro ':id'
+  //   component: <FrequenciaAluno />, // Escondendo esta rota para que não apareça no menu principal
+  // },
   {
     type: "item",
     name: "Notas do Aluno",

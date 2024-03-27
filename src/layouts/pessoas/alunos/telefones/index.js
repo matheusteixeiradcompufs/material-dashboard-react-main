@@ -13,11 +13,11 @@ import View from "./components/View";
 import Edit from "./components/Edit";
 import Add from "./components/Add";
 
-function EscolaEmails() {
-  const { escolaid } = useParams();
-  const [escola, setEscola] = useState(true);
-  const [email, setEmail] = useState(true);
-  const [endereco, setEndereco] = useState("");
+function AlunoTelefones() {
+  const { alunoid } = useParams();
+  const [aluno, setAluno] = useState(true);
+  const [telefone, setTelefone] = useState(true);
+  const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(true);
   const [add, setAdd] = useState(false);
   const [listar, setListar] = useState(true);
@@ -25,37 +25,37 @@ function EscolaEmails() {
   const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchEscola = async () => {
+    const fetchAluno = async () => {
       try {
-        const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-        setEscola(response.data);
+        const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+        setAluno(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        toast.error("Erro ao carregar aluno");
+        console.error("Erro ao carregar aluno:", error);
         setLoading(false);
       }
     };
-    fetchEscola();
+    fetchAluno();
   }, []);
 
-  const handleSetEndereco = (e) => {
-    setEndereco(e.target.value);
+  const handleSetNumero = (e) => {
+    setNumero(e.target.value);
   };
 
   const handleOnListar = () => {
-    setEndereco("");
-    setEmail(null);
+    setNumero("");
+    setTelefone(null);
     setAdd(false);
     setEditar(false);
     setView(false);
     setListar(true);
   };
 
-  const handleOnView = (emailid) => {
-    const emailView = escola.objetos_emails.find((objeto) => objeto.id === emailid);
-    setEmail(emailView);
-    setEndereco(emailView.endereco);
+  const handleOnView = (telefoneid) => {
+    const telefoneView = aluno.objetos_telefones.find((objeto) => objeto.id === telefoneid);
+    setTelefone(telefoneView);
+    setNumero(telefoneView.numero);
     setAdd(false);
     setEditar(false);
     setListar(false);
@@ -79,48 +79,48 @@ function EscolaEmails() {
   const handleAdd = async () => {
     setLoading(true);
     try {
-      await api.post("/escolas/email/api/v1/", {
-        endereco: endereco,
-        escola: escolaid,
+      await api.post("/pessoas/telefone/api/v1/", {
+        numero: numero,
+        pessoa: alunoid,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao cadastrar email");
-      console.log("Erro ao cadastrar email", error);
+      toast.error("Erro ao cadastrar telefone");
+      console.log("Erro ao cadastrar telefone", error);
       setLoading(false);
     }
   };
 
-  const handleEditar = async (emailid) => {
+  const handleEditar = async (telefoneid) => {
     setLoading(true);
     try {
-      await api.patch(`/escolas/email/api/v1/${emailid}/`, {
-        endereco: endereco,
+      await api.patch(`/pessoas/telefone/api/v1/${telefoneid}/`, {
+        numero: numero,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      toast.error("Erro ao cadastrar aluno");
+      console.log("Erro ao cadastrar aluno", error);
       setLoading(false);
     }
   };
 
-  const handleExcluir = async (emailid) => {
+  const handleExcluir = async (telefoneid) => {
     setLoading(true);
     try {
-      await api.delete(`/escolas/email/api/v1/${emailid}/`);
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      await api.delete(`/pessoas/telefone/api/v1/${telefoneid}/`);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir email");
-      console.log("Erro ao excluir email", error);
+      toast.error("Erro ao excluir telefone");
+      console.log("Erro ao excluir telefone", error);
       setLoading(false);
     }
   };
@@ -152,12 +152,12 @@ function EscolaEmails() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {listar ? (
               <List
-                emails={escola?.objetos_emails}
+                telefones={aluno?.objetos_telefones}
                 handleOnView={handleOnView}
                 handleExcluir={handleExcluir}
               />
@@ -168,9 +168,9 @@ function EscolaEmails() {
               <>
                 <MDBox>
                   <View
-                    email={email}
-                    endereco={endereco}
-                    handleSetEndereco={handleSetEndereco}
+                    telefone={telefone}
+                    numero={numero}
+                    handleSetNumero={handleSetNumero}
                     handleOnEditar={handleOnEditar}
                     handleOnListar={handleOnListar}
                   />
@@ -181,9 +181,9 @@ function EscolaEmails() {
             )}
             {editar ? (
               <Edit
-                email={email}
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
+                telefone={telefone}
+                numero={numero}
+                handleSetNumero={handleSetNumero}
                 handleEditar={handleEditar}
                 handleOnView={handleOnView}
               />
@@ -192,8 +192,8 @@ function EscolaEmails() {
             )}
             {add ? (
               <Add
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
+                numero={numero}
+                handleSetNumero={handleSetNumero}
                 handleAdd={handleAdd}
                 handleOnListar={handleOnListar}
               />
@@ -221,4 +221,4 @@ function EscolaEmails() {
   );
 }
 
-export default EscolaEmails;
+export default AlunoTelefones;

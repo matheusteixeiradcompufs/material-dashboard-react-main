@@ -13,9 +13,9 @@ import View from "./components/View";
 import Edit from "./components/Edit";
 import Add from "./components/Add";
 
-function EscolaEmails() {
-  const { escolaid } = useParams();
-  const [escola, setEscola] = useState(true);
+function AlunoEmails() {
+  const { alunoid } = useParams();
+  const [aluno, setAluno] = useState(true);
   const [email, setEmail] = useState(true);
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,18 +25,18 @@ function EscolaEmails() {
   const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchEscola = async () => {
+    const fetchAluno = async () => {
       try {
-        const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-        setEscola(response.data);
+        const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+        setAluno(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        toast.error("Erro ao carregar aluno");
+        console.error("Erro ao carregar aluno:", error);
         setLoading(false);
       }
     };
-    fetchEscola();
+    fetchAluno();
   }, []);
 
   const handleSetEndereco = (e) => {
@@ -53,7 +53,7 @@ function EscolaEmails() {
   };
 
   const handleOnView = (emailid) => {
-    const emailView = escola.objetos_emails.find((objeto) => objeto.id === emailid);
+    const emailView = aluno.objetos_emails.find((objeto) => objeto.id === emailid);
     setEmail(emailView);
     setEndereco(emailView.endereco);
     setAdd(false);
@@ -79,12 +79,12 @@ function EscolaEmails() {
   const handleAdd = async () => {
     setLoading(true);
     try {
-      await api.post("/escolas/email/api/v1/", {
+      await api.post("/pessoas/email/api/v1/", {
         endereco: endereco,
-        escola: escolaid,
+        pessoa: alunoid,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
@@ -97,16 +97,16 @@ function EscolaEmails() {
   const handleEditar = async (emailid) => {
     setLoading(true);
     try {
-      await api.patch(`/escolas/email/api/v1/${emailid}/`, {
+      await api.patch(`/pessoas/email/api/v1/${emailid}/`, {
         endereco: endereco,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      toast.error("Erro ao cadastrar aluno");
+      console.log("Erro ao cadastrar aluno", error);
       setLoading(false);
     }
   };
@@ -114,9 +114,9 @@ function EscolaEmails() {
   const handleExcluir = async (emailid) => {
     setLoading(true);
     try {
-      await api.delete(`/escolas/email/api/v1/${emailid}/`);
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      await api.delete(`/pessoas/email/api/v1/${emailid}/`);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir email");
@@ -157,7 +157,7 @@ function EscolaEmails() {
           <Grid item xs={12}>
             {listar ? (
               <List
-                emails={escola?.objetos_emails}
+                emails={aluno?.objetos_emails}
                 handleOnView={handleOnView}
                 handleExcluir={handleExcluir}
               />
@@ -221,4 +221,4 @@ function EscolaEmails() {
   );
 }
 
-export default EscolaEmails;
+export default AlunoEmails;

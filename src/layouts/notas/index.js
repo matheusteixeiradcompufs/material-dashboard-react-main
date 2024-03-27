@@ -152,7 +152,7 @@ function Notas() {
 }
 
 function NotasAluno() {
-  const { id } = useParams(); // Obtendo o ID do aluno da URL
+  const { boletimid } = useParams();
 
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
@@ -164,7 +164,7 @@ function NotasAluno() {
   const loadBoletim = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/pessoas/aluno/boletim/api/v1/${id}/`);
+      const response = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
       const { objetos_avaliacoes, objetos_medias, objetos_situacoes } = response.data;
       setAvaliacoes(objetos_avaliacoes);
       setMedias(objetos_medias);
@@ -188,7 +188,7 @@ function NotasAluno() {
     setLoading(true);
     loadBoletim();
     setLoading(false);
-  }, [id]);
+  }, [boletimid]);
 
   if (loading) {
     return (

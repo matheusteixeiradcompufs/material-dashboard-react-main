@@ -67,14 +67,16 @@ function TurmaAgenda() {
         const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
         setTurma(response.data);
         const { objeto_agenda } = response.data;
-        const { seg, ter, qua, qui, sex } = obterDisciplinas(
-          objeto_agenda.objetos_dias.slice(0, 7)
-        );
-        setSegunda(seg);
-        setTerca(ter);
-        setQuarta(qua);
-        setQuinta(qui);
-        setSexta(sex);
+        if (objeto_agenda) {
+          const { seg, ter, qua, qui, sex } = obterDisciplinas(
+            objeto_agenda.objetos_dias.slice(0, 7)
+          );
+          setSegunda(seg);
+          setTerca(ter);
+          setQuarta(qua);
+          setQuinta(qui);
+          setSexta(sex);
+        }
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar a turma");

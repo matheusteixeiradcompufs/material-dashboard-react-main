@@ -11,6 +11,7 @@ import List from "./components/List";
 import View from "./components/View";
 import Add from "./components/Add";
 import Edit from "./components/Edit";
+import Menu from "./components/Menu";
 
 function Alunos() {
   const [loading, setLoading] = useState(true);
@@ -240,7 +241,7 @@ function Alunos() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {listarAlunos ? (
@@ -253,28 +254,35 @@ function Alunos() {
               <></>
             )}
             {viewAluno ? (
-              <View
-                nome={nome}
-                sobrenome={sobrenome}
-                email={email}
-                usuario={usuario}
-                matricula={matricula}
-                cpf={cpf}
-                dataNascimento={dataNascimento}
-                endereco={endereco}
-                retrato={retrato}
-                handleSetNome={handleSetNome}
-                handleSetSobrenome={handleSetSobrenome}
-                handleSetEmail={handleSetEmail}
-                handleSetUsuario={handleSetUsuario}
-                handleSetMatricula={handleSetMatricula}
-                handleSetCpf={handleSetCpf}
-                handleSetDataNascimento={handleSetDataNascimento}
-                handleSetEndereco={handleSetEndereco}
-                handleFile={handleFile}
-                handleOnEditarAluno={handleOnEditarAluno}
-                handleOnListarAluno={handleOnListarAluno}
-              />
+              <>
+                <MDBox>
+                  <View
+                    nome={nome}
+                    sobrenome={sobrenome}
+                    email={email}
+                    usuario={usuario}
+                    matricula={matricula}
+                    cpf={cpf}
+                    dataNascimento={dataNascimento}
+                    endereco={endereco}
+                    retrato={retrato}
+                    handleSetNome={handleSetNome}
+                    handleSetSobrenome={handleSetSobrenome}
+                    handleSetEmail={handleSetEmail}
+                    handleSetUsuario={handleSetUsuario}
+                    handleSetMatricula={handleSetMatricula}
+                    handleSetCpf={handleSetCpf}
+                    handleSetDataNascimento={handleSetDataNascimento}
+                    handleSetEndereco={handleSetEndereco}
+                    handleFile={handleFile}
+                    handleOnEditarAluno={handleOnEditarAluno}
+                    handleOnListarAluno={handleOnListarAluno}
+                  />
+                </MDBox>
+                <MDBox mt={6}>
+                  <Menu aluno={aluno} />
+                </MDBox>
+              </>
             ) : (
               <></>
             )}
@@ -327,7 +335,7 @@ function Alunos() {
                 handleSetEndereco={handleSetEndereco}
                 handleFile={handleFile}
                 handleEditar={handleEditar}
-                handleOnListarAluno={handleOnListarAluno}
+                handleOnViewAluno={handleOnViewAluno}
               />
             ) : (
               <></>

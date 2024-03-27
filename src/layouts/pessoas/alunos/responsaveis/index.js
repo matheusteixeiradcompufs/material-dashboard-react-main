@@ -13,11 +13,13 @@ import View from "./components/View";
 import Edit from "./components/Edit";
 import Add from "./components/Add";
 
-function EscolaEmails() {
-  const { escolaid } = useParams();
-  const [escola, setEscola] = useState(true);
-  const [email, setEmail] = useState(true);
-  const [endereco, setEndereco] = useState("");
+function AlunoResponsaveis() {
+  const { alunoid } = useParams();
+  const [aluno, setAluno] = useState(true);
+  const [responsavel, setResponsavel] = useState(true);
+  const [cpf, setCpf] = useState("");
+  const [nome, setNome] = useState("");
+  const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(true);
   const [add, setAdd] = useState(false);
   const [listar, setListar] = useState(true);
@@ -25,27 +27,37 @@ function EscolaEmails() {
   const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchEscola = async () => {
+    const fetchAluno = async () => {
       try {
-        const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-        setEscola(response.data);
+        const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+        setAluno(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        toast.error("Erro ao carregar aluno");
+        console.error("Erro ao carregar aluno:", error);
         setLoading(false);
       }
     };
-    fetchEscola();
+    fetchAluno();
   }, []);
 
-  const handleSetEndereco = (e) => {
-    setEndereco(e.target.value);
+  const handleSetCpf = (e) => {
+    setCpf(e.target.value);
+  };
+
+  const handleSetNome = (e) => {
+    setNome(e.target.value);
+  };
+
+  const handleSetObservacao = (e) => {
+    setObservacao(e.target.value);
   };
 
   const handleOnListar = () => {
-    setEndereco("");
-    setEmail(null);
+    setCpf("");
+    setNome("");
+    setObservacao("");
+    setResponsavel(null);
     setAdd(false);
     setEditar(false);
     setView(false);
@@ -53,9 +65,11 @@ function EscolaEmails() {
   };
 
   const handleOnView = (emailid) => {
-    const emailView = escola.objetos_emails.find((objeto) => objeto.id === emailid);
-    setEmail(emailView);
-    setEndereco(emailView.endereco);
+    const responsavelView = aluno.objetos_responsaveis.find((objeto) => objeto.id === emailid);
+    setResponsavel(responsavelView);
+    setCpf(responsavelView.cpf);
+    setNome(responsavelView.nome);
+    setObservacao(responsavelView.observacao);
     setAdd(false);
     setEditar(false);
     setListar(false);
@@ -79,48 +93,52 @@ function EscolaEmails() {
   const handleAdd = async () => {
     setLoading(true);
     try {
-      await api.post("/escolas/email/api/v1/", {
-        endereco: endereco,
-        escola: escolaid,
+      await api.post("/pessoas/aluno/responsavel/api/v1/", {
+        cpf: cpf,
+        nome: nome,
+        observacao: observacao,
+        aluno: alunoid,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao cadastrar email");
-      console.log("Erro ao cadastrar email", error);
+      toast.error("Erro ao cadastrar responsável");
+      console.log("Erro ao cadastrar responsável", error);
       setLoading(false);
     }
   };
 
-  const handleEditar = async (emailid) => {
+  const handleEditar = async (responsavelid) => {
     setLoading(true);
     try {
-      await api.patch(`/escolas/email/api/v1/${emailid}/`, {
-        endereco: endereco,
+      await api.patch(`/pessoas/aluno/responsavel/api/v1/${responsavelid}/`, {
+        cpf: cpf,
+        nome: nome,
+        observacao: observacao,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       handleOnListar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      toast.error("Erro ao modificar responsável");
+      console.log("Erro ao modificar responsável", error);
       setLoading(false);
     }
   };
 
-  const handleExcluir = async (emailid) => {
+  const handleExcluir = async (responsavelid) => {
     setLoading(true);
     try {
-      await api.delete(`/escolas/email/api/v1/${emailid}/`);
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      await api.delete(`/pessoas/aluno/responsavel/api/v1/${responsavelid}/`);
+      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+      setAluno(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir email");
-      console.log("Erro ao excluir email", error);
+      toast.error("Erro ao excluir responsável");
+      console.log("Erro ao excluir responsável", error);
       setLoading(false);
     }
   };
@@ -157,7 +175,7 @@ function EscolaEmails() {
           <Grid item xs={12}>
             {listar ? (
               <List
-                emails={escola?.objetos_emails}
+                responsaveis={aluno?.objetos_responsaveis}
                 handleOnView={handleOnView}
                 handleExcluir={handleExcluir}
               />
@@ -168,9 +186,13 @@ function EscolaEmails() {
               <>
                 <MDBox>
                   <View
-                    email={email}
-                    endereco={endereco}
-                    handleSetEndereco={handleSetEndereco}
+                    responsavel={responsavel}
+                    cpf={cpf}
+                    handleSetCpf={handleSetCpf}
+                    nome={nome}
+                    handleSetNome={handleSetNome}
+                    observacao={observacao}
+                    handleSetObservacao={handleSetObservacao}
                     handleOnEditar={handleOnEditar}
                     handleOnListar={handleOnListar}
                   />
@@ -181,9 +203,13 @@ function EscolaEmails() {
             )}
             {editar ? (
               <Edit
-                email={email}
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
+                responsavel={responsavel}
+                cpf={cpf}
+                handleSetCpf={handleSetCpf}
+                nome={nome}
+                handleSetNome={handleSetNome}
+                observacao={observacao}
+                handleSetObservacao={handleSetObservacao}
                 handleEditar={handleEditar}
                 handleOnView={handleOnView}
               />
@@ -192,8 +218,12 @@ function EscolaEmails() {
             )}
             {add ? (
               <Add
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
+                cpf={cpf}
+                handleSetCpf={handleSetCpf}
+                nome={nome}
+                handleSetNome={handleSetNome}
+                observacao={observacao}
+                handleSetObservacao={handleSetObservacao}
                 handleAdd={handleAdd}
                 handleOnListar={handleOnListar}
               />
@@ -221,4 +251,4 @@ function EscolaEmails() {
   );
 }
 
-export default EscolaEmails;
+export default AlunoResponsaveis;

@@ -26,7 +26,7 @@ function Edit({
   handleSetEndereco,
   handleFile,
   handleEditar,
-  handleOnListarAluno,
+  handleOnViewAluno,
 }) {
   return (
     <Card>
@@ -128,7 +128,7 @@ function Edit({
           </MDButton>
         </MDBox>
         <MDBox ml={1}>
-          <MDButton variant="gradient" color="error" onClick={handleOnListarAluno}>
+          <MDButton variant="gradient" color="error" onClick={() => handleOnViewAluno(aluno.id)}>
             Cancelar
           </MDButton>
         </MDBox>
@@ -158,7 +158,7 @@ Edit.propTypes = {
   handleSetEndereco: PropTypes.func.isRequired,
   handleFile: PropTypes.func.isRequired,
   handleEditar: PropTypes.func.isRequired,
-  handleOnListarAluno: PropTypes.func.isRequired,
+  handleOnViewAluno: PropTypes.func.isRequired,
 };
 
 export default Edit;
