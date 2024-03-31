@@ -32,6 +32,16 @@ import AlunoBoletins from "layouts/pessoas/alunos/boletins";
 import BoletimFrequencia from "layouts/pessoas/alunos/boletins/frequencia";
 import BoletimNotas from "layouts/pessoas/alunos/boletins/notas";
 import BoletimRecados from "layouts/pessoas/alunos/boletins/recados";
+import Transportes from "layouts/transportes";
+import AddTransportes from "layouts/transportes/add";
+import ViewTransportes from "layouts/transportes/view";
+import EditarTransportes from "layouts/transportes/editar";
+import TransporteTelefones from "layouts/transportes/telefones";
+import AddTransporteTelefone from "layouts/transportes/telefones/add";
+import ViewTransporteTelefone from "layouts/transportes/telefones/view";
+import EditarTransporteTelefone from "layouts/transportes/telefones/editar";
+import TransporteAlunos from "layouts/transportes/alunos";
+import GerenciarTransporteAlunos from "layouts/transportes/alunos/gerenciar";
 
 const routes = [
   //DASHBOARD
@@ -242,6 +252,90 @@ const routes = [
     component: <Itens />,
   },
   //ITENS DA MERENDA
+  //------------------------
+  //TRANSPORTES
+  {
+    type: "collapse",
+    name: "Transportes",
+    key: "transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes",
+    component: <Transportes />,
+  },
+  {
+    type: "item",
+    name: "Add Transportes",
+    key: "add_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/add",
+    component: <AddTransportes />,
+  },
+  {
+    type: "item",
+    name: "Visualizar Transportes",
+    key: "view_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/view",
+    component: <ViewTransportes />,
+  },
+  {
+    type: "item",
+    name: "Editar Transportes",
+    key: "editar_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/editar",
+    component: <EditarTransportes />,
+  },
+  //------------------------
+  {
+    type: "item",
+    name: "Telefones do Transporte",
+    key: "telefones_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefones",
+    component: <TransporteTelefones />,
+  },
+  {
+    type: "item",
+    name: "Adicionar Telefones do Transporte",
+    key: "add_telefones_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefones/add",
+    component: <AddTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Visualizar Telefone do Transporte",
+    key: "view_telefone_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefone/:telefoneid/view",
+    component: <ViewTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Modificar Telefone do Transporte",
+    key: "editar_telefone_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefone/:telefoneid/editar",
+    component: <EditarTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Alunos do Transporte",
+    key: "alunos_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/alunos",
+    component: <TransporteAlunos />,
+  },
+  {
+    type: "item",
+    name: "Gerenciar Alunos do Transporte",
+    key: "gerenciar_alunos_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/alunos/gerenciar",
+    component: <GerenciarTransporteAlunos />,
+  },
+  //TRANSPORTES
   //------------------------
   //LOGOUT
   {

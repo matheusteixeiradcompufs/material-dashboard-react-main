@@ -42,7 +42,7 @@ function BoletimRecados() {
     };
     const loadDataInterval = setInterval(async () => {
       try {
-        const response = await api.get(`/pessoas/aluno/agenda/api/v1/${agendaRecados.id}/`);
+        const response = await api.get(`/pessoas/aluno/boletim/agenda/api/v1/${agendaRecados.id}/`);
         const { objetos_recados } = await response.data;
         setRecados(objetos_recados);
       } catch (err) {
@@ -85,7 +85,7 @@ function BoletimRecados() {
   };
   const handleEnviar = async () => {
     try {
-      const response = await api.post("/pessoas/aluno/agenda/recado/api/v1/", {
+      const response = await api.post("/pessoas/aluno/boletim/agenda/recado/api/v1/", {
         texto: texto,
         agenda: agendaRecados.id,
       });
