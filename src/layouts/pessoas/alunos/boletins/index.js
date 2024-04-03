@@ -1,43 +1,28 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
-import Menu from "./components/Menu";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
 function AlunoBoletins() {
+  const navigate = useNavigate();
   const { alunoid } = useParams();
-  const [aluno, setAluno] = useState(true);
-  const [boletim, setBoletim] = useState(null);
-  const [escolas, setEscolas] = useState([]);
-  const [salas, setSalas] = useState([]);
-  const [turmas, setTurmas] = useState([]);
-  const [selectedEscola, setSelectedEscola] = useState("");
-  const [selectedSala, setSelectedSala] = useState("");
-  const [selectedTurma, setSelectedTurma] = useState("");
-  const [encerrar, setEncerrar] = useState(false);
+  const [boletins, setBoletins] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [listar, setListar] = useState(true);
-  const [editar, setEditar] = useState(false);
-  const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchAluno = async () => {
+    const fetchDados = async () => {
       try {
-        let response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-        setAluno(response.data);
-        response = await api.get("/escolas/api/v1/");
-        setEscolas(response.data);
+        const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
+        setBoletins(response.data.objetos_boletins);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar dados");
@@ -45,7 +30,7 @@ function AlunoBoletins() {
         setLoading(false);
       }
     };
-    fetchAluno();
+    fetchDados();
   }, []);
   const getTurno = (turno) => {
     let response;
@@ -65,121 +50,16 @@ function AlunoBoletins() {
     }
     return response;
   };
-  const handleChangeEscola = (e) => {
-    setSelectedEscola(e.target.value);
-    const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
-    setSalas(escolaView.objetos_salas);
-    setTurmas([]);
-    setSelectedSala("");
-    setSelectedTurma("");
-  };
-  const handleChangeSala = (e) => {
-    setSelectedSala(e.target.value);
-    const salaView = salas.find((objeto) => objeto.id === e.target.value);
-    setTurmas(salaView.objetos_turmas);
-    setSelectedTurma("");
-  };
-  const handleChangeTurma = (e) => {
-    setSelectedTurma(e.target.value);
-  };
-
-  const handleChangeEncerrar = () => {
-    setEncerrar(!encerrar);
-  };
-
-  const handleOnListar = () => {
-    setSalas([]);
-    setTurmas([]);
-    setSelectedEscola("");
-    setSelectedSala("");
-    setSelectedTurma("");
-    setAdd(false);
-    setEditar(false);
-    setView(false);
-    setListar(true);
-  };
-
-  const handleOnView = async (boletimid) => {
+  const handleView = (boletimid) => {
     setLoading(true);
-    const boletimView = aluno.objetos_boletins.find((objeto) => objeto.id === boletimid);
-    setBoletim(boletimView);
-    setEncerrar(boletimView.encerrar);
-    try {
-      let response = await api.get(`/escolas/sala/turma/api/v1/${boletimView.turma}/`);
-      setSelectedTurma(response.data.id);
-      response = await api.get(`/escolas/sala/api/v1/${response.data.sala}/`);
-      setTurmas(response.data.objetos_turmas);
-      setSelectedSala(response.data.id);
-      const escolaView = escolas.find((objeto) => objeto.id === response.data.escola);
-      setSalas(escolaView.objetos_salas);
-      setSelectedEscola(response.data.escola);
-      setAdd(false);
-      setEditar(false);
-      setListar(false);
-      setView(true);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+    navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);
   };
-
-  const handleOnEditar = () => {
-    setAdd(false);
-    setView(false);
-    setListar(false);
-    setEditar(true);
-  };
-
-  const handleOnAdd = () => {
-    setEditar(false);
-    setView(false);
-    setListar(false);
-    setAdd(true);
-  };
-
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/pessoas/aluno/boletim/api/v1/", {
-        turma: selectedTurma,
-        aluno: alunoid,
-      });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao matricular aluno na turma");
-      console.log("Erro ao matricular aluno na turma", error);
-      setLoading(false);
-    }
-  };
-
-  const handleEditar = async (boletimid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/pessoas/aluno/boletim/api/v1/${boletimid}/`, {
-        turma: selectedTurma,
-        encerrar: encerrar,
-      });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao modificar matricula do aluno");
-      console.log("Erro ao modificar matricula do aluno", error);
-      setLoading(false);
-    }
-  };
-
   const handleExcluir = async (boletimid) => {
     setLoading(true);
     try {
       await api.delete(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
       const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
+      setBoletins(response.data.objetos_boletins);
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir matrícula do aluno");
@@ -187,7 +67,6 @@ function AlunoBoletins() {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -218,93 +97,86 @@ function AlunoBoletins() {
       <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? (
-              <List
-                boletins={aluno?.objetos_boletins}
-                getTurno={getTurno}
-                handleOnView={handleOnView}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {view ? (
-              <>
-                <MDBox>
-                  <View
-                    boletim={boletim}
-                    escolas={escolas}
-                    salas={salas}
-                    turmas={turmas}
-                    selectedEscola={selectedEscola}
-                    handleChangeEscola={handleChangeEscola}
-                    selectedSala={selectedSala}
-                    handleChangeSala={handleChangeSala}
-                    selectedTurma={selectedTurma}
-                    handleChangeTurma={handleChangeTurma}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-                <MDBox mt={6}>
-                  <Menu alunoid={alunoid} boletimid={boletim.id} />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editar ? (
-              <Edit
-                boletim={boletim}
-                escolas={escolas}
-                salas={salas}
-                turmas={turmas}
-                encerrar={encerrar}
-                handleChangeEncerrar={handleChangeEncerrar}
-                selectedEscola={selectedEscola}
-                handleChangeEscola={handleChangeEscola}
-                selectedSala={selectedSala}
-                handleChangeSala={handleChangeSala}
-                selectedTurma={selectedTurma}
-                handleChangeTurma={handleChangeTurma}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
-            {add ? (
-              <Add
-                escolas={escolas}
-                salas={salas}
-                turmas={turmas}
-                selectedEscola={selectedEscola}
-                handleChangeEscola={handleChangeEscola}
-                selectedSala={selectedSala}
-                handleChangeSala={handleChangeSala}
-                selectedTurma={selectedTurma}
-                handleChangeTurma={handleChangeTurma}
-                handleAdd={handleAdd}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Matrículas do Aluno
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "nome", accessor: "nome", align: "left" },
+                      { Header: "ano", accessor: "ano", align: "center" },
+                      { Header: "turno", accessor: "turno", align: "center" },
+                      { Header: "status", accessor: "status", align: "center" },
+                      { Header: "", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: boletins.map((boletim) => ({
+                      nome: boletim.objeto_turma.nome,
+                      ano: boletim.objeto_turma.ano,
+                      turno: getTurno(boletim.objeto_turma.turno),
+                      status: boletim.status,
+                      opcoes: (
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12} sm={6}>
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleView(boletim.id)}
+                            >
+                              Visualizar
+                            </MDButton>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <MDButton
+                              variant="gradient"
+                              color="error"
+                              size="small"
+                              onClick={() => handleExcluir(boletim.id)}
+                            >
+                              Excluir
+                            </MDButton>
+                          </Grid>
+                        </Grid>
+                      ),
+                    })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listar ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/pessoas/aluno/${alunoid}/boletins/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

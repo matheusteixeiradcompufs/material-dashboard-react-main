@@ -1,34 +1,29 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
 function AlunoTelefones() {
+  const navigate = useNavigate();
   const { alunoid } = useParams();
-  const [aluno, setAluno] = useState(true);
-  const [telefone, setTelefone] = useState(true);
+  const [telefones, setTelefones] = useState([]);
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [listar, setListar] = useState(true);
-  const [editar, setEditar] = useState(false);
-  const [view, setView] = useState(false);
 
   useEffect(() => {
     const fetchAluno = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-        setAluno(response.data);
+        setTelefones(response.data.objetos_telefones);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar aluno");
@@ -43,37 +38,9 @@ function AlunoTelefones() {
     setNumero(e.target.value);
   };
 
-  const handleOnListar = () => {
-    setNumero("");
-    setTelefone(null);
-    setAdd(false);
-    setEditar(false);
-    setView(false);
-    setListar(true);
-  };
-
-  const handleOnView = (telefoneid) => {
-    const telefoneView = aluno.objetos_telefones.find((objeto) => objeto.id === telefoneid);
-    setTelefone(telefoneView);
-    setNumero(telefoneView.numero);
-    setAdd(false);
-    setEditar(false);
-    setListar(false);
-    setView(true);
-  };
-
-  const handleOnEditar = () => {
-    setAdd(false);
-    setView(false);
-    setListar(false);
-    setEditar(true);
-  };
-
-  const handleOnAdd = () => {
-    setEditar(false);
-    setView(false);
-    setListar(false);
-    setAdd(true);
+  const handleView = (telefoneid) => {
+    setLoading(true);
+    navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/view`);
   };
 
   const handleAdd = async () => {
@@ -83,13 +50,10 @@ function AlunoTelefones() {
         numero: numero,
         pessoa: alunoid,
       });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
+      navigate(`/pessoas/aluno/${alunoid}/telefones`);
     } catch (error) {
-      toast.error("Erro ao cadastrar telefone");
-      console.log("Erro ao cadastrar telefone", error);
+      toast.error("Erro ao cadastrar telefone do aluno");
+      console.log("Erro ao cadastrar telefone do aluno", error);
       setLoading(false);
     }
   };
@@ -100,13 +64,10 @@ function AlunoTelefones() {
       await api.patch(`/pessoas/telefone/api/v1/${telefoneid}/`, {
         numero: numero,
       });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
+      navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/view`);
     } catch (error) {
-      toast.error("Erro ao cadastrar aluno");
-      console.log("Erro ao cadastrar aluno", error);
+      toast.error("Erro ao modificar teledone do aluno");
+      console.log("Erro ao modificar teledone do aluno", error);
       setLoading(false);
     }
   };
@@ -116,11 +77,11 @@ function AlunoTelefones() {
     try {
       await api.delete(`/pessoas/telefone/api/v1/${telefoneid}/`);
       const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
+      setTelefones(response.data.objetos_telefones);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir telefone");
-      console.log("Erro ao excluir telefone", error);
+      toast.error("Erro ao excluir telefone do aluno");
+      console.log("Erro ao excluir telefone do aluno", error);
       setLoading(false);
     }
   };
@@ -155,66 +116,80 @@ function AlunoTelefones() {
       <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? (
-              <List
-                telefones={aluno?.objetos_telefones}
-                handleOnView={handleOnView}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {view ? (
-              <>
-                <MDBox>
-                  <View
-                    telefone={telefone}
-                    numero={numero}
-                    handleSetNumero={handleSetNumero}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editar ? (
-              <Edit
-                telefone={telefone}
-                numero={numero}
-                handleSetNumero={handleSetNumero}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
-            {add ? (
-              <Add
-                numero={numero}
-                handleSetNumero={handleSetNumero}
-                handleAdd={handleAdd}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Telefones do Aluno
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "numero", accessor: "numero", align: "left" },
+                      { Header: "opcoes", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: telefones.map((telefone) => ({
+                      numero: telefone.numero,
+                      opcoes: (
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleView(telefone.id)}
+                            >
+                              Visualizar
+                            </MDButton>
+                          </Grid>
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="error"
+                              size="small"
+                              onClick={() => handleExcluir(telefone.id)}
+                            >
+                              Excluir
+                            </MDButton>
+                          </Grid>
+                        </Grid>
+                      ),
+                    })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listar ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/pessoas/aluno/${alunoid}/telefones/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

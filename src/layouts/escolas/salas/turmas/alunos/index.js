@@ -3,13 +3,14 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import Alunos from "./components/Alunos";
 
 function TurmaAlunos() {
+  const navigate = useNavigate();
   const { turmaid } = useParams();
   const [loading, setLoading] = useState(true);
   const [turma, setTurma] = useState(null);
@@ -27,6 +28,12 @@ function TurmaAlunos() {
     };
     fetchTurma();
   }, []);
+  const handleView = (alunoid) => {
+    setLoading(true);
+    navigate(
+      `/escola/${turma.objeto_sala.escola}/sala/${turma.objeto_sala.id}/turma/${turma.id}/aluno/${alunoid}/view`
+    );
+  };
   if (loading) {
     return (
       <DashboardLayout>
@@ -57,7 +64,7 @@ function TurmaAlunos() {
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Alunos turma={turma} />
+            <Alunos turma={turma} handleView={handleView} />
           </Grid>
         </Grid>
       </MDBox>

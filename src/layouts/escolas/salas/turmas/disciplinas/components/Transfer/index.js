@@ -101,23 +101,6 @@ export default function Transfer({ left, setLeft, right, setRight }) {
   return (
     <>
       <Grid container spacing={2} justifyContent="center" alignItems="center">
-        <Grid item xs={12}>
-          <MDBox
-            py={1}
-            px={1}
-            mt={3}
-            mb={1}
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
-            fullWidth
-          >
-            <MDTypography variant="h6" color="white" align="center">
-              Selecione as Disciplinas da Turma
-            </MDTypography>
-          </MDBox>
-        </Grid>
         <Grid item xs={5}>
           {customList("Disponíveis", left)}
         </Grid>

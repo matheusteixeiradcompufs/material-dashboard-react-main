@@ -1,34 +1,28 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
 function AlunoEmails() {
+  const navigate = useNavigate();
   const { alunoid } = useParams();
-  const [aluno, setAluno] = useState(true);
-  const [email, setEmail] = useState(true);
-  const [endereco, setEndereco] = useState("");
+  const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [listar, setListar] = useState(true);
-  const [editar, setEditar] = useState(false);
-  const [view, setView] = useState(false);
 
   useEffect(() => {
     const fetchAluno = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-        setAluno(response.data);
+        setEmails(response.data.objetos_emails);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar aluno");
@@ -38,85 +32,16 @@ function AlunoEmails() {
     };
     fetchAluno();
   }, []);
-
-  const handleSetEndereco = (e) => {
-    setEndereco(e.target.value);
-  };
-
-  const handleOnListar = () => {
-    setEndereco("");
-    setEmail(null);
-    setAdd(false);
-    setEditar(false);
-    setView(false);
-    setListar(true);
-  };
-
   const handleOnView = (emailid) => {
-    const emailView = aluno.objetos_emails.find((objeto) => objeto.id === emailid);
-    setEmail(emailView);
-    setEndereco(emailView.endereco);
-    setAdd(false);
-    setEditar(false);
-    setListar(false);
-    setView(true);
-  };
-
-  const handleOnEditar = () => {
-    setAdd(false);
-    setView(false);
-    setListar(false);
-    setEditar(true);
-  };
-
-  const handleOnAdd = () => {
-    setEditar(false);
-    setView(false);
-    setListar(false);
-    setAdd(true);
-  };
-
-  const handleAdd = async () => {
     setLoading(true);
-    try {
-      await api.post("/pessoas/email/api/v1/", {
-        endereco: endereco,
-        pessoa: alunoid,
-      });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar email");
-      console.log("Erro ao cadastrar email", error);
-      setLoading(false);
-    }
+    navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/view`);
   };
-
-  const handleEditar = async (emailid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/pessoas/email/api/v1/${emailid}/`, {
-        endereco: endereco,
-      });
-      const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar aluno");
-      console.log("Erro ao cadastrar aluno", error);
-      setLoading(false);
-    }
-  };
-
   const handleExcluir = async (emailid) => {
     setLoading(true);
     try {
       await api.delete(`/pessoas/email/api/v1/${emailid}/`);
       const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
+      setEmails(response.data.objetos_emails);
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir email");
@@ -124,7 +49,6 @@ function AlunoEmails() {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -155,66 +79,80 @@ function AlunoEmails() {
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? (
-              <List
-                emails={aluno?.objetos_emails}
-                handleOnView={handleOnView}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {view ? (
-              <>
-                <MDBox>
-                  <View
-                    email={email}
-                    endereco={endereco}
-                    handleSetEndereco={handleSetEndereco}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editar ? (
-              <Edit
-                email={email}
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
-            {add ? (
-              <Add
-                endereco={endereco}
-                handleSetEndereco={handleSetEndereco}
-                handleAdd={handleAdd}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Emails do Aluno
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "endereço", accessor: "endereco", align: "left" },
+                      { Header: "opcoes", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: emails.map((email) => ({
+                      endereco: email.endereco,
+                      opcoes: (
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleOnView(email.id)}
+                            >
+                              Visualizar
+                            </MDButton>
+                          </Grid>
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="error"
+                              size="small"
+                              onClick={() => handleExcluir(email.id)}
+                            >
+                              Excluir
+                            </MDButton>
+                          </Grid>
+                        </Grid>
+                      ),
+                    })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listar ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/pessoas/aluno/${alunoid}/emails/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

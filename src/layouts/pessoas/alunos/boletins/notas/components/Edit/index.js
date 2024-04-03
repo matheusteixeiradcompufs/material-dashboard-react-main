@@ -1,0 +1,89 @@
+import { Card, FormControlLabel, Switch } from "@mui/material";
+import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
+import MDInput from "components/MDInput";
+import MDTypography from "components/MDTypography";
+import PropTypes from "prop-types";
+
+function Edit({
+  nome,
+  avaliacoes,
+  valores,
+  handleInputChange,
+  confs,
+  handleSwitchChange,
+  handleSalvar,
+  handleOnList,
+}) {
+  return (
+    <Card>
+      <MDBox
+        mx={2}
+        mt={-3}
+        py={3}
+        px={2}
+        variant="gradient"
+        bgColor="info"
+        borderRadius="lg"
+        coloredShadow="info"
+      >
+        <MDTypography variant="h6" color="white">
+          Avaliação {nome}
+        </MDTypography>
+      </MDBox>
+      <MDBox pt={2} pb={2} px={3}>
+        {avaliacoes.map((avaliacao, index) => {
+          if (avaliacao.nome === nome) {
+            return (
+              <MDBox mt={1} mb={1} key={index} display="flex" justifyContent="center">
+                <MDBox mr={1}>
+                  <MDInput
+                    type="number"
+                    label={avaliacao.objeto_disciplina.nome}
+                    value={valores[index]}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                  />
+                </MDBox>
+                <MDBox ml={1}>
+                  <FormControlLabel
+                    control={
+                      <Switch checked={confs[index]} onClick={() => handleSwitchChange(index)} />
+                    }
+                    label="Confirmar"
+                  />
+                </MDBox>
+              </MDBox>
+            );
+          } else {
+            return <></>;
+          }
+        })}
+        <MDBox mt={1} mb={1} display="flex" justifyContent="center">
+          <MDBox mr={1}>
+            <MDButton variant="gradient" color="success" onClick={handleSalvar}>
+              Salvar
+            </MDButton>
+          </MDBox>
+          <MDBox ml={1}>
+            <MDButton variant="gradient" color="error" onClick={handleOnList}>
+              Cancelar
+            </MDButton>
+          </MDBox>
+        </MDBox>
+      </MDBox>
+    </Card>
+  );
+}
+
+Edit.propTypes = {
+  nome: PropTypes.string.isRequired,
+  avaliacoes: PropTypes.array.isRequired,
+  valores: PropTypes.array.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  confs: PropTypes.array.isRequired,
+  handleSwitchChange: PropTypes.func.isRequired,
+  handleSalvar: PropTypes.func.isRequired,
+  handleOnList: PropTypes.func.isRequired,
+};
+
+export default Edit;

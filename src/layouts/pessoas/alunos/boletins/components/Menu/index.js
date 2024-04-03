@@ -26,21 +26,21 @@ function Menu({ alunoid, boletimid }) {
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${alunoid}/matriculas/${boletimid}/frequencia`}>
+              <Link to={`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`}>
                 <MDButton variant="gradient" color="secondary">
                   Frequência
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${alunoid}/matriculas/${boletimid}/Notas`}>
+              <Link to={`/pessoas/aluno/${alunoid}/boletim/${boletimid}/notas`}>
                 <MDButton variant="gradient" color="secondary">
                   Notas
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${alunoid}/matriculas/${boletimid}/Recados`}>
+              <Link to={`/pessoas/aluno/${alunoid}/boletim/${boletimid}/recados`}>
                 <MDButton variant="gradient" color="secondary">
                   Recados
                 </MDButton>
@@ -54,8 +54,8 @@ function Menu({ alunoid, boletimid }) {
 }
 
 Menu.propTypes = {
-  alunoid: PropTypes.number.isRequired,
-  boletimid: PropTypes.number.isRequired,
+  alunoid: PropTypes.string.isRequired,
+  boletimid: PropTypes.string.isRequired,
 };
 
 export default Menu;

@@ -1,4 +1,4 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
@@ -6,31 +6,22 @@ import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import Detail from "./components/Detail";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ManageIcon from "@mui/icons-material/Settings";
-import Manage from "./components/Manage";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
-function CardapioItens() {
-  const { cardapioid } = useParams();
+function EscolaCardapioItens() {
+  const navigate = useNavigate();
+  const { escolaid, cardapioid } = useParams();
   const [loading, setLoading] = useState(true);
-  const [itensCardapio, setItensCardapio] = useState([]);
   const [itens, setItens] = useState([]);
-  const [left, setLeft] = useState([]);
-  const [right, setRight] = useState([]);
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [listarItens, setListarItens] = useState(true);
-  const [viewItens, setViewItens] = useState(false);
-  const [gerenciarItens, setGerenciarItens] = useState(false);
   useEffect(() => {
     const fetchItens = async () => {
       try {
-        let response = await api.get(`/escolas/cardapio/api/v1/${cardapioid}/`);
-        setItensCardapio(response.data.objetos_itens);
-        response = await api.get("/escolas/cardapio/item/api/v1");
-        setItens(response.data);
+        const response = await api.get(`/escolas/cardapio/api/v1/${cardapioid}/`);
+        setItens(response.data.objetos_itens);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar cardápio!");
@@ -40,50 +31,9 @@ function CardapioItens() {
     };
     fetchItens();
   }, []);
-  const handleOnListarItens = () => {
-    setLeft([]);
-    setRight([]);
-    setNome("");
-    setDescricao("");
-    setViewItens(false);
-    setGerenciarItens(false);
-    setListarItens(true);
-  };
-  const handleOnViewItens = (itemid) => {
-    const itemView = itens.find((objeto) => objeto.id === itemid);
-    setNome(itemView.nome);
-    setDescricao(itemView.descricao);
-    setListarItens(false);
-    setGerenciarItens(false);
-    setViewItens(true);
-  };
-  const handleOnGerenciarItens = () => {
-    setRight(itensCardapio);
-    setLeft(itens.filter((item) => !itensCardapio.some((element) => element.id === item.id)));
-    setViewItens(false);
-    setListarItens(false);
-    setGerenciarItens(true);
-  };
-  const handleSetNome = (e) => {
-    setNome(e.target.value);
-  };
-  const handleSetDescricao = (e) => {
-    setDescricao(e.target.value);
-  };
-  const handleSalvar = async () => {
+  const handleView = (itemid) => {
     setLoading(true);
-    try {
-      const response = await api.patch(`/escolas/cardapio/api/v1/${cardapioid}/`, {
-        itens: right.map((item) => item.id),
-      });
-      setItensCardapio(response.data.objetos_itens);
-      handleOnListarItens();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao salvar itens no cardápio!");
-      console.log("Erro ao salvar itens no cardápio!", error);
-      setLoading(false);
-    }
+    navigate(`/escola/${escolaid}/cardapio/${cardapioid}/item/${itemid}/view`);
   };
   if (loading) {
     return (
@@ -112,56 +62,72 @@ function CardapioItens() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listarItens ? (
-              <List itens={itensCardapio} handleOnViewItens={handleOnViewItens} />
-            ) : (
-              <></>
-            )}
-            {viewItens ? (
-              <Detail
-                nome={nome}
-                handleSetNome={handleSetNome}
-                descricao={descricao}
-                handleSetDescricao={handleSetDescricao}
-                handleOnListarItens={handleOnListarItens}
-              />
-            ) : (
-              <></>
-            )}
-            {gerenciarItens ? (
-              <Manage
-                left={left}
-                setLeft={setLeft}
-                right={right}
-                setRight={setRight}
-                handleSalvar={handleSalvar}
-                handleOnListarItens={handleOnListarItens}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Itens do Cardápio
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "ítem", accessor: "item", width: "85%", align: "left" },
+                      { Header: "", accessor: "opcoes", align: "center" },
+                    ],
+                    rows: [
+                      ...itens?.map((objeto) => ({
+                        item: objeto.nome,
+                        opcoes: (
+                          <MDBox display="flex" flexDirection="row">
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleView(objeto.id)}
+                            >
+                              Visualizar
+                            </MDButton>
+                          </MDBox>
+                        ),
+                      })),
+                    ],
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listarItens ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/escola/${escolaid}/cardapio/${cardapioid}/itens/manage`}>
               <Fab
                 color="info"
                 aria-label="Gerenciar Cardápio"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnGerenciarItens}
               >
                 <ManageIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>
   );
 }
 
-export default CardapioItens;
+export default EscolaCardapioItens;

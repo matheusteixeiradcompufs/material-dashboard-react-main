@@ -5,7 +5,7 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function Menu({ escola }) {
+function Menu({ escolaid }) {
   return (
     <Card>
       <MDBox
@@ -26,35 +26,35 @@ function Menu({ escola }) {
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/telefones`}>
+              <Link to={`/escola/${escolaid}/telefones`}>
                 <MDButton variant="gradient" color="secondary">
                   Telefones
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/emails`}>
+              <Link to={`/escola/${escolaid}/emails`}>
                 <MDButton variant="gradient" color="secondary">
                   Emails
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/salas`}>
+              <Link to={`/escola/${escolaid}/salas`}>
                 <MDButton variant="gradient" color="secondary">
                   Salas
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/murais`}>
+              <Link to={`/escola/${escolaid}/murais`}>
                 <MDButton variant="gradient" color="secondary">
                   Murais
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/cardapios`}>
+              <Link to={`/escola/${escolaid}/cardapios`}>
                 <MDButton variant="gradient" color="secondary">
                   Cardápios
                 </MDButton>
@@ -68,7 +68,7 @@ function Menu({ escola }) {
 }
 
 Menu.propTypes = {
-  escola: PropTypes.object.isRequired,
+  escolaid: PropTypes.string.isRequired,
 };
 
 export default Menu;

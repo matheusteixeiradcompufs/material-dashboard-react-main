@@ -1,31 +1,26 @@
-import { Grid } from "@mui/material";
+import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
+import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DataTable from "examples/Tables/DataTable";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import Manage from "./components/Manage";
 
-function TurmaDisciplinas() {
-  const { turmaid } = useParams();
+function EscolaSalaTurmaDisciplinas() {
+  const navigate = useNavigate();
+  const { escolaid, salaid, turmaid } = useParams();
   const [loading, setLoading] = useState(true);
   const [turma, setTurma] = useState(null);
-  const [disciplinas, setDisciplinas] = useState([]);
-  const [left, setLeft] = useState([]);
-  const [right, setRight] = useState([]);
-  const [listar, setListar] = useState(true);
-  const [gerenciar, setGerenciar] = useState(false);
   useEffect(() => {
     const fetchTurma = async () => {
       try {
-        let response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
+        const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
         setTurma(response.data);
-        response = await api.get("/escolas/disciplina/api/v1/");
-        setDisciplinas(response.data);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar turma!");
@@ -35,37 +30,9 @@ function TurmaDisciplinas() {
     };
     fetchTurma();
   }, []);
-  const handleOnListar = () => {
-    setGerenciar(false);
-    setListar(true);
-  };
-  const handleOnGerenciar = () => {
-    setLeft(
-      disciplinas?.filter(
-        (item) =>
-          !turma?.objetos_disciplinas.some(
-            (element) => element.id === item.id && element.nome === item.nome
-          )
-      )
-    );
-    setRight(turma?.objetos_disciplinas);
-    setListar(false);
-    setGerenciar(true);
-  };
-  const handleSalvarDisciplinas = async () => {
+  const handleGerenciar = () => {
     setLoading(true);
-    try {
-      const response = await api.patch(`/escolas/sala/turma/api/v1/${turma.id}/`, {
-        disciplinas: right.map((item) => item.id),
-      });
-      setTurma(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao salvar atualizar a turma");
-      console.log("Erro ao salvar atualizar a turma");
-      setLoading(false);
-    }
+    navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas/manage`);
   };
   if (loading) {
     return (
@@ -94,23 +61,57 @@ function TurmaDisciplinas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? <List turma={turma} handleOnGerenciar={handleOnGerenciar} /> : <></>}
-            {gerenciar ? (
-              <Manage
-                turma={turma}
-                left={left}
-                setLeft={setLeft}
-                right={right}
-                setRight={setRight}
-                handleSalvarDisciplinas={handleSalvarDisciplinas}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Disciplinas do {turma?.nome}
+                </MDTypography>
+              </MDBox>
+              <MDBox justifyContent="center">
+                <MDBox
+                  mx={2}
+                  py={3}
+                  px={2}
+                  flexDirection="column"
+                  justifyContent="center"
+                  align="center"
+                >
+                  {turma?.objetos_disciplinas ? (
+                    <DataTable
+                      table={{
+                        columns: [{ Header: "disciplina", accessor: "disciplina", align: "left" }],
+                        rows: turma?.objetos_disciplinas.map((objeto) => ({
+                          disciplina: objeto.nome,
+                        })),
+                      }}
+                      isSorted={false}
+                      entriesPerPage={false}
+                      showTotalEntries={false}
+                      noEndBorder
+                    />
+                  ) : (
+                    <MDTypography>Sem disciplinas</MDTypography>
+                  )}
+                </MDBox>
+                <MDBox mx={2} py={3} px={2} display="flex" justifyContent="center">
+                  <MDButton variant="gradient" color="success" onClick={handleGerenciar}>
+                    Gerenciar
+                  </MDButton>
+                </MDBox>
+              </MDBox>
+            </Card>
           </Grid>
         </Grid>
       </MDBox>
@@ -118,4 +119,4 @@ function TurmaDisciplinas() {
   );
 }
 
-export default TurmaDisciplinas;
+export default EscolaSalaTurmaDisciplinas;

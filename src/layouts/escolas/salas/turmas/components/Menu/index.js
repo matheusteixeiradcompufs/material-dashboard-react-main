@@ -19,28 +19,28 @@ function Menu({ escolaid, salaid, turmaid }) {
         coloredShadow="info"
       >
         <MDTypography variant="h6" color="white">
-          Acessar Cardápio do Dia
+          Opções da Turma
         </MDTypography>
       </MDBox>
       <Grid container spacing={3} mb={2}>
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/alunos`}>
+              <Link to={`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/alunos`}>
                 <MDButton variant="gradient" color="secondary">
                   Alunos
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/disciplinas`}>
+              <Link to={`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas`}>
                 <MDButton variant="gradient" color="secondary">
                   Disciplinas
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda`}>
+              <Link to={`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/agenda`}>
                 <MDButton variant="gradient" color="secondary">
                   Agenda
                 </MDButton>
@@ -54,9 +54,9 @@ function Menu({ escolaid, salaid, turmaid }) {
 }
 
 Menu.propTypes = {
-  escolaid: PropTypes.number.isRequired,
-  salaid: PropTypes.number.isRequired,
-  turmaid: PropTypes.number.isRequired,
+  escolaid: PropTypes.string.isRequired,
+  salaid: PropTypes.string.isRequired,
+  turmaid: PropTypes.string.isRequired,
 };
 
 export default Menu;

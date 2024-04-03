@@ -1,4 +1,4 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
@@ -6,24 +6,18 @@ import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import Detail from "./components/Detail";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
+import { format } from "date-fns";
 
-function MuralAvisos() {
-  const { muralid } = useParams();
+function EscolaMuralAvisos() {
+  const navigate = useNavigate();
+  const { escolaid, muralid } = useParams();
   const [loading, setLoading] = useState(true);
   const [avisos, setAvisos] = useState([]);
-  const [aviso, setAviso] = useState(null);
-  const [titulo, setTitulo] = useState("");
-  const [texto, setTexto] = useState("");
-  const [listarAvisos, setListarAvisos] = useState(true);
-  const [viewAvisos, setViewAvisos] = useState(false);
-  const [editarAvisos, setEditarAvisos] = useState(false);
-  const [addAvisos, setAddAvisos] = useState(false);
   useEffect(() => {
     const fetchAvisos = async () => {
       try {
@@ -38,76 +32,9 @@ function MuralAvisos() {
     };
     fetchAvisos();
   }, []);
-  const handleOnListarAvisos = () => {
-    setTitulo("");
-    setTexto("");
-    setViewAvisos(false);
-    setEditarAvisos(false);
-    setAddAvisos(false);
-    setListarAvisos(true);
-  };
-  const handleOnViewAvisos = (avisoid) => {
-    const avisoView = avisos.find((objeto) => objeto.id === avisoid);
-    setTitulo(avisoView.titulo);
-    setTexto(avisoView.texto);
-    setAviso(avisoView);
-    setListarAvisos(false);
-    setEditarAvisos(false);
-    setAddAvisos(false);
-    setViewAvisos(true);
-  };
-  const handleOnEditarAvisos = () => {
-    setViewAvisos(false);
-    setListarAvisos(false);
-    setAddAvisos(false);
-    setEditarAvisos(true);
-  };
-  const handleOnAddAvisos = () => {
-    setViewAvisos(false);
-    setListarAvisos(false);
-    setEditarAvisos(false);
-    setAddAvisos(true);
-  };
-  const handleSetTitulo = (e) => {
-    setTitulo(e.target.value);
-  };
-  const handleSetTexto = (e) => {
-    setTexto(e.target.value);
-  };
-  const handleSalvar = async () => {
+  const handleView = (avisoid) => {
     setLoading(true);
-    try {
-      let response = await api.post("/escolas/mural/aviso/api/v1/", {
-        titulo: titulo,
-        texto: texto,
-        mural: id,
-      });
-      response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
-      setAvisos(response.data.objetos_avisos);
-      handleOnListarAvisos();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao salvar aviso!");
-      console.log("Erro ao salvar aviso!", error);
-      setLoading(false);
-    }
-  };
-  const handleEditar = async (avisoid) => {
-    setLoading(true);
-    try {
-      let response = await api.patch(`/escolas/mural/aviso/api/v1/${avisoid}/`, {
-        titulo: titulo,
-        texto: texto,
-      });
-      response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
-      setAvisos(response.data.objetos_avisos);
-      handleOnListarAvisos();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao salvar aviso!");
-      console.log("Erro ao salvar aviso!", error);
-      setLoading(false);
-    }
+    navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/view`);
   };
   const handleExcluir = async (avisoid) => {
     setLoading(true);
@@ -115,7 +42,6 @@ function MuralAvisos() {
       await api.delete(`/escolas/mural/aviso/api/v1/${avisoid}/`);
       const response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
       setAvisos(response.data.objetos_avisos);
-      handleOnListarAvisos();
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir aviso!");
@@ -150,75 +76,91 @@ function MuralAvisos() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listarAvisos ? (
-              <List
-                avisos={avisos}
-                handleOnViewAvisos={handleOnViewAvisos}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {viewAvisos ? (
-              <Detail
-                aviso={aviso}
-                titulo={titulo}
-                handleSetTitulo={handleSetTitulo}
-                texto={texto}
-                handleSetTexto={handleSetTexto}
-                handleOnEditarAvisos={handleOnEditarAvisos}
-                handleOnListarAvisos={handleOnListarAvisos}
-              />
-            ) : (
-              <></>
-            )}
-            {editarAvisos ? (
-              <Edit
-                aviso={aviso}
-                titulo={titulo}
-                handleSetTitulo={handleSetTitulo}
-                texto={texto}
-                handleSetTexto={handleSetTexto}
-                handleEditar={handleEditar}
-                handleOnViewAvisos={handleOnViewAvisos}
-              />
-            ) : (
-              <></>
-            )}
-            {addAvisos ? (
-              <Add
-                titulo={titulo}
-                handleSetTitulo={handleSetTitulo}
-                texto={texto}
-                handleSetTexto={handleSetTexto}
-                handleSalvar={handleSalvar}
-                handleOnListarAvisos={handleOnListarAvisos}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Avisos do Mural
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "data", accessor: "data", width: "30%", align: "left" },
+                      { Header: "titulo", accessor: "titulo", width: "40%", align: "left" },
+                      { Header: "", accessor: "opcoes", align: "center" },
+                    ],
+                    rows: [
+                      ...avisos
+                        .sort((a, b) => new Date(b.publicado_em) - new Date(a.publicado_em))
+                        .map((objeto) => ({
+                          data: format(
+                            new Date(objeto.publicado_em),
+                            "dd/MM/yyyy 'às' HH:mm 'horas'"
+                          ),
+                          titulo: objeto.titulo,
+                          opcoes: (
+                            <MDBox display="flex" flexDirection="row">
+                              <MDBox mr={1}>
+                                <MDButton
+                                  variant="gradient"
+                                  color="info"
+                                  size="small"
+                                  onClick={() => handleView(objeto.id)}
+                                >
+                                  Visualizar
+                                </MDButton>
+                              </MDBox>
+                              <MDBox ml={1}>
+                                <MDButton
+                                  variant="gradient"
+                                  color="error"
+                                  size="small"
+                                  onClick={() => handleExcluir(objeto.id)}
+                                >
+                                  Excluir
+                                </MDButton>
+                              </MDBox>
+                            </MDBox>
+                          ),
+                        })),
+                    ],
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listarAvisos ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/escola/${escolaid}/mural/${muralid}/avisos/add`}>
               <Fab
                 color="success"
                 aria-label="Add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAddAvisos}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>
   );
 }
 
-export default MuralAvisos;
+export default EscolaMuralAvisos;

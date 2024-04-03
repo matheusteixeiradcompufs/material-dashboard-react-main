@@ -14,7 +14,7 @@ import Disciplinas from "./components/Disciplinas";
 import Avisos from "./components/Avisos";
 import Tarefas from "./components/Tarefas";
 
-function DiaAgenda() {
+function EscolaSalaTurmaAgendaDiaAgenda() {
   const { turmaid } = useParams();
   const [loading, setLoading] = useState(false);
   const [turma, setTurma] = useState(null);
@@ -365,4 +365,4 @@ function DiaAgenda() {
   );
 }
 
-export default DiaAgenda;
+export default EscolaSalaTurmaAgendaDiaAgenda;

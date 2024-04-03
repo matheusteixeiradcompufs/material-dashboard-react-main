@@ -3,7 +3,6 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import { Link } from "react-router-dom";
-import { PropTypes } from "prop-types";
 import { api } from "services/apiClient";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +13,7 @@ import { useParams } from "react-router-dom";
 import { Audio } from "react-loader-spinner";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
-function TurmaAgenda() {
+function EscolaSalaTurmaAgenda() {
   const { escolaid, salaid, turmaid } = useParams();
   const [turma, setTurma] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -158,7 +157,7 @@ function TurmaAgenda() {
                       <MDBox display="flex" justifyContent="center">
                         <MDBox mr={1}>
                           <Link
-                            to={`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda/gerenciar`}
+                            to={`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/agenda/gerenciar`}
                           >
                             <MDButton variant="gradient" color="info">
                               Gerenciar Disciplinas
@@ -167,7 +166,7 @@ function TurmaAgenda() {
                         </MDBox>
                         <MDBox ml={1}>
                           <Link
-                            to={`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda/diaagenda`}
+                            to={`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/agenda/diaagenda`}
                           >
                             <MDButton variant="gradient" color="info">
                               Acessar Agenda
@@ -193,11 +192,4 @@ function TurmaAgenda() {
   );
 }
 
-TurmaAgenda.propTypes = {
-  id: PropTypes.number.isRequired,
-  turma: PropTypes.object.isRequired,
-  setTurma: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
-};
-
-export default TurmaAgenda;
+export default EscolaSalaTurmaAgenda;

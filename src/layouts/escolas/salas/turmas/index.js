@@ -1,31 +1,22 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import Add from "./components/Add";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Menu from "./components/Menu";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
-function SalaTurmas() {
-  const { salaid } = useParams();
+function EscolaSalaTurmas() {
+  const navigate = useNavigate();
+  const { escolaid, salaid } = useParams();
   const [loading, setLoading] = useState(true);
   const [sala, setSala] = useState(null);
-  const [turma, setTurma] = useState(null);
-  const [listarTurma, setListarTurma] = useState(true);
-  const [addTurma, setAddTurma] = useState(false);
-  const [editarTurma, setEditarTurma] = useState(false);
-  const [viewTurma, setViewTurma] = useState(false);
-  const [nomeTurma, setNomeTurma] = useState("");
-  const [selectedTurno, setSelectedTurno] = useState("M");
-  const [anoTurma, setAnoTurma] = useState("");
 
   useEffect(() => {
     const fetchSala = async () => {
@@ -42,92 +33,9 @@ function SalaTurmas() {
     fetchSala();
   }, []);
 
-  const handleOnAdd = () => {
-    setListarTurma(false);
-    setEditarTurma(false);
-    setViewTurma(false);
-    setAddTurma(true);
-  };
-
-  const handleOnEditar = () => {
-    setListarTurma(false);
-    setViewTurma(false);
-    setAddTurma(false);
-    setEditarTurma(true);
-  };
-
-  const handleOnListar = () => {
-    setTurma(null);
-    setNomeTurma("");
-    setSelectedTurno("M");
-    setAnoTurma("");
-    setEditarTurma(false);
-    setViewTurma(false);
-    setAddTurma(false);
-    setListarTurma(true);
-  };
-
-  const handleOnView = (turmaid) => {
-    const turmaView = sala?.objetos_turmas.find((objeto) => objeto.id === turmaid);
-    setTurma(turmaView);
-    setNomeTurma(turmaView.nome);
-    setSelectedTurno(turmaView.turno);
-    setAnoTurma(turmaView.ano);
-    setEditarTurma(false);
-    setAddTurma(false);
-    setListarTurma(false);
-    setViewTurma(true);
-  };
-
-  const handleSetNomeTurma = (nome) => {
-    setNomeTurma(nome.target.value);
-  };
-
-  const handleTurnoChange = (turno) => {
-    setSelectedTurno(turno.target.value);
-  };
-
-  const handleSetAnoTurma = (ano) => {
-    setAnoTurma(ano.target.value);
-  };
-
-  const handleAddTurma = async () => {
+  const handleView = (turmaid) => {
     setLoading(true);
-    try {
-      await api.post("/escolas/sala/turma/api/v1/", {
-        nome: nomeTurma,
-        ano: anoTurma,
-        turno: selectedTurno,
-        sala: sala.id,
-      });
-      const response = await api.get(`/escolas/sala/api/v1/${salaid}/`);
-      setSala(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar nova turma!");
-      console.log("Erro ao cadastrar nova turma!", error);
-      setLoading(false);
-    }
-  };
-
-  const handleEditar = async (turmaid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/sala/turma/api/v1/${turmaid}/`, {
-        nome: nomeTurma,
-        ano: anoTurma,
-        turno: selectedTurno,
-      });
-      const response = await api.get(`/escolas/sala/api/v1/${salaid}/`);
-      setSala(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao modificar turma!");
-      console.log("Erro ao modificar turma!", error);
-      setLoading(false);
-    }
+    navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/view`);
   };
 
   const handleExcluir = async (turmaid) => {
@@ -172,83 +80,91 @@ function SalaTurmas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listarTurma ? (
-              <List sala={sala} handleOnView={handleOnView} handleExcluir={handleExcluir} />
-            ) : (
-              <></>
-            )}
-            {addTurma ? (
-              <Add
-                nomeTurma={nomeTurma}
-                handleSetNomeTurma={handleSetNomeTurma}
-                selectedTurno={selectedTurno}
-                handleTurnoChange={handleTurnoChange}
-                anoTurma={anoTurma}
-                handleSetAnoTurma={handleSetAnoTurma}
-                handleAddTurma={handleAddTurma}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
-            {viewTurma ? (
-              <>
-                <MDBox>
-                  <View
-                    nomeTurma={nomeTurma}
-                    handleSetNomeTurma={handleSetNomeTurma}
-                    selectedTurno={selectedTurno}
-                    handleTurnoChange={handleTurnoChange}
-                    anoTurma={anoTurma}
-                    handleSetAnoTurma={handleSetAnoTurma}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-                <MDBox mt={6}>
-                  <Menu escolaid={sala.escola} salaid={salaid} turmaid={turma.id} />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editarTurma ? (
-              <Edit
-                turma={turma}
-                nomeTurma={nomeTurma}
-                handleSetNomeTurma={handleSetNomeTurma}
-                selectedTurno={selectedTurno}
-                handleTurnoChange={handleTurnoChange}
-                anoTurma={anoTurma}
-                handleSetAnoTurma={handleSetAnoTurma}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Turmas da Sala {String(sala.numero).padStart(3, "0")}
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "nome", accessor: "nome", align: "left" },
+                      { Header: "ano", accessor: "ano", align: "left" },
+                      { Header: "opcoes", accessor: "opcoes", align: "center" },
+                    ],
+                    rows: sala.objetos_turmas
+                      ? sala.objetos_turmas.map((turma) => ({
+                          nome: turma.nome,
+                          ano: turma.ano,
+                          opcoes: (
+                            <Grid
+                              container
+                              spacing={2}
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <Grid item xs={12} sm={6} container>
+                                <MDButton
+                                  variant="gradient"
+                                  color="info"
+                                  size="small"
+                                  onClick={() => handleView(turma.id)}
+                                >
+                                  Visualizar
+                                </MDButton>
+                              </Grid>
+                              <Grid item xs={12} sm={6} container>
+                                <MDButton
+                                  variant="gradient"
+                                  color="error"
+                                  size="small"
+                                  onClick={() => handleExcluir(turma.id)}
+                                >
+                                  Excluir
+                                </MDButton>
+                              </Grid>
+                            </Grid>
+                          ),
+                        }))
+                      : [],
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listarTurma ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/escola/${escolaid}/sala/${salaid}/turmas/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>
   );
 }
 
-export default SalaTurmas;
+export default EscolaSalaTurmas;

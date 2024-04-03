@@ -5,7 +5,7 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function Menu({ escola, cardapioid }) {
+function Menu({ escolaid, cardapioid }) {
   return (
     <Card>
       <MDBox
@@ -19,14 +19,14 @@ function Menu({ escola, cardapioid }) {
         coloredShadow="info"
       >
         <MDTypography variant="h6" color="white">
-          Visualizar Mural
+          Acessar Cardápio
         </MDTypography>
       </MDBox>
       <Grid container spacing={3} mb={2}>
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
-              <Link to={`/escolas/${escola.id}/cardapios/${cardapioid}/itens`}>
+              <Link to={`/escola/${escolaid}/cardapio/${cardapioid}/itens`}>
                 <MDButton variant="gradient" color="secondary">
                   Acessar
                 </MDButton>
@@ -40,8 +40,8 @@ function Menu({ escola, cardapioid }) {
 }
 
 Menu.propTypes = {
-  escola: PropTypes.object.isRequired,
-  cardapioid: PropTypes.number.isRequired,
+  escolaid: PropTypes.string.isRequired,
+  cardapioid: PropTypes.string.isRequired,
 };
 
 export default Menu;

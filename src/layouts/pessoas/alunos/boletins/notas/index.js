@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Card, FormControlLabel, Grid, Icon, Switch } from "@mui/material";
+import { Grid } from "@mui/material";
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DataTable from "examples/Tables/DataTable";
 import { useParams } from "react-router-dom";
-import MDButton from "components/MDButton";
 import { api } from "services/apiClient";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Audio } from "react-loader-spinner";
-import MDInput from "components/MDInput";
+import List from "./components/List";
+import Edit from "./components/Edit";
+import Final from "./components/Final";
 
 function BoletimNotas() {
   const { boletimid } = useParams();
@@ -43,175 +42,6 @@ function BoletimNotas() {
     };
     fetchBoletim();
   }, []);
-
-  const columns = [
-    { Header: "matéria", accessor: "materia", width: "20%", align: "left" },
-    { Header: "a1", accessor: "a1", align: "center" },
-    { Header: "a2", accessor: "a2", align: "center" },
-    { Header: "r1", accessor: "r1", align: "center" },
-    { Header: "m1", accessor: "m1", align: "center" },
-    { Header: "a3", accessor: "a3", align: "center" },
-    { Header: "a4", accessor: "a4", align: "center" },
-    { Header: "r2", accessor: "r2", align: "center" },
-    { Header: "m2", accessor: "m2", align: "center" },
-    { Header: "mg", accessor: "mg", align: "center" },
-    { Header: "situação", accessor: "situacao", align: "center" },
-  ];
-
-  const gerarLinhas = () => {
-    const linhas = [];
-    for (let i = 0; i < situacoes.length; i++) {
-      const linha = {
-        materia: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6].objeto_disciplina.nome}
-          </MDTypography>
-        ),
-        a1: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        a2: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6 + 1].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        r1: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6 + 2].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        m1: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {medias[(i * 6) / 2].valor.toFixed(1)}
-          </MDTypography>
-        ),
-        a3: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6 + 3].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        a4: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6 + 4].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        r2: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {avaliacoes[i * 6 + 5].nota.toFixed(1)}
-          </MDTypography>
-        ),
-        m2: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {medias[(i * 6) / 2 + 1].valor.toFixed(1)}
-          </MDTypography>
-        ),
-        mg: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {medias[(i * 6) / 2 + 2].valor.toFixed(1)}
-          </MDTypography>
-        ),
-        situacao: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {situacoes[i].situacao}
-          </MDTypography>
-        ),
-      };
-      linhas.push(linha);
-    }
-    linhas.push({
-      materia: "",
-      a1: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 1ª Avaliação"
-          size="small"
-          onClick={() => handleOnEdit("A1")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      a2: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 2ª Avaliação"
-          size="small"
-          onClick={() => handleOnEdit("A2")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      r1: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 1ª Recuperação"
-          size="small"
-          onClick={() => handleOnEdit("R1")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      m1: "",
-      a3: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 3ª Avaliação"
-          size="small"
-          onClick={() => handleOnEdit("A3")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      a4: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 4ª Avaliação"
-          size="small"
-          onClick={() => handleOnEdit("A4")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      r2: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Editar 2ª Recuperação"
-          size="small"
-          onClick={() => handleOnEdit("R2")}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-      m2: "",
-      mg: "",
-      situacao: (
-        <MDButton
-          variant="gradient"
-          color="info"
-          title="Finalizar Matérias"
-          size="small"
-          onClick={handleOnFinal}
-          iconOnly
-        >
-          <Icon>edit</Icon>
-        </MDButton>
-      ),
-    });
-    return linhas;
-  };
 
   const handleOnFinal = () => {
     setFinals(situacoes.map((objeto) => objeto.finalizar));
@@ -344,151 +174,38 @@ function BoletimNotas() {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             {list ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Notas do Aluno
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                  <DataTable
-                    table={{ columns, rows: gerarLinhas() }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  />
-                </MDBox>
-              </Card>
+              <List
+                avaliacoes={avaliacoes}
+                medias={medias}
+                situacoes={situacoes}
+                handleOnEdit={handleOnEdit}
+                handleOnFinal={handleOnFinal}
+              />
             ) : (
               <></>
             )}
             {edit ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Avaliação {nome}
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={2} pb={2} px={3}>
-                  {avaliacoes.map((avaliacao, index) => {
-                    if (avaliacao.nome === nome) {
-                      return (
-                        <MDBox mt={1} mb={1} key={index} display="flex" justifyContent="center">
-                          <MDBox mr={1}>
-                            <MDInput
-                              type="number"
-                              label={avaliacao.objeto_disciplina.nome}
-                              value={valores[index]}
-                              onChange={(e) => handleInputChange(index, e.target.value)}
-                            />
-                          </MDBox>
-                          <MDBox ml={1}>
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  checked={confs[index]}
-                                  onClick={() => handleSwitchChange(index)}
-                                />
-                              }
-                              label="Confirmar"
-                            />
-                          </MDBox>
-                        </MDBox>
-                      );
-                    } else {
-                      return <></>;
-                    }
-                  })}
-                  <MDBox mt={1} mb={1} display="flex" justifyContent="center">
-                    <MDBox mr={1}>
-                      <MDButton variant="gradient" color="success" onClick={handleSalvar}>
-                        Salvar
-                      </MDButton>
-                    </MDBox>
-                    <MDBox ml={1}>
-                      <MDButton variant="gradient" color="error" onClick={handleOnList}>
-                        Cancelar
-                      </MDButton>
-                    </MDBox>
-                  </MDBox>
-                </MDBox>
-              </Card>
+              <Edit
+                nome={nome}
+                avaliacoes={avaliacoes}
+                valores={valores}
+                handleInputChange={handleInputChange}
+                confs={confs}
+                handleSwitchChange={handleSwitchChange}
+                handleSalvar={handleSalvar}
+                handleOnList={handleOnList}
+              />
             ) : (
               <></>
             )}
             {final ? (
-              <Card>
-                <MDBox
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="info"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h6" color="white">
-                    Finalizar Matérias
-                  </MDTypography>
-                </MDBox>
-                <MDBox pt={2} pb={2} px={3}>
-                  {situacoes.map((situacao, index) => (
-                    <MDBox mt={1} mb={1} key={index} display="flex" justifyContent="center">
-                      <MDBox mr={1}>
-                        <MDInput
-                          type="text"
-                          label={situacao.objeto_disciplina.nome}
-                          value={situacao.situacao}
-                          disabled
-                        />
-                      </MDBox>
-                      <MDBox ml={1}>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={finals[index]}
-                              onClick={() => handleFinalsChange(index)}
-                            />
-                          }
-                          label="Finalizar"
-                        />
-                      </MDBox>
-                    </MDBox>
-                  ))}
-                  <MDBox mt={1} mb={1} display="flex" justifyContent="center">
-                    <MDBox mr={1}>
-                      <MDButton variant="gradient" color="success" onClick={handleFinalizar}>
-                        Salvar
-                      </MDButton>
-                    </MDBox>
-                    <MDBox ml={1}>
-                      <MDButton variant="gradient" color="error" onClick={handleOnList}>
-                        Cancelar
-                      </MDButton>
-                    </MDBox>
-                  </MDBox>
-                </MDBox>
-              </Card>
+              <Final
+                situacoes={situacoes}
+                finals={finals}
+                handleFinalsChange={handleFinalsChange}
+                handleFinalizar={handleFinalizar}
+                handleOnList={handleOnList}
+              />
             ) : (
               <></>
             )}

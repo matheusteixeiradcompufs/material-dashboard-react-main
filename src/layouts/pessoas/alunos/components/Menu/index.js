@@ -5,7 +5,7 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function Menu({ aluno }) {
+function Menu({ alunoid }) {
   return (
     <Card>
       <MDBox
@@ -26,28 +26,28 @@ function Menu({ aluno }) {
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${aluno.id}/telefones`}>
+              <Link to={`/pessoas/aluno/${alunoid}/telefones`}>
                 <MDButton variant="gradient" color="secondary">
                   Telefones
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${aluno.id}/emails`}>
+              <Link to={`/pessoas/aluno/${alunoid}/emails`}>
                 <MDButton variant="gradient" color="secondary">
                   Emails
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${aluno.id}/responsaveis`}>
+              <Link to={`/pessoas/aluno/${alunoid}/responsaveis`}>
                 <MDButton variant="gradient" color="secondary">
                   Responsáveis
                 </MDButton>
               </Link>
             </MDBox>
             <MDBox mr={1} ml={1}>
-              <Link to={`/pessoas/alunos/${aluno.id}/matriculas`}>
+              <Link to={`/pessoas/aluno/${alunoid}/boletins`}>
                 <MDButton variant="gradient" color="secondary">
                   Matrículas
                 </MDButton>
@@ -61,7 +61,7 @@ function Menu({ aluno }) {
 }
 
 Menu.propTypes = {
-  aluno: PropTypes.object.isRequired,
+  alunoid: PropTypes.string.isRequired,
 };
 
 export default Menu;

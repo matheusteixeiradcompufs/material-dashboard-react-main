@@ -12,7 +12,7 @@ import Transfer from "./components/Transfer";
 import { parseISO, getDay } from "date-fns";
 import MDButton from "components/MDButton";
 
-function GerenciarDisciplinas() {
+function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   const { escolaid, salaid, turmaid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -113,7 +113,7 @@ function GerenciarDisciplinas() {
     };
     fetchTurma();
   }, []);
-  const handleSalvarDisciplinas = async () => {
+  const handleSalvar = async () => {
     setLoading(true);
     try {
       await api.post("/pessoas/agendasdisciplinas/", {
@@ -212,7 +212,7 @@ function GerenciarDisciplinas() {
           />
           <MDBox mx={2} py={3} px={2} display="flex" justifyContent="center">
             <MDBox mr={1}>
-              <MDButton variant="gradient" color="success" onClick={handleSalvarDisciplinas}>
+              <MDButton variant="gradient" color="success" onClick={handleSalvar}>
                 Salvar
               </MDButton>
             </MDBox>
@@ -221,7 +221,7 @@ function GerenciarDisciplinas() {
                 variant="gradient"
                 color="error"
                 onClick={() =>
-                  navigate(`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda`)
+                  navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/agenda`)
                 }
               >
                 Cancelar
@@ -234,4 +234,4 @@ function GerenciarDisciplinas() {
   );
 }
 
-export default GerenciarDisciplinas;
+export default EscolaSalaTurmaAgendaGerenciarDisciplinas;

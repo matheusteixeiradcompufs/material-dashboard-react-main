@@ -1,36 +1,32 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
-import Menu from "./components/Menu";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
 function EscolaSalas() {
+  const navigate = useNavigate();
   const { escolaid } = useParams();
   const [escola, setEscola] = useState(true);
+  const [salas, setSalas] = useState([]);
   const [sala, setSala] = useState(true);
   const [numero, setNumero] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [loading, setLoading] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [listar, setListar] = useState(true);
-  const [editar, setEditar] = useState(false);
-  const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchEscola = async () => {
+    const fetchSalas = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-        setEscola(response.data);
+        setSalas(response.data.objetos_salas);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar escola");
@@ -38,52 +34,12 @@ function EscolaSalas() {
         setLoading(false);
       }
     };
-    fetchEscola();
+    fetchSalas();
   }, []);
-
-  const handleSetNumero = (e) => {
-    setNumero(e.target.value);
+  const handleView = (salaid) => {
+    setLoading(true);
+    navigate(`/escola/${escolaid}/sala/${salaid}/view`);
   };
-
-  const handleSetQuantidade = (e) => {
-    setQuantidade(e.target.value);
-  };
-
-  const handleOnListar = () => {
-    setNumero("");
-    setQuantidade("");
-    setSala(null);
-    setAdd(false);
-    setEditar(false);
-    setView(false);
-    setListar(true);
-  };
-
-  const handleOnView = (salaid) => {
-    const salaView = escola.objetos_salas.find((objeto) => objeto.id === salaid);
-    setSala(salaView);
-    setNumero(salaView.numero);
-    setQuantidade(salaView.quantidade_alunos);
-    setAdd(false);
-    setEditar(false);
-    setListar(false);
-    setView(true);
-  };
-
-  const handleOnEditar = () => {
-    setAdd(false);
-    setView(false);
-    setListar(false);
-    setEditar(true);
-  };
-
-  const handleOnAdd = () => {
-    setEditar(false);
-    setView(false);
-    setListar(false);
-    setAdd(true);
-  };
-
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -92,17 +48,13 @@ function EscolaSalas() {
         quantidade_alunos: quantidade,
         escola: id,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
+      navigate(`/escola/${escolaid}/salas`);
     } catch (error) {
       toast.error("Erro ao cadastrar sala");
       console.log("Erro ao cadastrar sala", error);
       setLoading(false);
     }
   };
-
   const handleEditar = async (salaid) => {
     setLoading(true);
     try {
@@ -110,23 +62,19 @@ function EscolaSalas() {
         numero: numero,
         quantidade_alunos: quantidade,
       });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
+      navigate(`/escola/${escolaid}/sala/${salaid}/view`);
     } catch (error) {
       toast.error("Erro ao cadastrar escola");
       console.log("Erro ao cadastrar escola", error);
       setLoading(false);
     }
   };
-
   const handleExcluir = async (salaid) => {
     setLoading(true);
     try {
       await api.delete(`/escolas/sala/api/v1/${salaid}/`);
       const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      setSalas(response.data.objetos_salas);
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir sala");
@@ -134,7 +82,6 @@ function EscolaSalas() {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -162,78 +109,85 @@ function EscolaSalas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? (
-              <List
-                salas={escola?.objetos_salas}
-                handleOnView={handleOnView}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {view ? (
-              <>
-                <MDBox>
-                  <View
-                    sala={sala}
-                    numero={numero}
-                    quantidade={quantidade}
-                    handleSetNumero={handleSetNumero}
-                    handleSetQuantidade={handleSetQuantidade}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-                <MDBox mt={6}>
-                  <Menu escola={escola} salaid={sala.id} />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editar ? (
-              <Edit
-                sala={sala}
-                numero={numero}
-                quantidade={quantidade}
-                handleSetNumero={handleSetNumero}
-                handleSetQuantidade={handleSetQuantidade}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
-            {add ? (
-              <Add
-                numero={numero}
-                quantidade={quantidade}
-                handleSetNumero={handleSetNumero}
-                handleSetQuantidade={handleSetQuantidade}
-                handleAdd={handleAdd}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Salas da Escola
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "numero", accessor: "numero", align: "left" },
+                      { Header: "quantidade de alunos", accessor: "quantidade", align: "center" },
+                      { Header: "opcoes", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: salas.map((sala) => ({
+                      numero: String(sala.numero).padStart(3, "0"),
+                      quantidade: sala.quantidade_alunos,
+                      opcoes: (
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="info"
+                              size="small"
+                              onClick={() => handleView(sala.id)}
+                            >
+                              Visualizar
+                            </MDButton>
+                          </Grid>
+                          <Grid item xs={12} sm={6} container>
+                            <MDButton
+                              variant="gradient"
+                              color="error"
+                              size="small"
+                              onClick={() => handleExcluir(sala.id)}
+                            >
+                              Excluir
+                            </MDButton>
+                          </Grid>
+                        </Grid>
+                      ),
+                    })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listar ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/escola/${escolaid}/salas/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

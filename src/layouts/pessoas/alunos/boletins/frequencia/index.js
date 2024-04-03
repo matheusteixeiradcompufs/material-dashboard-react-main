@@ -1,6 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Card, Fab, Grid, Switch } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
@@ -10,24 +9,16 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import Add from "./components/Add";
-import Edit from "./components/Edit";
 
 function BoletimFrequencia() {
+  const navigate = useNavigate();
   const { alunoid, boletimid } = useParams();
   const [boletim, setBoletim] = useState(null);
-  const [dialetivo, setDialetivo] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [list, setList] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [edit, setEdit] = useState(false);
   useEffect(() => {
     const fetchBoletim = async () => {
       try {
@@ -42,70 +33,11 @@ function BoletimFrequencia() {
     };
     fetchBoletim();
   }, []);
-  const handleChangeDate = (date) => {
-    setSelectedDate(date);
-  };
-  const handleChangeChecked = () => {
-    setChecked(!checked);
-  };
-  const handleOnAdd = () => {
-    setList(false);
-    setEdit(false);
-    setAdd(true);
-  };
-  const handleOnEdit = (dialetivoid) => {
-    const dialetivoView = boletim.objeto_frequencia.objetos_diasletivos.find(
-      (objeto) => objeto.id === dialetivoid
+  const handleEdit = (dialetivoid) => {
+    setLoading(true);
+    navigate(
+      `/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia/dialetivo/${dialetivoid}/edit`
     );
-    setDialetivo(dialetivoView);
-    setChecked(dialetivoView.presenca);
-    setSelectedDate(new Date(dialetivoView.data));
-    setList(false);
-    setAdd(false);
-    setEdit(true);
-  };
-  const handleOnList = () => {
-    setDialetivo(null);
-    setChecked(false);
-    setSelectedDate(null);
-    setEdit(false);
-    setAdd(false);
-    setList(true);
-  };
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/pessoas/aluno/frequencia/dialetivo/api/v1/", {
-        data: format(selectedDate, "yyyy-MM-dd"),
-        presenca: checked,
-        frequencia: boletim?.objeto_frequencia.id,
-      });
-      const response = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
-      setBoletim(response.data);
-      handleOnList();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao adicionar presença!");
-      console.log("Erro ao adicionar presença!", error);
-      setLoading(false);
-    }
-  };
-  const handleEditar = async (dialetivoid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/pessoas/aluno/frequencia/dialetivo/api/v1/${dialetivoid}/`, {
-        data: format(selectedDate, "yyyy-MM-dd"),
-        presenca: checked,
-      });
-      const response = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
-      setBoletim(response.data);
-      handleOnList();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao editar presença!");
-      console.log("Erro ao editar presença!", error);
-      setLoading(false);
-    }
   };
   const handleExcluir = async (dialetivoid) => {
     setLoading(true);
@@ -186,60 +118,68 @@ function BoletimFrequencia() {
                   bgColor="info"
                   borderRadius="lg"
                   coloredShadow="info"
-                  fullWidth
                 >
                   <MDTypography variant="h6" color="white">
                     Lista de Presenças
                   </MDTypography>
                 </MDBox>
-                {list ? (
-                  <List
-                    boletim={boletim}
-                    handleOnEdit={handleOnEdit}
-                    handleExcluir={handleExcluir}
-                  />
-                ) : (
-                  <></>
-                )}
-                {add ? (
-                  <Add
-                    selectedDate={selectedDate}
-                    handleChangeDate={handleChangeDate}
-                    checked={checked}
-                    handleChangeChecked={handleChangeChecked}
-                    handleAdd={handleAdd}
-                    handleOnList={handleOnList}
-                  />
-                ) : (
-                  <></>
-                )}
-                {edit ? (
-                  <Edit
-                    selectedDate={selectedDate}
-                    handleChangeDate={handleChangeDate}
-                    checked={checked}
-                    handleChangeChecked={handleChangeChecked}
-                    handleEditar={handleEditar}
-                    handleOnList={handleOnList}
-                  />
-                ) : (
-                  <></>
-                )}
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "data", accessor: "data", align: "left" },
+                      { Header: "presença", accessor: "presenca", align: "center" },
+                      { Header: "", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: boletim?.objeto_frequencia.objetos_diasletivos
+                      .sort((a, b) => new Date(b.data) - new Date(a.data))
+                      .map((dialetivo) => ({
+                        data: format(new Date(dialetivo.data), "dd/MM/yyyy"),
+                        presenca: <Switch size="small" checked={dialetivo.presenca} />,
+                        opcoes: (
+                          <MDBox display="flex" flexDirection="row">
+                            <MDBox mr={1}>
+                              <MDButton
+                                variant="gradient"
+                                color="info"
+                                size="small"
+                                onClick={() => handleEdit(dialetivo.id)}
+                              >
+                                Modificar
+                              </MDButton>
+                            </MDBox>
+                            <MDBox ml={1}>
+                              <MDButton
+                                variant="gradient"
+                                color="error"
+                                size="small"
+                                onClick={() => handleExcluir(dialetivo.id)}
+                              >
+                                Excluir
+                              </MDButton>
+                            </MDBox>
+                          </MDBox>
+                        ),
+                      })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
               </Grid>
-              {list ? (
-                <Grid item xs={12} mt={6}>
+              <Grid item xs={12} mt={6}>
+                <Link
+                  to={`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia/diasletivos/add`}
+                >
                   <Fab
                     color="success"
                     aria-label="add"
                     style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                    onClick={handleOnAdd}
                   >
                     <AddIcon color="white" />
                   </Fab>
-                </Grid>
-              ) : (
-                <></>
-              )}
+                </Link>
+              </Grid>
             </Grid>
           </MDBox>
         </Card>

@@ -1,36 +1,28 @@
-import { Fab, Grid } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import List from "./components/List";
-import View from "./components/View";
-import Edit from "./components/Edit";
-import Add from "./components/Add";
-import Menu from "./components/Menu";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import MDButton from "components/MDButton";
 
 function EscolaCardapios() {
+  const navigate = useNavigate();
   const { escolaid } = useParams();
-  const [escola, setEscola] = useState(true);
-  const [cardapio, setCardapio] = useState(true);
-  const [data, setData] = useState("");
-  const [turno, setTurno] = useState("M");
+  const [cardapios, setCardapios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [add, setAdd] = useState(false);
-  const [listar, setListar] = useState(true);
-  const [editar, setEditar] = useState(false);
-  const [view, setView] = useState(false);
 
   useEffect(() => {
-    const fetchEscola = async () => {
+    const fetchCardapios = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-        setEscola(response.data);
+        setCardapios(response.data.objetos_cardapios);
         setLoading(false);
       } catch (error) {
         toast.error("Erro ao carregar escola");
@@ -38,94 +30,18 @@ function EscolaCardapios() {
         setLoading(false);
       }
     };
-    fetchEscola();
+    fetchCardapios();
   }, []);
-
-  const handleSetData = (e) => {
-    setData(e.target.value);
-  };
-  const handleSetTurno = (e) => {
-    setTurno(e.target.value);
-  };
-
-  const handleOnListar = () => {
-    setData(null);
-    setTurno("M");
-    setCardapio(null);
-    setAdd(false);
-    setEditar(false);
-    setView(false);
-    setListar(true);
-  };
-
-  const handleOnView = (cardapioid) => {
-    const cardapioView = escola.objetos_cardapios.find((objeto) => objeto.id === cardapioid);
-    setCardapio(cardapioView);
-    setData(cardapioView.data);
-    setTurno(cardapioView.turno);
-    setAdd(false);
-    setEditar(false);
-    setListar(false);
-    setView(true);
-  };
-
-  const handleOnEditar = () => {
-    setAdd(false);
-    setView(false);
-    setListar(false);
-    setEditar(true);
-  };
-
-  const handleOnAdd = () => {
-    setEditar(false);
-    setView(false);
-    setListar(false);
-    setAdd(true);
-  };
-
-  const handleAdd = async () => {
+  const handleView = (cardapioid) => {
     setLoading(true);
-    try {
-      await api.post("/escolas/cardapio/api/v1/", {
-        data: data,
-        turno: turno,
-        escola: escolaid,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar cardapio");
-      console.log("Erro ao cadastrar cardapio", error);
-      setLoading(false);
-    }
+    navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);
   };
-
-  const handleEditar = async (cardapioid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/cardapio/api/v1/${cardapioid}/`, {
-        data: data,
-        turno: turno,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
-      setLoading(false);
-    }
-  };
-
   const handleExcluir = async (cardapioid) => {
     setLoading(true);
     try {
       await api.delete(`/escolas/cardapio/api/v1/${cardapioid}/`);
       const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
+      setCardapios(response.data.objetos_cardapios);
       setLoading(false);
     } catch (error) {
       toast.error("Erro ao excluir cardapio");
@@ -133,7 +49,6 @@ function EscolaCardapios() {
       setLoading(false);
     }
   };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -161,78 +76,87 @@ function EscolaCardapios() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={6} mb={3}>
+      <MDBox pt={2} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listar ? (
-              <List
-                cardapios={escola?.objetos_cardapios}
-                handleOnView={handleOnView}
-                handleExcluir={handleExcluir}
-              />
-            ) : (
-              <></>
-            )}
-            {view ? (
-              <>
-                <MDBox>
-                  <View
-                    cardapio={cardapio}
-                    data={data}
-                    turno={turno}
-                    handleSetData={handleSetData}
-                    handleSetTurno={handleSetTurno}
-                    handleOnEditar={handleOnEditar}
-                    handleOnListar={handleOnListar}
-                  />
-                </MDBox>
-                <MDBox mt={6}>
-                  <Menu escola={escola} cardapioid={cardapio.id} />
-                </MDBox>
-              </>
-            ) : (
-              <></>
-            )}
-            {editar ? (
-              <Edit
-                cardapio={cardapio}
-                data={data}
-                turno={turno}
-                handleSetData={handleSetData}
-                handleSetTurno={handleSetTurno}
-                handleEditar={handleEditar}
-                handleOnView={handleOnView}
-              />
-            ) : (
-              <></>
-            )}
-            {add ? (
-              <Add
-                data={data}
-                turno={turno}
-                handleSetData={handleSetData}
-                handleSetTurno={handleSetTurno}
-                handleAdd={handleAdd}
-                handleOnListar={handleOnListar}
-              />
-            ) : (
-              <></>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Cardápios da Escola
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "data", width: "35%", accessor: "data", align: "left" },
+                      { Header: "turno", width: "35%", accessor: "turno", align: "center" },
+                      { Header: "opcoes", accessor: "opcoes", align: "center" },
+                    ],
+                    rows: cardapios
+                      .sort((a, b) => new Date(b.data) - new Date(a.data))
+                      .map((cardapio) => ({
+                        data: cardapio.data,
+                        turno: cardapio.turno,
+                        opcoes: (
+                          <Grid
+                            container
+                            spacing={2}
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={12} sm={6} container>
+                              <MDButton
+                                variant="gradient"
+                                color="info"
+                                size="small"
+                                onClick={() => handleView(cardapio.id)}
+                              >
+                                Visualizar
+                              </MDButton>
+                            </Grid>
+                            <Grid item xs={12} sm={6} container>
+                              <MDButton
+                                variant="gradient"
+                                color="error"
+                                size="small"
+                                onClick={() => handleExcluir(cardapio.id)}
+                              >
+                                Excluir
+                              </MDButton>
+                            </Grid>
+                          </Grid>
+                        ),
+                      })),
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {listar ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/escola/${escolaid}/cardapios/add`}>
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAdd}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <></>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

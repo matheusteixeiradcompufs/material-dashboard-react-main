@@ -1,6 +1,5 @@
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CancelIcon from "@mui/icons-material/Cancel";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
@@ -8,24 +7,15 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
 import { useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
-import MDInput from "components/MDInput";
-import Listar from "./components/Listar";
-import Add from "./components/Add";
-import Editar from "./components/Editar";
+import { Link, useNavigate } from "react-router-dom";
 
 function Disciplinas() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [disciplina, setDisciplina] = useState(null);
   const [disciplinas, setDisciplinas] = useState([]);
-  const [addDisciplina, setAddDisciplina] = useState(false);
-  const [editarDisciplina, setEditarDisciplina] = useState(false);
-  const [listarDisciplina, setListarDisciplina] = useState(true);
-  const [nomeDisciplina, setNomeDisciplina] = useState("");
-
   useEffect(() => {
     const fetchDisciplina = async () => {
       setLoading(true);
@@ -42,45 +32,23 @@ function Disciplinas() {
     fetchDisciplina();
   }, []);
 
-  const handleChangeNomeDisciplina = (nome) => {
-    setNomeDisciplina(nome.target.value);
+  const handleOnEditar = (disciplinaid) => {
+    setLoading(true);
+    navigate(`/disciplinas/${disciplinaid}/editar`);
   };
-
-  const handleOnAddDisciplina = () => {
-    handleOffEditarDisciplina();
-    handleOffListarDisciplina();
-    setAddDisciplina(true);
+  const handleExcluir = async (disciplinaid) => {
+    setLoading(true);
+    try {
+      await api.delete(`/escolas/disciplina/api/v1/${disciplinaid}/`);
+      const response = await api.get("/escolas/disciplina/api/v1/");
+      setDisciplinas(response.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Erro ao excluir disciplina!");
+      console.log("Erro ao excluir disciplina!", error);
+      setLoading(false);
+    }
   };
-
-  const handleOffAddDisciplina = () => {
-    setAddDisciplina(false);
-    setNomeDisciplina("");
-  };
-
-  const handleOnEditarDisciplina = (index) => {
-    handleOffAddDisciplina();
-    handleOffListarDisciplina();
-    setEditarDisciplina(true);
-    setNomeDisciplina(disciplinas[index].nome);
-    setDisciplina(disciplinas[index]);
-  };
-
-  const handleOffEditarDisciplina = () => {
-    setEditarDisciplina(false);
-    setNomeDisciplina("");
-    setDisciplina(null);
-  };
-
-  const handleOnListarDisciplina = () => {
-    handleOffAddDisciplina();
-    handleOffEditarDisciplina();
-    setListarDisciplina(true);
-  };
-
-  const handleOffListarDisciplina = () => {
-    setListarDisciplina(false);
-  };
-
   if (loading) {
     return (
       <DashboardLayout>
@@ -105,61 +73,89 @@ function Disciplinas() {
       </DashboardLayout>
     );
   }
-
+  const columns = [
+    { Header: "nome", accessor: "nome", width: "80%", align: "left" },
+    { Header: "opções", accessor: "opcoes", align: "center" },
+  ];
   return (
     <DashboardLayout>
       <ToastContainer />
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            {listarDisciplina ? (
-              <Listar
-                disciplinas={disciplinas}
-                setDisciplinas={setDisciplinas}
-                setLoading={setLoading}
-                handleOnEditarDisciplina={handleOnEditarDisciplina}
-              />
-            ) : (
-              <MDBox></MDBox>
-            )}
-            {addDisciplina ? (
-              <Add
-                nomeDisciplina={nomeDisciplina}
-                setDisciplinas={setDisciplinas}
-                setLoading={setLoading}
-                handleChangeNomeDisciplina={handleChangeNomeDisciplina}
-                handleOnListarDisciplina={handleOnListarDisciplina}
-              />
-            ) : (
-              <MDBox></MDBox>
-            )}
-            {editarDisciplina ? (
-              <Editar
-                nomeDisciplina={nomeDisciplina}
-                disciplina={disciplina}
-                setDisciplinas={setDisciplinas}
-                setLoading={setLoading}
-                handleChangeNomeDisciplina={handleChangeNomeDisciplina}
-                handleOnListarDisciplina={handleOnListarDisciplina}
-              />
-            ) : (
-              <MDBox></MDBox>
-            )}
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Disciplinas
+                </MDTypography>
+              </MDBox>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns,
+                    rows: disciplinas
+                      ? disciplinas.map((disciplina, index) => ({
+                          nome: disciplina.nome,
+                          opcoes: (
+                            <Grid
+                              container
+                              spacing={2}
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <Grid item xs={12} sm={6} container>
+                                <MDButton
+                                  variant="gradient"
+                                  color="warning"
+                                  size="small"
+                                  onClick={() => handleOnEditar(disciplina.id)}
+                                >
+                                  Editar
+                                </MDButton>
+                              </Grid>
+                              <Grid item xs={12} sm={6} container>
+                                <MDButton
+                                  variant="gradient"
+                                  color="error"
+                                  size="small"
+                                  onClick={() => handleExcluir(disciplina.id)}
+                                >
+                                  Excluir
+                                </MDButton>
+                              </Grid>
+                            </Grid>
+                          ),
+                        }))
+                      : [],
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
+            </Card>
           </Grid>
-          {!addDisciplina ? (
-            <Grid item xs={12} mt={6}>
+          <Grid item xs={12} mt={6}>
+            <Link to="/disciplinas/add">
               <Fab
                 color="success"
                 aria-label="add"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-                onClick={handleOnAddDisciplina}
               >
                 <AddIcon color="white" />
               </Fab>
-            </Grid>
-          ) : (
-            <MDBox></MDBox>
-          )}
+            </Link>
+          </Grid>
         </Grid>
       </MDBox>
     </DashboardLayout>

@@ -6,7 +6,7 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
 
-function Alunos({ turma }) {
+function Alunos({ turma, handleView }) {
   const columns = [
     { Header: "aluno", accessor: "aluno", width: "45%", align: "left" },
     { Header: "matrícula", accessor: "matricula", align: "center" },
@@ -53,7 +53,12 @@ function Alunos({ turma }) {
                 matricula: boletim.objeto_aluno.matricula,
                 situacao: boletim.status,
                 opcoes: (
-                  <MDButton variant="gradient" color="info" size="small">
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    size="small"
+                    onClick={() => handleView(boletim.objeto_aluno.id)}
+                  >
                     Visualizar
                   </MDButton>
                 ),
@@ -71,6 +76,7 @@ function Alunos({ turma }) {
 
 Alunos.propTypes = {
   turma: PropTypes.object.isRequired,
+  handleView: PropTypes.func.isRequired,
 };
 
 export default Alunos;
