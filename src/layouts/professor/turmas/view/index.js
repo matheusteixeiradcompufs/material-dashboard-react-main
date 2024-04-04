@@ -1,7 +1,7 @@
 import { Card, Grid, MenuItem } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,13 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
-import Select from "examples/Select";
 import Menu from "./components/Menu";
 import DataTable from "examples/Tables/DataTable";
 import MDAvatar from "components/MDAvatar";
+import { AuthContext } from "context/AuthContext";
 
 function ViewProfessorTurma() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { turmaid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -28,8 +28,13 @@ function ViewProfessorTurma() {
         setTurma(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados da turma!");
-        console.log("Erro ao carregar os dados da turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar os dados da turma!");
+          console.log("Erro ao carregar os dados da turma!", error);
+        }
         setLoading(false);
       }
     };
@@ -41,11 +46,6 @@ function ViewProfessorTurma() {
     navigate(
       `/escola/${turma.objeto_sala.escola}/sala/${turma.objeto_sala.id}/turma/${turma.id}/aluno/${alunoid}/view`
     );
-  };
-
-  const handleVoltar = () => {
-    setLoading(true);
-    navigate(`/professor/turmas`);
   };
 
   if (loading) {

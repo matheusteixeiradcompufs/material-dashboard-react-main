@@ -1,6 +1,6 @@
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,10 +12,12 @@ import MDTypography from "components/MDTypography";
 import { Fab, Grid, Icon } from "@mui/material";
 import MDButton from "components/MDButton";
 import DownIcon from "@mui/icons-material/South";
+import { AuthContext } from "context/AuthContext";
 
 function BoletimRecados() {
   const [controller] = useMaterialUIController();
   const { miniSidenav } = controller;
+  const { refreshToken } = useContext(AuthContext);
   const { boletimid } = useParams();
   const [agendaRecados, setAgendaRecados] = useState(null);
   const [recados, setRecados] = useState([]);
@@ -25,6 +27,7 @@ function BoletimRecados() {
   const messagesEndRef = useRef(null);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
+
   useEffect(() => {
     const fetchBoletim = async () => {
       try {
@@ -35,8 +38,13 @@ function BoletimRecados() {
         setRecados(objetos_recados);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar agenda de recados!");
-        console.log("Erro ao carregar agenda de recados!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchBoletim();
+        } else {
+          toast.error("Erro ao carregar agenda de recados!");
+          console.log("Erro ao carregar agenda de recados!", error);
+        }
         setLoading(false);
       }
     };
@@ -52,6 +60,7 @@ function BoletimRecados() {
     fetchBoletim();
     return () => clearInterval(loadDataInterval);
   }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
@@ -62,12 +71,14 @@ function BoletimRecados() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   useEffect(() => {
     const scrollToBottom = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
     scrollToBottom();
   }, [recados, click]);
+
   useEffect(() => {
     const calculateButtonPosition = () => {
       const windowWidth = window.innerWidth;
@@ -77,12 +88,15 @@ function BoletimRecados() {
     };
     calculateButtonPosition();
   }, [miniSidenav]);
+
   const handleChangeTexto = (e) => {
     setTexto(e.target.value);
   };
+
   const handleClick = () => {
     setClick(!click);
   };
+
   const handleEnviar = async () => {
     try {
       const response = await api.post("/pessoas/aluno/boletim/agenda/recado/api/v1/", {
@@ -92,10 +106,16 @@ function BoletimRecados() {
       setTexto("");
       setRecados([...recados, response.data]);
     } catch (error) {
-      toast.error("Erro ao enviar recado!");
-      console.log("Erro ao enviar recado!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEnviar();
+      } else {
+        toast.error("Erro ao enviar recado!");
+        console.log("Erro ao enviar recado!", error);
+      }
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -120,6 +140,7 @@ function BoletimRecados() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

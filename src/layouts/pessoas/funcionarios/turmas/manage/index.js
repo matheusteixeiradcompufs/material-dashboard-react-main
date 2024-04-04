@@ -2,7 +2,7 @@ import { Card, Fab, Grid, MenuItem } from "@mui/material";
 import ManageIcon from "@mui/icons-material/Settings";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,8 +12,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import Transfer from "../components/Transfer";
+import { AuthContext } from "context/AuthContext";
 
 function ManageFuncionarioTurmas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { funcionarioid } = useParams();
   const [escola, setEscola] = useState("");
@@ -34,13 +36,19 @@ function ManageFuncionarioTurmas() {
         setRight(resFunc.data.objetos_turmas);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados");
-        console.error("Erro ao carregar dados:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDados();
+        } else {
+          toast.error("Erro ao carregar dados");
+          console.error("Erro ao carregar dados:", error);
+        }
         setLoading(false);
       }
     };
     fetchDados();
   }, []);
+
   const handleChangeEscola = (e) => {
     const newValue = e.target.value;
     setEscola(newValue);
@@ -49,6 +57,7 @@ function ManageFuncionarioTurmas() {
     const turmasFiltradas = turmas.filter((item) => newValue === item.objeto_sala.objeto_escola.id);
     setLeft(turmasFiltradas.filter((item) => !right.some((element) => element.id === item.id)));
   };
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -57,15 +66,22 @@ function ManageFuncionarioTurmas() {
       });
       navigate(`/pessoas/funcionario/${funcionarioid}/turmas`);
     } catch (error) {
-      toast.error("Erro ao salvar turmas!");
-      console.log("Erro ao salvar turmas!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao salvar turmas!");
+        console.log("Erro ao salvar turmas!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/turmas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -90,6 +106,7 @@ function ManageFuncionarioTurmas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

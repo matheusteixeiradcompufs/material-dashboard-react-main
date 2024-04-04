@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,8 +10,10 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function ViewAlunoEmail() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, emailid } = useParams();
   const [endereco, setEndereco] = useState("");
@@ -24,24 +26,33 @@ function ViewAlunoEmail() {
         setEndereco(response.data.endereco);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar aluno");
-        console.error("Erro ao carregar aluno:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEmail();
+        } else {
+          toast.error("Erro ao carregar aluno");
+          console.error("Erro ao carregar aluno:", error);
+        }
         setLoading(false);
       }
     };
     fetchEmail();
   }, []);
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/emails`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -66,6 +77,7 @@ function ViewAlunoEmail() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

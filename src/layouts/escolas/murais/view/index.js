@@ -4,18 +4,21 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewEscolaMural() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, muralid } = useParams();
   const [ano, setAno] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchMural = async () => {
       try {
@@ -23,21 +26,29 @@ function ViewEscolaMural() {
         setAno(response.data.ano);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao acessar os dados do mural!");
-        console.log("Erro ao acessar os dados do mural!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchMural();
+        } else {
+          toast.error("Erro ao acessar os dados do mural!");
+          console.log("Erro ao acessar os dados do mural!", error);
+        }
         setLoading(false);
       }
     };
     fetchMural();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/murais`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -62,6 +73,7 @@ function ViewEscolaMural() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

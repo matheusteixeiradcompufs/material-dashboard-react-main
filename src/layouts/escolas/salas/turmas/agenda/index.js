@@ -7,13 +7,15 @@ import { api } from "services/apiClient";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DiaSemana from "./components/DiaSemana";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getDay, parseISO } from "date-fns";
 import { useParams } from "react-router-dom";
 import { Audio } from "react-loader-spinner";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaSalaTurmaAgenda() {
+  const { refreshToken } = useContext(AuthContext);
   const { escolaid, salaid, turmaid } = useParams();
   const [turma, setTurma] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +24,7 @@ function EscolaSalaTurmaAgenda() {
   const [quarta, setQuarta] = useState([]);
   const [quinta, setQuinta] = useState([]);
   const [sexta, setSexta] = useState([]);
+
   const obterDisciplinas = (dias) => {
     let dom = [],
       seg = [],
@@ -60,6 +63,7 @@ function EscolaSalaTurmaAgenda() {
     });
     return { dom, seg, ter, qua, qui, sex, sab };
   };
+
   useEffect(() => {
     const fetchTurma = async () => {
       try {
@@ -78,13 +82,19 @@ function EscolaSalaTurmaAgenda() {
         }
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar a turma");
-        console.log("Erro ao carregar a turma", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar a turma");
+          console.log("Erro ao carregar a turma", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleIniciarAgenda = async () => {
     setLoading(true);
     try {
@@ -95,11 +105,17 @@ function EscolaSalaTurmaAgenda() {
       setTurma(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao iniciar agenda da turma");
-      console.log("Erro ao iniciar agenda da turma", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleIniciarAgenda();
+      } else {
+        toast.error("Erro ao iniciar agenda da turma");
+        console.log("Erro ao iniciar agenda da turma", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -124,6 +140,7 @@ function EscolaSalaTurmaAgenda() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

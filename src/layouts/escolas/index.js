@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Grid, Fab, Card } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -11,8 +11,10 @@ import { Link, useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function Escolas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [escolas, setEscolas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,8 +26,13 @@ function Escolas() {
         setEscolas(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escolas");
-        console.error("Erro ao carregar escolas:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscolas();
+        } else {
+          toast.error("Erro ao carregar escolas");
+          console.error("Erro ao carregar escolas:", error);
+        }
         setLoading(false);
       }
     };
@@ -45,8 +52,13 @@ function Escolas() {
       setEscolas(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir escola");
-      console.log("Erro ao excluir escola", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(escolaid);
+      } else {
+        toast.error("Erro ao excluir escola");
+        console.log("Erro ao excluir escola", error);
+      }
       setLoading(false);
     }
   };

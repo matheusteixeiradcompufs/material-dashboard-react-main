@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,13 +10,16 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { useNavigate, useParams } from "react-router-dom";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function ViewItem() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { itemid } = useParams();
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -25,21 +28,29 @@ function ViewItem() {
         setDescricao(response.data.descricao);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar ítens da merenda!");
-        console.log("Erro ao carregar ítens da merenda!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar ítens da merenda!");
+          console.log("Erro ao carregar ítens da merenda!", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/itemmerenda/${itemid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/itensmerenda`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -64,6 +75,7 @@ function ViewItem() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

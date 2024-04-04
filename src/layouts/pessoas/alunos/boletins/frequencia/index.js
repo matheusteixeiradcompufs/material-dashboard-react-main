@@ -4,10 +4,11 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import { format } from "date-fns";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,10 +16,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
 function BoletimFrequencia() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, boletimid } = useParams();
   const [boletim, setBoletim] = useState(null);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchBoletim = async () => {
       try {
@@ -26,19 +29,26 @@ function BoletimFrequencia() {
         setBoletim(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar boletim!");
-        console.log("Erro ao carregar boletim", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchBoletim();
+        } else {
+          toast.error("Erro ao carregar boletim!");
+          console.log("Erro ao carregar boletim", error);
+        }
         setLoading(false);
       }
     };
     fetchBoletim();
   }, []);
+
   const handleEdit = (dialetivoid) => {
     setLoading(true);
     navigate(
       `/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia/dialetivo/${dialetivoid}/edit`
     );
   };
+
   const handleExcluir = async (dialetivoid) => {
     setLoading(true);
     try {
@@ -47,11 +57,17 @@ function BoletimFrequencia() {
       setBoletim(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir presença!");
-      console.log("Erro ao excluir presença!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(dialetivoid);
+      } else {
+        toast.error("Erro ao excluir presença!");
+        console.log("Erro ao excluir presença!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -76,6 +92,7 @@ function BoletimFrequencia() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

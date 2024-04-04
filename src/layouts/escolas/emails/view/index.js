@@ -3,18 +3,21 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function ViewEscolaEmail() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, emailid } = useParams();
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -22,21 +25,29 @@ function ViewEscolaEmail() {
         setEndereco(response.data.endereco);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados da escola!");
-        console.log("Erro ao carregar dados da escola!");
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar dados da escola!");
+          console.log("Erro ao carregar dados da escola!");
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/emails`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -61,6 +72,7 @@ function ViewEscolaEmail() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaSalaTurmas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, salaid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -25,8 +27,13 @@ function EscolaSalaTurmas() {
         setSala(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar turmas da sala!");
-        console.log("Erro ao carregar turmas da sala", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchSala();
+        } else {
+          toast.error("Erro ao carregar turmas da sala!");
+          console.log("Erro ao carregar turmas da sala", error);
+        }
         setLoading(false);
       }
     };
@@ -46,8 +53,13 @@ function EscolaSalaTurmas() {
       setSala(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir a turma!");
-      console.log("Erro ao excluir a turma!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(turmaid);
+      } else {
+        toast.error("Erro ao excluir a turma!");
+        console.log("Erro ao excluir a turma!", error);
+      }
       setLoading(false);
     }
   };

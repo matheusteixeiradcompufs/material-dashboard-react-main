@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,8 +11,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MDButton from "components/MDButton";
 import Funcao from "../components/Funcao";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarFuncionario() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { funcionarioid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,7 @@ function EditarFuncionario() {
   const [formacao, setFormacao] = useState("");
   const [retrato, setRetrato] = useState(null);
   const [novoRetrato, setNovoRetrato] = useState(null);
+
   useEffect(() => {
     const fetchFuncionario = async () => {
       try {
@@ -51,6 +54,10 @@ function EditarFuncionario() {
         setGrupos(response.data);
         setLoading(false);
       } catch (error) {
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchFuncionario();
+        }
         toast.error("Erro ao carregar os funcionarios");
         console.log("Erro ao carregar os funcionarios", error);
         setLoading(false);
@@ -58,39 +65,51 @@ function EditarFuncionario() {
     };
     fetchFuncionario();
   }, []);
+
   const handleSetGrupo = (e) => {
     setGrupo(e.target.value);
   };
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
+
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
+
   const handleSetSenha = (e) => {
     setSenha(e.target.value);
   };
+
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleSetFormacao = (e) => {
     setFormacao(e.target.value);
   };
+
   const handleFile = (e) => {
     if (!e.target.files) {
       return;
@@ -103,6 +122,7 @@ function EditarFuncionario() {
       setNovoRetrato(image);
     }
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -131,15 +151,22 @@ function EditarFuncionario() {
       });
       navigate(`/pessoas/funcionario/${funcionarioid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar funcionario!");
-      console.log("Erro ao modificar funcionario!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar funcionario!");
+        console.log("Erro ao modificar funcionario!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -164,6 +191,7 @@ function EditarFuncionario() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

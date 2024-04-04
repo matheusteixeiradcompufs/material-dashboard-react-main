@@ -5,14 +5,16 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewTransportes() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -22,6 +24,7 @@ function ViewTransportes() {
   const [nomeMotorista, setNomeMotorista] = useState("");
   const [nomeAuxiliar, setNomeAuxiliar] = useState("");
   const [itinerario, setItinerario] = useState("");
+
   useEffect(() => {
     const fetchTransporte = async () => {
       try {
@@ -34,18 +37,30 @@ function ViewTransportes() {
         setItinerario(response.data.itinerario || "");
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do transporte!");
-        console.log("Erro ao carregar dados do transporte!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTransporte();
+        } else {
+          toast.error("Erro ao carregar dados do transporte!");
+          console.log("Erro ao carregar dados do transporte!", error);
+        }
         setLoading(false);
         navigate("/transportes");
       }
     };
     fetchTransporte();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/editar`);
   };
+
+  const handleVoltar = () => {
+    setLoading(true);
+    navigate(`/transportes`);
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -70,6 +85,7 @@ function ViewTransportes() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />
@@ -168,11 +184,9 @@ function ViewTransportes() {
                         </MDButton>
                       </MDBox>
                       <MDBox ml={1}>
-                        <Link to="/transportes">
-                          <MDButton variant="gradient" color="error">
-                            Voltar
-                          </MDButton>
-                        </Link>
+                        <MDButton variant="gradient" color="error" onClick={handleVoltar}>
+                          Voltar
+                        </MDButton>
                       </MDBox>
                     </MDBox>
                   </Grid>

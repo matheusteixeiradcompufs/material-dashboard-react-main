@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,12 +11,13 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaMurais() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [escola, setEscola] = useState(true);
-  const [ano, setAno] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,56 +27,22 @@ function EscolaMurais() {
         setEscola(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
 
-  const handleChangeAno = (e) => {
-    setAno(e.target.value);
-  };
-
   const handleView = (muralid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/view`);
-  };
-
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/escolas/mural/api/v1/", {
-        ano: ano,
-        escola: escolaid,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar mural");
-      console.log("Erro ao cadastrar mural", error);
-      setLoading(false);
-    }
-  };
-
-  const handleEditar = async (muralid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/mural/api/v1/${muralid}/`, {
-        ano: ano,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao modificar escola");
-      console.log("Erro ao modificar escola", error);
-      setLoading(false);
-    }
   };
 
   const handleExcluir = async (muralid) => {
@@ -86,8 +53,13 @@ function EscolaMurais() {
       setEscola(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir mural");
-      console.log("Erro ao excluir mural", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(muralid);
+      } else {
+        toast.error("Erro ao excluir mural");
+        console.log("Erro ao excluir mural", error);
+      }
       setLoading(false);
     }
   };
@@ -116,6 +88,7 @@ function EscolaMurais() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

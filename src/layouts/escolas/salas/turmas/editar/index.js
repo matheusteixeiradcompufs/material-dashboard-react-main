@@ -1,7 +1,7 @@
 import { Card, Grid, MenuItem } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarEscolaSalaTurma() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, salaid, turmaid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -29,22 +31,31 @@ function EditarEscolaSalaTurma() {
         setTurno(response.data.turno);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados da turma!");
-        console.log("Erro ao carregar os dados da turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar os dados da turma!");
+          console.log("Erro ao carregar os dados da turma!", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
+
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -55,15 +66,22 @@ function EditarEscolaSalaTurma() {
       });
       navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar turma!");
-      console.log("Erro ao modificar turma!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar turma!");
+        console.log("Erro ao modificar turma!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>

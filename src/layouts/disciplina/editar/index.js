@@ -3,18 +3,21 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarDisciplina() {
+  const { refreshToken } = useContext(AuthContext);
   const { disciplinaid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState("");
+
   useEffect(() => {
     const fetchDisciplina = async () => {
       try {
@@ -22,16 +25,23 @@ function EditarDisciplina() {
         setNome(response.data.nome);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados da disciplina!");
-        console.log("Erro ao carregar dados da disciplina!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDisciplina();
+        } else {
+          toast.error("Erro ao carregar dados da disciplina!");
+          console.log("Erro ao carregar dados da disciplina!", error);
+        }
         setLoading(false);
       }
     };
     fetchDisciplina();
   }, []);
+
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -40,15 +50,22 @@ function EditarDisciplina() {
       });
       navigate("/disciplinas");
     } catch (error) {
-      toast.error("Erro ao alterar disciplina!");
-      console.log("Erro ao alterar disciplina!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao alterar disciplina!");
+        console.log("Erro ao alterar disciplina!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate("/disciplinas");
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +90,7 @@ function EditarDisciplina() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

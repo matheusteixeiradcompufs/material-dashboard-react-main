@@ -2,20 +2,23 @@ import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import Transfer from "./components/Transfer";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function GerenciarTransporteAlunos() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [right, setRight] = useState([]);
   const [left, setLeft] = useState([]);
+
   useEffect(() => {
     const fetchDados = async () => {
       try {
@@ -29,17 +32,24 @@ function GerenciarTransporteAlunos() {
         );
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados!");
-        console.log("Erro ao carregar os dados!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDados();
+        } else {
+          toast.error("Erro ao carregar os dados!");
+          console.log("Erro ao carregar os dados!", error);
+        }
         setLoading(false);
       }
     };
     fetchDados();
   }, []);
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/alunos`);
   };
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -48,11 +58,17 @@ function GerenciarTransporteAlunos() {
       });
       navigate(`/transportes/${transporteid}/alunos`);
     } catch (error) {
-      toast.error("Erro ao salvar alunos do transporte!");
-      console.log("Erro ao salvar alunos do transporte!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao salvar alunos do transporte!");
+        console.log("Erro ao salvar alunos do transporte!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -77,6 +93,7 @@ function GerenciarTransporteAlunos() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

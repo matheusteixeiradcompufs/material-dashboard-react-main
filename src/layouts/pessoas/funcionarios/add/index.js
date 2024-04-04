@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,8 +11,10 @@ import { useNavigate } from "react-router-dom";
 import MDButton from "components/MDButton";
 import Funcao from "../components/Funcao";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function AddFuncionarios() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [grupos, setGrupos] = useState([]);
@@ -28,39 +30,51 @@ function AddFuncionarios() {
   const [endereco, setEndereco] = useState("");
   const [formacao, setFormacao] = useState("");
   const [novoRetrato, setNovoRetrato] = useState(null);
+
   const handleSetGrupo = (e) => {
     setGrupo(e.target.value);
   };
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
+
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
+
   const handleSetSenha = (e) => {
     setSenha(e.target.value);
   };
+
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleSetFormacao = (e) => {
     setFormacao(e.target.value);
   };
+
   const handleFile = (e) => {
     if (!e.target.files) {
       return;
@@ -73,20 +87,27 @@ function AddFuncionarios() {
       setNovoRetrato(image);
     }
   };
+
   useEffect(() => {
-    const fetchFuncionarios = async () => {
+    const fetchGrupos = async () => {
       try {
         const response = await api.get("/pessoas/usuario/grupo/api/v1/");
         setGrupos(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os cargos!");
-        console.log("Erro ao carregar os cargos!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchGrupos();
+        } else {
+          toast.error("Erro ao carregar os cargos!");
+          console.log("Erro ao carregar os cargos!", error);
+        }
         setLoading(false);
       }
     };
-    fetchFuncionarios();
+    fetchGrupos();
   }, []);
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -114,15 +135,22 @@ function AddFuncionarios() {
       });
       navigate("/pessoas/funcionarios");
     } catch (error) {
-      toast.error("Erro ao cadastrar novo funcionario!");
-      console.log("Erro ao cadastrar novo funcionario!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao cadastrar novo funcionario!");
+        console.log("Erro ao cadastrar novo funcionario!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate("/pessoas/funcionarios");
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -147,6 +175,7 @@ function AddFuncionarios() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,15 +10,19 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function AddAlunoTelefones() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleSetNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -28,15 +32,22 @@ function AddAlunoTelefones() {
       });
       navigate(`/pessoas/aluno/${alunoid}/telefones`);
     } catch (error) {
-      toast.error("Erro ao cadastrar telefone do aluno");
-      console.log("Erro ao cadastrar telefone do aluno", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar telefone do aluno");
+        console.log("Erro ao cadastrar telefone do aluno", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefones`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -61,6 +72,7 @@ function AddAlunoTelefones() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

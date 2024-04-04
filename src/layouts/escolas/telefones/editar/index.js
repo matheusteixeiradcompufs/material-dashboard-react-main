@@ -3,18 +3,21 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarEscolaTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const { escolaid, telefoneid } = useParams();
   const navigate = useNavigate();
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchTelefone = async () => {
       try {
@@ -22,16 +25,23 @@ function EditarEscolaTelefone() {
         setNumero(response.data.numero);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do telefone!");
-        console.log("Erro ao carregar dados do telefone!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTelefone();
+        } else {
+          toast.error("Erro ao carregar dados do telefone!");
+          console.log("Erro ao carregar dados do telefone!", error);
+        }
         setLoading(false);
       }
     };
     fetchTelefone();
   }, []);
+
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -40,15 +50,22 @@ function EditarEscolaTelefone() {
       });
       navigate(`/escola/${escolaid}/telefone/${telefoneid}/view`);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao cadastrar escola");
+        console.log("Erro ao cadastrar escola", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefone/${telefoneid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +90,7 @@ function EditarEscolaTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

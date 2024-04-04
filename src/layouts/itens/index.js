@@ -1,7 +1,7 @@
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,14 +11,14 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "context/AuthContext";
 
 function Itens() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [itens, setItens] = useState([]);
-  const [item, setItem] = useState(null);
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -26,51 +26,24 @@ function Itens() {
         setItens(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar ítens da merenda!");
-        console.log("Erro ao carregar ítens da merenda!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar ítens da merenda!");
+          console.log("Erro ao carregar ítens da merenda!", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleView = (itemid) => {
     setLoading(true);
     navigate(`/itemmerenda/${itemid}/view`);
   };
-  const handleChangeNome = (e) => {
-    setNome(e.target.value);
-  };
-  const handleChangeDescricao = (e) => {
-    setDescricao(e.target.value);
-  };
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/escolas/cardapio/item/api/v1/", {
-        nome: nome,
-        descricao: descricao,
-      });
-      navigate(`/itensmerenda`);
-    } catch (error) {
-      toast.error("Erro ao salvar item!");
-      console.log("Erro ao salvar item!", error);
-      setLoading(false);
-    }
-  };
-  const handleEditar = async () => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/cardapio/item/api/v1/${itemid}/`, {
-        nome: nome,
-        descricao: descricao,
-      });
-      navigate(`/itemmerenda/${itemid}/view`);
-    } catch (error) {
-      toast.error("Erro ao editar item!");
-      console.log("Erro ao editar item!", error);
-      setLoading(false);
-    }
-  };
+
   const handleExcluir = async (itemid) => {
     setLoading(true);
     try {
@@ -79,11 +52,17 @@ function Itens() {
       setItens(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir item!");
-      console.log("Erro ao excluir item!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(itemid);
+      } else {
+        toast.error("Erro ao excluir item!");
+        console.log("Erro ao excluir item!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -108,6 +87,7 @@ function Itens() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

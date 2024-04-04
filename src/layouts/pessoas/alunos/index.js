@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,11 +12,14 @@ import Aluno from "./components/Aluno";
 import DataTable from "examples/Tables/DataTable";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function Alunos() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [alunos, setAlunos] = useState([]);
+
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -24,17 +27,24 @@ function Alunos() {
         setAlunos(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os alunos");
-        console.log("Erro ao carregar os alunos", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAlunos();
+        } else {
+          toast.error("Erro ao carregar os alunos");
+          console.log("Erro ao carregar os alunos", error);
+        }
         setLoading(false);
       }
     };
     fetchAlunos();
   }, []);
+
   const handleOnViewAluno = (alunoid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/view`);
   };
+
   const handleExcluir = async (alunoid) => {
     setLoading(true);
     try {
@@ -46,11 +56,17 @@ function Alunos() {
       setAlunos(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao modificar aluno!");
-      console.log("Erro ao modificar aluno!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(alunoid);
+      } else {
+        toast.error("Erro ao modificar aluno!");
+        console.log("Erro ao modificar aluno!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -75,6 +91,7 @@ function Alunos() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

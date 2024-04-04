@@ -3,19 +3,22 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarEscolaMuralAviso() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, muralid, avisoid } = useParams();
   const [loading, setLoading] = useState(true);
   const [titulo, setTitulo] = useState("");
   const [texto, setTexto] = useState("");
+
   useEffect(() => {
     const fetchAviso = async () => {
       try {
@@ -24,19 +27,27 @@ function EditarEscolaMuralAviso() {
         setTexto(response.data.texto);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados do aviso!");
-        console.log("Erro ao carregar os dados do aviso!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAviso();
+        } else {
+          toast.error("Erro ao carregar os dados do aviso!");
+          console.log("Erro ao carregar os dados do aviso!", error);
+        }
         setLoading(false);
       }
     };
     fetchAviso();
   }, []);
+
   const handleChangeTitulo = (e) => {
     setTitulo(e.target.value);
   };
+
   const handleChangeTexto = (e) => {
     setTexto(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -46,15 +57,22 @@ function EditarEscolaMuralAviso() {
       });
       navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/view`);
     } catch (error) {
-      toast.error("Erro ao salvar aviso!");
-      console.log("Erro ao salvar aviso!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao salvar aviso!");
+        console.log("Erro ao salvar aviso!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -79,6 +97,7 @@ function EditarEscolaMuralAviso() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

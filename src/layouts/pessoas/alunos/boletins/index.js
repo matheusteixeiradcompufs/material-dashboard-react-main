@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function AlunoBoletins() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [boletins, setBoletins] = useState([]);
@@ -25,13 +27,19 @@ function AlunoBoletins() {
         setBoletins(response.data.objetos_boletins);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados");
-        console.error("Erro ao carregar dados:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDados();
+        } else {
+          toast.error("Erro ao carregar dados");
+          console.error("Erro ao carregar dados:", error);
+        }
         setLoading(false);
       }
     };
     fetchDados();
   }, []);
+
   const getTurno = (turno) => {
     let response;
     switch (turno) {
@@ -50,10 +58,12 @@ function AlunoBoletins() {
     }
     return response;
   };
+
   const handleView = (boletimid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);
   };
+
   const handleExcluir = async (boletimid) => {
     setLoading(true);
     try {
@@ -62,11 +72,17 @@ function AlunoBoletins() {
       setBoletins(response.data.objetos_boletins);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir matrícula do aluno");
-      console.log("Erro ao excluir matrícula do aluno", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(boletimid);
+      } else {
+        toast.error("Erro ao excluir matrícula do aluno");
+        console.log("Erro ao excluir matrícula do aluno", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -91,6 +107,7 @@ function AlunoBoletins() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -30,7 +30,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/Escola.png";
 import { AuthContext } from "context/AuthContext";
-import { Audio } from "react-loader-spinner";
+import { RotatingLines } from "react-loader-spinner";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -51,40 +51,6 @@ function Basic() {
     await login({ username, password });
   };
 
-  if (loading) {
-    return (
-      <BasicLayout image={bgImage}>
-        <Card>
-          <MDBox
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
-            mx={2}
-            mt={-3}
-            p={2}
-            mb={1}
-            textAlign="center"
-          >
-            <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-              Login
-            </MDTypography>
-          </MDBox>
-          <MDBox pt={4} pb={3} px={3}>
-            <Audio
-              height="80"
-              width="80"
-              radius="9"
-              color="#3089ec"
-              ariaLabel="three-dots-loading"
-              wrapperStyle
-              wrapperClass
-            />
-          </MDBox>
-        </Card>
-      </BasicLayout>
-    );
-  }
   return (
     <BasicLayout image={bgImage}>
       <ToastContainer />
@@ -125,9 +91,26 @@ function Basic() {
               />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" onClick={handleLogin} fullWidth>
-                Acessar
-              </MDButton>
+              {loading ? (
+                <MDButton variant="gradient" color="info" fullWidth>
+                  <RotatingLines
+                    visible={true}
+                    height="20"
+                    width="20"
+                    color="#fff"
+                    strokeColor="white"
+                    strokeWidth="5"
+                    animationDuration="0.75"
+                    ariaLabel="rotating-lines-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                  />
+                </MDButton>
+              ) : (
+                <MDButton variant="gradient" color="info" onClick={handleLogin} fullWidth>
+                  Acessar
+                </MDButton>
+              )}
             </MDBox>
           </MDBox>
         </MDBox>

@@ -19,17 +19,16 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // tentar pegar algo no cookie
-    const cookies = parseCookies(AuthContext);
-    const username = cookies["@nextauth.username"];
-    const first_name = cookies["@nextauth.first_name"];
-    const access = cookies["@nextauth.access"];
-    const refresh = cookies["@nextauth.refresh"];
+    const fetchUsername = async () => {
+      const cookies = parseCookies(AuthContext);
+      const username = cookies["@nextauth.username"];
+      const first_name = cookies["@nextauth.first_name"];
+      const access = cookies["@nextauth.access"];
+      const refresh = cookies["@nextauth.refresh"];
 
-    if (access) {
-      api
-        .post("/pessoas/me/", { username })
-        .then((response) => {
+      if (access) {
+        try {
+          const response = await api.post("/pessoas/me/", { username });
           const { objeto_usuario } = response.data;
           const { username, first_name } = objeto_usuario;
 
@@ -42,16 +41,18 @@ export function AuthProvider({ children }) {
           }));
 
           api.defaults.headers["Authorization"] = `Bearer ${access}`;
-        })
-        .catch(() => {
-          //Se deu erro deslogamos o user.
+          setLoading(false);
+        } catch (error) {
           logout();
-        });
-    }
+          setLoading(false);
+        }
+      }
+    };
+    fetchUsername();
   }, []);
 
   async function obterTokens({ username, password }) {
-    setLoading(true);
+    console.log("Tentando obter os tokens de acesso!");
     try {
       const response = await api.post("/api/token/", {
         username,
@@ -75,57 +76,52 @@ export function AuthProvider({ children }) {
       }));
 
       api.defaults.headers["Authorization"] = `Bearer ${access}`;
-      setLoading(false);
+
+      console.log("Tokens obtidos com sucesso!");
     } catch (error) {
       toast.error("Erro ao obter os tokens de acesso. Verifique suas credenciais!");
       console.error("Erro ao obter os tokens de acesso:", error);
-      setLoading(false);
     }
   }
 
   async function refreshToken() {
-    setLoading(true);
+    console.log("Tentando atualizar o token de acesso!");
     try {
-      const response = await api.post("/api/token/", {
-        access,
+      const response = await api.post("/api/token/refresh/", {
+        refresh: user.refresh,
       });
-
-      if (!response.ok) {
-        throw new Error("Falha ao atualizar o token");
-      }
 
       const { access } = await response.data;
 
-      // Atualiza o token de acesso
       setUser((prevUser) => ({
         ...prevUser,
         access: access,
       }));
 
-      // Atualiza o token de acesso nos cabeçalhos da API
       api.defaults.headers["Authorization"] = `Bearer ${access}`;
 
-      // Salva o novo token de acesso no AsyncStorage
-      setCookie(AuthContext, "@nextauth.access", newAccessToken, {
-        maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
-        path: "/", // Quais caminhos terao acesso ao cookie
+      setCookie(AuthContext, "@nextauth.access", access, {
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/",
       });
-      setLoading(false);
+
+      console.log("Token de acesso atualizado com sucesso!");
     } catch (error) {
       toast.error("Erro ao atualizar o token!");
-      console.error("Erro ao atualizar o token:", error);
-      // Se houver um erro 401, significa que tanto o token de acesso quanto o token de refresh estão expirados
-      if (error) {
-        alert("Sua sessão expirou. Faça login novamente.");
+      console.log("Erro ao atualizar o token:", error);
+
+      if (error.response.status === 401) {
+        toast.error("Sua sessão expirou. Faça login novamente.");
+        await logout();
+        navigate("/");
       }
-      setLoading(false);
-      await logout();
     }
   }
 
   async function login({ username, password }) {
-    await obterTokens({ username, password });
     setLoading(true);
+    await obterTokens({ username, password });
+    console.log("Tentando buscar os dados do usuário!");
     try {
       const response = await api.post("/pessoas/me/", {
         username,
@@ -148,7 +144,7 @@ export function AuthProvider({ children }) {
         first_name: first_name,
       }));
 
-      setLoading(false);
+      console.log("Dados do usuário obtidos com sucesso!");
       navigate("/");
     } catch (err) {
       toast.error("Erro ao acessar!");

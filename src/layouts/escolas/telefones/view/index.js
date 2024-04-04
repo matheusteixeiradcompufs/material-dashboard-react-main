@@ -3,27 +3,35 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function ViewEscolaTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const { escolaid, telefoneid } = useParams();
   const navigate = useNavigate();
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchTelefone = async () => {
       try {
         const response = await api.get(`/escolas/telefone/api/v1/${telefoneid}/`);
         setNumero(response.data.numero);
-        setLoading(false);
+        fetchTelefone(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do telefone!");
-        console.log("Erro ao carregar dados do telefone!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTelefone();
+        } else {
+          toast.error("Erro ao carregar dados do telefone!");
+          console.log("Erro ao carregar dados do telefone!", error);
+        }
         setLoading(false);
       }
     };

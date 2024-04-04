@@ -3,19 +3,22 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function ViewEscolaCardapioItem() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, cardapioid, itemid } = useParams();
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -24,17 +27,24 @@ function ViewEscolaCardapioItem() {
         setDescricao(response.data.descricao);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do ítem");
-        console.log("Erro ao carregar dados do ítem", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar dados do ítem");
+          console.log("Erro ao carregar dados do ítem", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/itens`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -59,6 +69,7 @@ function ViewEscolaCardapioItem() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

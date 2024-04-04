@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,8 +10,10 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function ViewAlunoTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, telefoneid } = useParams();
   const [numero, setNumero] = useState("");
@@ -24,21 +26,29 @@ function ViewAlunoTelefone() {
         setNumero(response.data.numero);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do telefone!");
-        console.error("Erro ao carregar dados do telefone!:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTelefone();
+        } else {
+          toast.error("Erro ao carregar dados do telefone!");
+          console.error("Erro ao carregar dados do telefone!:", error);
+        }
         setLoading(false);
       }
     };
     fetchTelefone();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefones`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -63,6 +73,7 @@ function ViewAlunoTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

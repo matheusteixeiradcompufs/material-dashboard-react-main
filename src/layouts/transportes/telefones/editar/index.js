@@ -12,10 +12,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarTransporteTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid, telefoneid } = useParams();
   const [loading, setLoading] = useState(true);
   const [numero, setNumero] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchTelefone = async () => {
       try {
@@ -23,16 +25,23 @@ function EditarTransporteTelefone() {
         setNumero(response.data.numero);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar telefone!");
-        console.log("Erro ao carregar telefone!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTelefone();
+        } else {
+          toast.error("Erro ao carregar telefone!");
+          console.log("Erro ao carregar telefone!", error);
+        }
         setLoading(false);
       }
     };
     fetchTelefone();
   }, []);
+
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -41,15 +50,22 @@ function EditarTransporteTelefone() {
       });
       navigate(`/transportes/${transporteid}/telefone/${telefoneid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar telefone");
-      console.log("Erro ao modificar telefone", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar telefone");
+        console.log("Erro ao modificar telefone", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefone/${telefoneid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -74,6 +90,7 @@ function EditarTransporteTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

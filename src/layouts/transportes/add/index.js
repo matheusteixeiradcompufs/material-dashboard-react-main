@@ -3,15 +3,17 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function AddTransportes() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [placa, setPlaca] = useState("");
@@ -20,24 +22,31 @@ function AddTransportes() {
   const [nomeMotorista, setNomeMotorista] = useState("");
   const [nomeAuxiliar, setNomeAuxiliar] = useState("");
   const [itinerario, setItinerario] = useState("");
+
   const handleChangePlaca = (e) => {
     setPlaca(e.target.value);
   };
+
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
+
   const handleChangeTipo = (e) => {
     setTipo(e.target.value);
   };
+
   const handleChangeNomeMotorista = (e) => {
     setNomeMotorista(e.target.value);
   };
+
   const handleChangeNomeAuxiliar = (e) => {
     setNomeAuxiliar(e.target.value);
   };
+
   const handleChangeItinerario = (e) => {
     setItinerario(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -51,11 +60,17 @@ function AddTransportes() {
       });
       navigate("/transportes");
     } catch (error) {
-      toast.error("Erro ao salvar novo transporte!");
-      console.log("Erro ao salvar novo transporte!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao salvar novo transporte!");
+        console.log("Erro ao salvar novo transporte!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -80,6 +95,7 @@ function AddTransportes() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -10,19 +10,24 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function AddEscolaSalas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [numero, setNumero] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleChangeQuantidade = (e) => {
     setQuantidade(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -33,15 +38,22 @@ function AddEscolaSalas() {
       });
       navigate(`/escola/${escolaid}/salas`);
     } catch (error) {
-      toast.error("Erro ao cadastrar sala");
-      console.log("Erro ao cadastrar sala", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar sala");
+        console.log("Erro ao cadastrar sala", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/salas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -66,6 +78,7 @@ function AddEscolaSalas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

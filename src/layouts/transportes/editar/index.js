@@ -3,15 +3,17 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarTransportes() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -21,6 +23,7 @@ function EditarTransportes() {
   const [nomeMotorista, setNomeMotorista] = useState("");
   const [nomeAuxiliar, setNomeAuxiliar] = useState("");
   const [itinerario, setItinerario] = useState("");
+
   useEffect(() => {
     const fetchTransporte = async () => {
       try {
@@ -33,32 +36,43 @@ function EditarTransportes() {
         setItinerario(response.data.itinerario || "");
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do transporte!");
-        console.log("Erro ao carregar dados do transporte!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTransporte();
+        } else {
+          toast.error("Erro ao carregar dados do transporte!");
+          console.log("Erro ao carregar dados do transporte!", error);
+        }
         setLoading(false);
-        navigate(`/transportes/${transporteid}/view`);
       }
     };
     fetchTransporte();
   }, []);
+
   const handleChangePlaca = (e) => {
     setPlaca(e.target.value);
   };
+
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
+
   const handleChangeTipo = (e) => {
     setTipo(e.target.value);
   };
+
   const handleChangeNomeMotorista = (e) => {
     setNomeMotorista(e.target.value);
   };
+
   const handleChangeNomeAuxiliar = (e) => {
     setNomeAuxiliar(e.target.value);
   };
+
   const handleChangeItinerario = (e) => {
     setItinerario(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -72,15 +86,22 @@ function EditarTransportes() {
       });
       navigate(`/transportes/${transporteid}/view`);
     } catch (error) {
-      toast.error("Erro ao salvar novo transporte!");
-      console.log("Erro ao salvar novo transporte!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao salvar novo transporte!");
+        console.log("Erro ao salvar novo transporte!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -105,6 +126,7 @@ function EditarTransportes() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -12,10 +12,12 @@ import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function ViewTransporteTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid, telefoneid } = useParams();
   const [loading, setLoading] = useState(true);
   const [numero, setNumero] = useState("");
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchTelefone = async () => {
       try {
@@ -23,21 +25,29 @@ function ViewTransporteTelefone() {
         setNumero(response.data.numero);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar telefone!");
-        console.log("Erro ao carregar telefone!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTelefone();
+        } else {
+          toast.error("Erro ao carregar telefone!");
+          console.log("Erro ao carregar telefone!", error);
+        }
         setLoading(false);
       }
     };
     fetchTelefone();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefone/${telefoneid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefones`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -62,6 +72,7 @@ function ViewTransporteTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

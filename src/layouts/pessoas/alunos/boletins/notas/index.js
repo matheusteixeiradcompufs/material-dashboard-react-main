@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -10,8 +10,10 @@ import { Audio } from "react-loader-spinner";
 import List from "./components/List";
 import Edit from "./components/Edit";
 import Final from "./components/Final";
+import { AuthContext } from "context/AuthContext";
 
 function BoletimNotas() {
+  const { refreshToken } = useContext(AuthContext);
   const { boletimid } = useParams();
   const [loading, setLoading] = useState(true);
   const [avaliacoes, setAvaliacoes] = useState([]);
@@ -35,8 +37,13 @@ function BoletimNotas() {
         setSituacoes(objetos_situacoes);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar boletim");
-        console.error("Erro ao carregar boletim:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchBoletim();
+        } else {
+          toast.error("Erro ao carregar boletim");
+          console.error("Erro ao carregar boletim:", error);
+        }
         setLoading(false);
       }
     };
@@ -109,8 +116,13 @@ function BoletimNotas() {
       setSituacoes(objetos_situacoes);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao salvar as avaliações!");
-      console.log("Erro ao salvar as avaliações!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao salvar as avaliações!");
+        console.log("Erro ao salvar as avaliações!", error);
+      }
       setLoading(false);
     }
   };
@@ -138,11 +150,17 @@ function BoletimNotas() {
       setSituacoes(objetos_situacoes);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao finalizar matérias!");
-      console.log("Erro ao finalizar matérias!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleFinalizar();
+      } else {
+        toast.error("Erro ao finalizar matérias!");
+        console.log("Erro ao finalizar matérias!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -167,6 +185,7 @@ function BoletimNotas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

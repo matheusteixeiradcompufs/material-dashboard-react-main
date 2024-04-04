@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,11 +12,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Funcionario from "./components/Funcionario";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function Funcionarios() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [funcionarios, setFuncionarios] = useState([]);
+
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
@@ -24,17 +27,24 @@ function Funcionarios() {
         setFuncionarios(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os funcionarios");
-        console.log("Erro ao carregar os funcionarios", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchFuncionarios();
+        } else {
+          toast.error("Erro ao carregar os funcionarios");
+          console.log("Erro ao carregar os funcionarios", error);
+        }
         setLoading(false);
       }
     };
     fetchFuncionarios();
   }, []);
+
   const handleView = (funcionarioid) => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/view`);
   };
+
   const handleExcluir = async (funcionarioid) => {
     setLoading(true);
     try {
@@ -46,11 +56,17 @@ function Funcionarios() {
       setFuncionarios(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao modificar funcionario!");
-      console.log("Erro ao modificar funcionario!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(funcionarioid);
+      } else {
+        toast.error("Erro ao modificar funcionario!");
+        console.log("Erro ao modificar funcionario!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -75,6 +91,7 @@ function Funcionarios() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

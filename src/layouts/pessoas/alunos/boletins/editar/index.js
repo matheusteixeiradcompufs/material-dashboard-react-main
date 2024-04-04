@@ -1,7 +1,7 @@
 import { Card, FormControlLabel, Grid, MenuItem, Switch } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarAlunoBoletim() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, boletimid } = useParams();
   const [boletim, setBoletim] = useState(null);
@@ -42,13 +44,19 @@ function EditarAlunoBoletim() {
         setSelectedEscola(resSala.data.escola);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados");
-        console.error("Erro ao carregar dados:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDados();
+        } else {
+          toast.error("Erro ao carregar dados");
+          console.error("Erro ao carregar dados:", error);
+        }
         setLoading(false);
       }
     };
     fetchDados();
   }, []);
+
   const handleChangeEscola = (e) => {
     setSelectedEscola(e.target.value);
     const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
@@ -57,18 +65,22 @@ function EditarAlunoBoletim() {
     setSelectedSala("");
     setSelectedTurma("");
   };
+
   const handleChangeSala = (e) => {
     setSelectedSala(e.target.value);
     const salaView = salas.find((objeto) => objeto.id === e.target.value);
     setTurmas(salaView.objetos_turmas);
     setSelectedTurma("");
   };
+
   const handleChangeTurma = (e) => {
     setSelectedTurma(e.target.value);
   };
+
   const handleChangeEncerrar = () => {
     setEncerrar(!encerrar);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -78,15 +90,22 @@ function EditarAlunoBoletim() {
       });
       navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar matricula do aluno");
-      console.log("Erro ao modificar matricula do aluno", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar matricula do aluno");
+        console.log("Erro ao modificar matricula do aluno", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -111,6 +130,7 @@ function EditarAlunoBoletim() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

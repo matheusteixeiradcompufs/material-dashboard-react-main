@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,13 +10,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Transfer from "../components/Transfer";
+import { AuthContext } from "context/AuthContext";
 
 function ManageEscolaCardapioItens() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, cardapioid } = useParams();
   const [loading, setLoading] = useState(true);
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -30,13 +33,19 @@ function ManageEscolaCardapioItens() {
         );
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar cardápio!");
-        console.log("Erro ao carregar cardápio!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar cardápio!");
+          console.log("Erro ao carregar cardápio!", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -45,15 +54,22 @@ function ManageEscolaCardapioItens() {
       });
       navigate(`/escola/${escolaid}/cardapio/${cardapioid}/itens`);
     } catch (error) {
-      toast.error("Erro ao salvar itens no cardápio!");
-      console.log("Erro ao salvar itens no cardápio!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao salvar itens no cardápio!");
+        console.log("Erro ao salvar itens no cardápio!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/itens`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -78,6 +94,7 @@ function ManageEscolaCardapioItens() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,8 +13,10 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Funcao from "../components/Funcao";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewFuncionario() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { funcionarioid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -31,6 +33,7 @@ function ViewFuncionario() {
   const [endereco, setEndereco] = useState("");
   const [formacao, setFormacao] = useState("");
   const [retrato, setRetrato] = useState(null);
+
   useEffect(() => {
     const fetchFuncionario = async () => {
       try {
@@ -52,21 +55,29 @@ function ViewFuncionario() {
         setGrupos(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os funcionarios");
-        console.log("Erro ao carregar os funcionarios", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          fetchFuncionario();
+        } else {
+          toast.error("Erro ao carregar os funcionarios");
+          console.log("Erro ao carregar os funcionarios", error);
+        }
         setLoading(false);
       }
     };
     fetchFuncionario();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionarios`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -91,6 +102,7 @@ function ViewFuncionario() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

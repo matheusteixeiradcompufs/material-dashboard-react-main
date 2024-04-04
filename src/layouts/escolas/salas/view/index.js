@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,13 +11,16 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewEscolaSala() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, salaid } = useParams();
   const [numero, setNumero] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchSala = async () => {
       try {
@@ -26,27 +29,37 @@ function ViewEscolaSala() {
         setQuantidade(response.data.quantidade_alunos);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchSala();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchSala();
   }, []);
+
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleChangeQuantidade = (e) => {
     setQuantidade(e.target.value);
   };
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/salas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -71,6 +84,7 @@ function ViewEscolaSala() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

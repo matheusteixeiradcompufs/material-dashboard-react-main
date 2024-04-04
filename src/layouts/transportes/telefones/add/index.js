@@ -3,22 +3,25 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
-import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useParams, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
+import { AuthContext } from "context/AuthContext";
 
 function AddTransporteTelefone() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
   const [loading, setLoading] = useState(true);
   const [numero, setNumero] = useState("");
   const navigate = useNavigate();
+
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -28,15 +31,22 @@ function AddTransporteTelefone() {
       });
       navigate(`/transportes/${transporteid}/telefones`);
     } catch (error) {
-      toast.error("Erro ao cadastrar telefone");
-      console.log("Erro ao cadastrar telefone", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar telefone");
+        console.log("Erro ao cadastrar telefone", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefones`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -61,6 +71,7 @@ function AddTransporteTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

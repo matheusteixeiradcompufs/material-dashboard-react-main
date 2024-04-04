@@ -3,26 +3,31 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function AddEscolaCardapios() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [data, setData] = useState("");
   const [turno, setTurno] = useState("M");
   const [loading, setLoading] = useState(false);
+
   const handleChangeData = (e) => {
     setData(e.target.value);
   };
+
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -33,15 +38,22 @@ function AddEscolaCardapios() {
       });
       navigate(`/escola/${escolaid}/cardapios`);
     } catch (error) {
-      toast.error("Erro ao cadastrar cardapio");
-      console.log("Erro ao cadastrar cardapio", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar cardapio");
+        console.log("Erro ao cadastrar cardapio", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapios`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -66,6 +78,7 @@ function AddEscolaCardapios() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

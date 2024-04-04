@@ -6,16 +6,19 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
 import { ToastContainer, toast } from "react-toastify";
 import Aluno from "./components/Aluno";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "services/apiClient";
 import { Audio } from "react-loader-spinner";
 import ManageIcon from "@mui/icons-material/Settings";
+import { AuthContext } from "context/AuthContext";
 
 function TransporteAlunos() {
+  const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
   const [loading, setLoading] = useState(true);
   const [transporte, setTransporte] = useState(null);
+
   useEffect(() => {
     const fetchTransporte = async () => {
       try {
@@ -23,13 +26,19 @@ function TransporteAlunos() {
         setTransporte(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do transporte!");
-        console.log("Erro ao carregar dados do transporte!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTransporte();
+        } else {
+          toast.error("Erro ao carregar dados do transporte!");
+          console.log("Erro ao carregar dados do transporte!", error);
+        }
         setLoading(false);
       }
     };
     fetchTransporte();
   }, []);
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -54,6 +63,7 @@ function TransporteAlunos() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

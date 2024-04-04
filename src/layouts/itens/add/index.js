@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,18 +10,23 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { useNavigate } from "react-router-dom";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function AddItens() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -31,15 +36,22 @@ function AddItens() {
       });
       navigate(`/itensmerenda`);
     } catch (error) {
-      toast.error("Erro ao salvar item!");
-      console.log("Erro ao salvar item!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao salvar item!");
+        console.log("Erro ao salvar item!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/itensmerenda`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -64,6 +76,7 @@ function AddItens() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

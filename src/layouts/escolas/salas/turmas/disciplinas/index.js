@@ -2,9 +2,10 @@ import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,10 +13,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
 function EscolaSalaTurmaDisciplinas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, salaid, turmaid } = useParams();
   const [loading, setLoading] = useState(true);
   const [turma, setTurma] = useState(null);
+
   useEffect(() => {
     const fetchTurma = async () => {
       try {
@@ -23,17 +26,24 @@ function EscolaSalaTurmaDisciplinas() {
         setTurma(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar turma!");
-        console.log("Erro ao carregar turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar turma!");
+          console.log("Erro ao carregar turma!", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleGerenciar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas/manage`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -58,6 +68,7 @@ function EscolaSalaTurmaDisciplinas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +10,10 @@ import { useNavigate } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function AddAlunos() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [nome, setNome] = useState("");
@@ -24,33 +26,43 @@ function AddAlunos() {
   const [dataNascimento, setDataNascimento] = useState(null);
   const [endereco, setEndereco] = useState("");
   const [novoRetrato, setNovoRetrato] = useState(null);
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
+
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
+
   const handleSetSenha = (e) => {
     setSenha(e.target.value);
   };
+
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleFile = (e) => {
     if (!e.target.files) {
       return;
@@ -63,6 +75,7 @@ function AddAlunos() {
       setNovoRetrato(image);
     }
   };
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -90,15 +103,22 @@ function AddAlunos() {
       });
       navigate(`/pessoas/alunos`);
     } catch (error) {
-      toast.error("Erro ao cadastrar novo aluno!");
-      console.log("Erro ao cadastrar novo aluno!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao cadastrar novo aluno!");
+        console.log("Erro ao cadastrar novo aluno!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/alunos`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -123,6 +143,7 @@ function AddAlunos() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

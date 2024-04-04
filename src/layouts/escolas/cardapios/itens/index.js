@@ -1,7 +1,7 @@
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,12 +11,15 @@ import ManageIcon from "@mui/icons-material/Settings";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaCardapioItens() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, cardapioid } = useParams();
   const [loading, setLoading] = useState(true);
   const [itens, setItens] = useState([]);
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -24,17 +27,24 @@ function EscolaCardapioItens() {
         setItens(response.data.objetos_itens);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar cardápio!");
-        console.log("Erro ao carregar cardápio!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar cardápio!");
+          console.log("Erro ao carregar cardápio!", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleView = (itemid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/item/${itemid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -59,6 +69,7 @@ function EscolaCardapioItens() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

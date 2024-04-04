@@ -1,7 +1,7 @@
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,12 +12,15 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import { format } from "date-fns";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaMuralAvisos() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, muralid } = useParams();
   const [loading, setLoading] = useState(true);
   const [avisos, setAvisos] = useState([]);
+
   useEffect(() => {
     const fetchAvisos = async () => {
       try {
@@ -25,17 +28,24 @@ function EscolaMuralAvisos() {
         setAvisos(response.data.objetos_avisos);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar avisos!");
-        console.log("Erro ao carregar avisos!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAvisos();
+        } else {
+          toast.error("Erro ao carregar avisos!");
+          console.log("Erro ao carregar avisos!", error);
+        }
         setLoading(false);
       }
     };
     fetchAvisos();
   }, []);
+
   const handleView = (avisoid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/view`);
   };
+
   const handleExcluir = async (avisoid) => {
     setLoading(true);
     try {
@@ -44,11 +54,17 @@ function EscolaMuralAvisos() {
       setAvisos(response.data.objetos_avisos);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir aviso!");
-      console.log("Erro ao excluir aviso!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(avisoid);
+      } else {
+        toast.error("Erro ao excluir aviso!");
+        console.log("Erro ao excluir aviso!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +89,7 @@ function EscolaMuralAvisos() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

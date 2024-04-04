@@ -1,7 +1,7 @@
 import { Card, FormControlLabel, Grid, MenuItem, Switch } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -12,8 +12,10 @@ import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import MDInput from "components/MDInput";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewAlunoBoletim() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, boletimid } = useParams();
   const [boletim, setBoletim] = useState(null);
@@ -42,13 +44,19 @@ function ViewAlunoBoletim() {
         setSelectedEscola(resSala.data.escola);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados");
-        console.error("Erro ao carregar dados:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDados();
+        } else {
+          toast.error("Erro ao carregar dados");
+          console.error("Erro ao carregar dados:", error);
+        }
         setLoading(false);
       }
     };
     fetchDados();
   }, []);
+
   const handleChangeEscola = (e) => {
     setSelectedEscola(e.target.value);
     const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
@@ -57,23 +65,28 @@ function ViewAlunoBoletim() {
     setSelectedSala("");
     setSelectedTurma("");
   };
+
   const handleChangeSala = (e) => {
     setSelectedSala(e.target.value);
     const salaView = salas.find((objeto) => objeto.id === e.target.value);
     setTurmas(salaView.objetos_turmas);
     setSelectedTurma("");
   };
+
   const handleChangeTurma = (e) => {
     setSelectedTurma(e.target.value);
   };
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletins`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -98,6 +111,7 @@ function ViewAlunoBoletim() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

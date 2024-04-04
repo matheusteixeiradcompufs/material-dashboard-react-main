@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,12 +11,13 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaTelefones() {
+  const { refreshToken } = useContext(AuthContext);
   const [escola, setEscola] = useState(true);
   const { escolaid } = useParams();
   const navigate = useNavigate();
-  const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,56 +27,22 @@ function EscolaTelefones() {
         setEscola(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
 
-  const handleChangeNumero = (e) => {
-    setNumero(e.target.value);
-  };
-
   const handleView = (telefoneid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefone/${telefoneid}/view`);
-  };
-
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/escolas/telefone/api/v1/", {
-        numero: numero,
-        escola: id,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar telefone");
-      console.log("Erro ao cadastrar telefone", error);
-      setLoading(false);
-    }
-  };
-
-  const handleEditar = async (telefoneid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/telefone/api/v1/${telefoneid}/`, {
-        numero: numero,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
-      setLoading(false);
-    }
   };
 
   const handleExcluir = async (telefoneid) => {
@@ -86,8 +53,13 @@ function EscolaTelefones() {
       setEscola(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir telefone");
-      console.log("Erro ao excluir telefone", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(telefoneid);
+      } else {
+        toast.error("Erro ao excluir telefone");
+        console.log("Erro ao excluir telefone", error);
+      }
       setLoading(false);
     }
   };
@@ -116,6 +88,7 @@ function EscolaTelefones() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

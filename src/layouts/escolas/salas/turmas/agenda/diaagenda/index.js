@@ -3,7 +3,7 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { api } from "services/apiClient";
 import { Audio } from "react-loader-spinner";
 import { useParams } from "react-router-dom";
@@ -13,8 +13,10 @@ import Dia from "./components/Dia";
 import Disciplinas from "./components/Disciplinas";
 import Avisos from "./components/Avisos";
 import Tarefas from "./components/Tarefas";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaSalaTurmaAgendaDiaAgenda() {
+  const { refreshToken } = useContext(AuthContext);
   const { turmaid } = useParams();
   const [loading, setLoading] = useState(false);
   const [turma, setTurma] = useState(null);
@@ -35,27 +37,35 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
   const [descricao, setDescricao] = useState("");
   const [tipo, setTipo] = useState("C");
   const [dataEntrega, setDataEntrega] = useState(null);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
   const handleSetTitulo = (e) => {
     setTitulo(e.target.value);
   };
+
   const handleSetTexto = (e) => {
     setTexto(e.target.value);
   };
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetDescricao = (e) => {
     setDescricao(e.target.value);
   };
+
   const handleSetTipo = (e) => {
     setTipo(e.target.value);
   };
+
   const handleSetDataEntrega = (date) => {
     setDataEntrega(date);
   };
+
   const handleOnEditAviso = () => {
     setViewTarefa(false);
     setAddTarefa(false);
@@ -64,6 +74,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setEditTarefa(false);
     setEditAviso(true);
   };
+
   const handleOnViewAviso = (avisoid) => {
     const avisoView = diaAgenda.objetos_avisos.find((objeto) => objeto.id === avisoid);
     setTitulo(avisoView.titulo);
@@ -76,6 +87,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setAddAviso(false);
     setViewAviso(true);
   };
+
   const handleOnAddAviso = () => {
     setNome("");
     setDescricao("");
@@ -88,6 +100,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setViewAviso(false);
     setAddAviso(true);
   };
+
   const handleOnEditTarefa = () => {
     setViewTarefa(false);
     setAddTarefa(false);
@@ -96,6 +109,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setEditAviso(false);
     setEditTarefa(true);
   };
+
   const handleOnViewTarefa = (tarefaid) => {
     const tarefaView = diaAgenda.objetos_tarefas.find((objeto) => objeto.id === tarefaid);
     setNome(tarefaView.nome);
@@ -110,6 +124,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setAddAviso(false);
     setViewTarefa(true);
   };
+
   const handleOnAddTarefa = () => {
     setTitulo("");
     setTexto("");
@@ -120,6 +135,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setViewTarefa(false);
     setAddTarefa(true);
   };
+
   const handleOffAdd = () => {
     setTitulo("");
     setTexto("");
@@ -134,6 +150,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setViewTarefa(false);
     setAddTarefa(false);
   };
+
   useEffect(() => {
     const fetchTurma = async () => {
       setLoading(true);
@@ -142,13 +159,19 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
         setTurma(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar a turma!");
-        console.log("Erro ao carregar a turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar a turma!");
+          console.log("Erro ao carregar a turma!", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleCarregar = async () => {
     setLoading(true);
     try {
@@ -165,11 +188,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       );
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao carregar a agenda!");
-      console.log("Erro ao carregar a agenda!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleCarregar();
+      } else {
+        toast.error("Erro ao carregar a agenda!");
+        console.log("Erro ao carregar a agenda!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleAddAviso = async () => {
     setLoading(true);
     try {
@@ -182,11 +211,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       handleOffAdd();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao inserir aviso!");
-      console.error("Erro ao inserir aviso:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAddAviso();
+      } else {
+        toast.error("Erro ao inserir aviso!");
+        console.error("Erro ao inserir aviso:", error);
+      }
       setLoading(false);
     }
   };
+
   const handleEditarAviso = async (avisoid) => {
     setLoading(true);
     try {
@@ -198,8 +233,13 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       handleOffAdd();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao editar aviso!");
-      console.error("Erro ao editar aviso:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditarAviso(avisoid);
+      } else {
+        toast.error("Erro ao editar aviso!");
+        console.error("Erro ao editar aviso:", error);
+      }
       setLoading(false);
     }
   };
@@ -211,11 +251,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       await handleCarregar();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir aviso!");
-      console.error("Erro ao excluir aviso:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluirAviso(avisoid);
+      } else {
+        toast.error("Erro ao excluir aviso!");
+        console.error("Erro ao excluir aviso:", error);
+      }
       setLoading(false);
     }
   };
+
   const handleAddTarefa = async () => {
     setLoading(true);
     try {
@@ -230,11 +276,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       handleOffAdd();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao inserir tarefa!");
-      console.error("Erro ao inserir tarefa:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAddTarefa();
+      } else {
+        toast.error("Erro ao inserir tarefa!");
+        console.error("Erro ao inserir tarefa:", error);
+      }
       setLoading(false);
     }
   };
+
   const handleEditarTarefa = async (tarefaid) => {
     setLoading(true);
     try {
@@ -248,11 +300,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       handleOffAdd();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao editar tarefa!");
-      console.error("Erro ao editar tarefa:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditarTarefa(tarefaid);
+      } else {
+        toast.error("Erro ao editar tarefa!");
+        console.error("Erro ao editar tarefa:", error);
+      }
       setLoading(false);
     }
   };
+
   const handleExcluirTarefa = async (tarefaid) => {
     setLoading(true);
     try {
@@ -261,8 +319,13 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       handleOffAdd();
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir tarefa!");
-      console.error("Erro ao excluir tarefa:", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluirTarefa(tarefaid);
+      } else {
+        toast.error("Erro ao excluir tarefa!");
+        console.error("Erro ao excluir tarefa:", error);
+      }
       setLoading(false);
     }
   };
@@ -290,6 +353,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

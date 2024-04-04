@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,8 +11,10 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewAluno() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -26,6 +28,7 @@ function ViewAluno() {
   const [dataNascimento, setDataNascimento] = useState(null);
   const [endereco, setEndereco] = useState("");
   const [retrato, setRetrato] = useState(null);
+
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -42,45 +45,61 @@ function ViewAluno() {
         setRetrato(response.data.retrato);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados do aluno");
-        console.log("Erro ao carregar os dados do aluno", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAlunos();
+        } else {
+          toast.error("Erro ao carregar os dados do aluno");
+          console.log("Erro ao carregar os dados do aluno", error);
+        }
         setLoading(false);
       }
     };
     fetchAlunos();
   }, []);
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
+
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
+
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/alunos`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -105,6 +124,7 @@ function ViewAluno() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

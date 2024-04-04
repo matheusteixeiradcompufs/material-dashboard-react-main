@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaCardapios() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [cardapios, setCardapios] = useState([]);
@@ -25,17 +27,24 @@ function EscolaCardapios() {
         setCardapios(response.data.objetos_cardapios);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchCardapios();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchCardapios();
   }, []);
+
   const handleView = (cardapioid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);
   };
+
   const handleExcluir = async (cardapioid) => {
     setLoading(true);
     try {
@@ -44,11 +53,17 @@ function EscolaCardapios() {
       setCardapios(response.data.objetos_cardapios);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir cardapio");
-      console.log("Erro ao excluir cardapio", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(cardapioid);
+      } else {
+        toast.error("Erro ao excluir cardapio");
+        console.log("Erro ao excluir cardapio", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +88,7 @@ function EscolaCardapios() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

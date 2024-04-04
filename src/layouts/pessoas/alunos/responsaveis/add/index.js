@@ -1,8 +1,7 @@
-import { Card, Fab, Grid } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,23 +10,29 @@ import { api } from "services/apiClient";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 
 function AddAlunoResponsaveis() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
   const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetObservacao = (e) => {
     setObservacao(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -39,15 +44,22 @@ function AddAlunoResponsaveis() {
       });
       navigate(`/pessoas/aluno/${alunoid}/responsaveis`);
     } catch (error) {
-      toast.error("Erro ao cadastrar responsável");
-      console.log("Erro ao cadastrar responsável", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar responsável");
+        console.log("Erro ao cadastrar responsável", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsaveis`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -72,6 +84,7 @@ function AddAlunoResponsaveis() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -3,18 +3,21 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarEscolaMural() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, muralid } = useParams();
   const [ano, setAno] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchMural = async () => {
       try {
@@ -22,16 +25,23 @@ function EditarEscolaMural() {
         setAno(response.data.ano);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao acessar os dados do mural!");
-        console.log("Erro ao acessar os dados do mural!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchMural();
+        } else {
+          toast.error("Erro ao acessar os dados do mural!");
+          console.log("Erro ao acessar os dados do mural!", error);
+        }
         setLoading(false);
       }
     };
     fetchMural();
   }, []);
+
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -40,15 +50,22 @@ function EditarEscolaMural() {
       });
       navigate(`/escola/${escolaid}/mural/${muralid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar escola");
-      console.log("Erro ao modificar escola", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar escola");
+        console.log("Erro ao modificar escola", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +90,7 @@ function EditarEscolaMural() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />
@@ -127,4 +145,5 @@ function EditarEscolaMural() {
     </DashboardLayout>
   );
 }
+
 export default EditarEscolaMural;

@@ -5,37 +5,46 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "context/AuthContext";
 
 function Disciplinas() {
   const navigate = useNavigate();
+  const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [disciplinas, setDisciplinas] = useState([]);
+
   useEffect(() => {
-    const fetchDisciplina = async () => {
+    const fetchDisciplinas = async () => {
       setLoading(true);
       try {
         const response = await api.get(`/escolas/disciplina/api/v1/`);
         setDisciplinas(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar disciplina!");
-        console.log("Erro ao carregar disciplina!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchDisciplinas();
+        } else {
+          toast.error("Erro ao carregar disciplina!");
+          console.log("Erro ao carregar disciplina!", error);
+        }
         setLoading(false);
       }
     };
-    fetchDisciplina();
+    fetchDisciplinas();
   }, []);
 
   const handleOnEditar = (disciplinaid) => {
     setLoading(true);
     navigate(`/disciplinas/${disciplinaid}/editar`);
   };
+
   const handleExcluir = async (disciplinaid) => {
     setLoading(true);
     try {
@@ -44,11 +53,17 @@ function Disciplinas() {
       setDisciplinas(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir disciplina!");
-      console.log("Erro ao excluir disciplina!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(disciplinaid);
+      } else {
+        toast.error("Erro ao excluir disciplina!");
+        console.log("Erro ao excluir disciplina!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>

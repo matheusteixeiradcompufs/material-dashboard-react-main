@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,12 +11,13 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaEmails() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [escola, setEscola] = useState(true);
-  const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,38 +27,22 @@ function EscolaEmails() {
         setEscola(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
 
-  const handleChangeEndereco = (e) => {
-    setEndereco(e.target.value);
-  };
-
   const handleView = (emailid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/view`);
-  };
-
-  const handleEditar = async (emailid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/email/api/v1/${emailid}/`, {
-        endereco: endereco,
-      });
-      const response = await api.get(`/escolas/api/v1/${escolaid}/`);
-      setEscola(response.data);
-      handleOnListar();
-      setLoading(false);
-    } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
-      setLoading(false);
-    }
   };
 
   const handleExcluir = async (emailid) => {
@@ -68,8 +53,13 @@ function EscolaEmails() {
       setEscola(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir email");
-      console.log("Erro ao excluir email", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(emailid);
+      } else {
+        toast.error("Erro ao excluir email");
+        console.log("Erro ao excluir email", error);
+      }
       setLoading(false);
     }
   };
@@ -98,6 +88,7 @@ function EscolaEmails() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

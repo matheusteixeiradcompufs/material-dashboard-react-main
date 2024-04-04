@@ -3,20 +3,23 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarEscolaCardapio() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, cardapioid } = useParams();
   const [data, setData] = useState("");
   const [turno, setTurno] = useState("M");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchCardapio = async () => {
       try {
@@ -25,19 +28,27 @@ function EditarEscolaCardapio() {
         setTurno(response.data.turno);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados do cardápio");
-        console.log("Erro ao carregar dados do cardápio", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchCardapio();
+        } else {
+          toast.error("Erro ao carregar dados do cardápio");
+          console.log("Erro ao carregar dados do cardápio", error);
+        }
         setLoading(false);
       }
     };
     fetchCardapio();
   }, []);
+
   const handleChangeData = (e) => {
     setData(e.target.value);
   };
+
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
+
   const handleEditar = async (cardapioid) => {
     setLoading(true);
     try {
@@ -47,15 +58,22 @@ function EditarEscolaCardapio() {
       });
       navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar(cardapioid);
+      } else {
+        toast.error("Erro ao cadastrar escola");
+        console.log("Erro ao cadastrar escola", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -80,6 +98,7 @@ function EditarEscolaCardapio() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

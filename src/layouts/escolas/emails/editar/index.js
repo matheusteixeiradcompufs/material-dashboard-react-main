@@ -3,18 +3,21 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function EditarEscolaEmail() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, emailid } = useParams();
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -22,16 +25,23 @@ function EditarEscolaEmail() {
         setEndereco(response.data.endereco);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar dados da escola!");
-        console.log("Erro ao carregar dados da escola!");
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar dados da escola!");
+          console.log("Erro ao carregar dados da escola!");
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
+
   const handleChangeEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -40,15 +50,22 @@ function EditarEscolaEmail() {
       });
       navigate(`/escola/${escolaid}/email/${emailid}/view`);
     } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao cadastrar escola");
+        console.log("Erro ao cadastrar escola", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -73,6 +90,7 @@ function EditarEscolaEmail() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

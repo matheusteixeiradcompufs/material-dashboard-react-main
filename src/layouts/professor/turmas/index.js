@@ -13,6 +13,7 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 
 function ProfessorTurmas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { user, first_name } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,13 @@ function ProfessorTurmas() {
         setTurmas(response.data.objetos_turmas);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar turmas da sala!");
-        console.log("Erro ao carregar turmas da sala", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchSala();
+        } else {
+          toast.error("Erro ao carregar turmas da sala!");
+          console.log("Erro ao carregar turmas da sala", error);
+        }
         setLoading(false);
       }
     };

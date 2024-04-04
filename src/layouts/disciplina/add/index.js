@@ -3,37 +3,48 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function AddDisciplinas() {
+  const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
+
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
-      api.post("/escolas/disciplina/api/v1/", {
+      await api.post("/escolas/disciplina/api/v1/", {
         nome: nome,
       });
       navigate(`/disciplinas`);
     } catch (error) {
-      toast.error("Erro ao cadastrar nova disciplina!");
-      console.log("Erro ao cadastrar nova disciplina!");
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar nova disciplina!");
+        console.log("Erro ao cadastrar nova disciplina!");
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/disciplinas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -58,6 +69,7 @@ function AddDisciplinas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

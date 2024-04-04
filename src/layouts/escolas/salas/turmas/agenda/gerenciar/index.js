@@ -2,7 +2,7 @@ import { Card } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +11,10 @@ import { api } from "services/apiClient";
 import Transfer from "./components/Transfer";
 import { parseISO, getDay } from "date-fns";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
+  const { refreshToken } = useContext(AuthContext);
   const { escolaid, salaid, turmaid } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -27,6 +29,7 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   const [quiRight, setQuiRight] = useState([]);
   const [sexLeft, setSexLeft] = useState([]);
   const [sexRight, setSexRight] = useState([]);
+
   function obterDisciplinas(dias) {
     let dom = [],
       seg = [],
@@ -65,6 +68,7 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
     });
     return { dom, seg, ter, qua, qui, sex, sab };
   }
+
   useEffect(() => {
     const fetchTurma = async () => {
       try {
@@ -106,13 +110,19 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
         setSexRight(sex);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar turma!");
-        console.log("Erro ao carregar turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar turma!");
+          console.log("Erro ao carregar turma!", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -127,11 +137,17 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
       navigate(`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda`);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao preencher a agenda com as disciplinas!");
-      console.log("Erro ao preencher a agenda com as disciplinas!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao preencher a agenda com as disciplinas!");
+        console.log("Erro ao preencher a agenda com as disciplinas!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -156,6 +172,7 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

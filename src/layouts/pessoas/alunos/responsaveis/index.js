@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,12 +11,15 @@ import { api } from "services/apiClient";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 
 function AlunoResponsaveis() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [responsaveis, setResponsaveis] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchAluno = async () => {
       try {
@@ -24,17 +27,24 @@ function AlunoResponsaveis() {
         setResponsaveis(response.data.objetos_responsaveis);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os responsáveis do aluno!");
-        console.error("Erro ao carregar os responsáveis do aluno!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAluno();
+        } else {
+          toast.error("Erro ao carregar os responsáveis do aluno!");
+          console.error("Erro ao carregar os responsáveis do aluno!", error);
+        }
         setLoading(false);
       }
     };
     fetchAluno();
   }, []);
+
   const handleView = (responsavelid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsavel/${responsavelid}/view`);
   };
+
   const handleExcluir = async (responsavelid) => {
     setLoading(true);
     try {
@@ -43,11 +53,17 @@ function AlunoResponsaveis() {
       setAluno(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir responsável");
-      console.log("Erro ao excluir responsável", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(responsavelid);
+      } else {
+        toast.error("Erro ao excluir responsável");
+        console.log("Erro ao excluir responsável", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -72,6 +88,7 @@ function AlunoResponsaveis() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

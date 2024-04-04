@@ -3,21 +3,25 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function AddEscolaMurais() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [ano, setAno] = useState("");
   const [loading, setLoading] = useState(false);
+
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -27,15 +31,22 @@ function AddEscolaMurais() {
       });
       navigate(`/escola/${escolaid}/murais`);
     } catch (error) {
-      toast.error("Erro ao cadastrar mural");
-      console.log("Erro ao cadastrar mural", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao cadastrar mural");
+        console.log("Erro ao cadastrar mural", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/murais`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -60,6 +71,7 @@ function AddEscolaMurais() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

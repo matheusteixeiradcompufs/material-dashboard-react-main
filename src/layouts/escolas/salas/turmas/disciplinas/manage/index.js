@@ -4,20 +4,23 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import Transfer from "../components/Transfer";
+import { AuthContext } from "context/AuthContext";
 
 function ManageEscolaSalaTurmaDisciplinas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid, salaid, turmaid } = useParams();
   const [loading, setLoading] = useState(true);
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
+
   useEffect(() => {
     const fetchTurma = async () => {
       try {
@@ -31,13 +34,19 @@ function ManageEscolaSalaTurmaDisciplinas() {
         );
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar turma!");
-        console.log("Erro ao carregar turma!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar turma!");
+          console.log("Erro ao carregar turma!", error);
+        }
         setLoading(false);
       }
     };
     fetchTurma();
   }, []);
+
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -46,15 +55,22 @@ function ManageEscolaSalaTurmaDisciplinas() {
       });
       navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas`);
     } catch (error) {
-      toast.error("Erro ao salvar atualizar a turma");
-      console.log("Erro ao salvar atualizar a turma");
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleSalvar();
+      } else {
+        toast.error("Erro ao salvar atualizar a turma");
+        console.log("Erro ao salvar atualizar a turma");
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -79,6 +95,7 @@ function ManageEscolaSalaTurmaDisciplinas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

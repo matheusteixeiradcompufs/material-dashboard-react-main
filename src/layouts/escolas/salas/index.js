@@ -2,7 +2,7 @@ import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,15 +11,13 @@ import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
+import { AuthContext } from "context/AuthContext";
 
 function EscolaSalas() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
-  const [escola, setEscola] = useState(true);
   const [salas, setSalas] = useState([]);
-  const [sala, setSala] = useState(true);
-  const [numero, setNumero] = useState("");
-  const [quantidade, setQuantidade] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,46 +27,24 @@ function EscolaSalas() {
         setSalas(response.data.objetos_salas);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escola");
-        console.error("Erro ao carregar escola:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchSalas();
+        } else {
+          toast.error("Erro ao carregar escola");
+          console.error("Erro ao carregar escola:", error);
+        }
         setLoading(false);
       }
     };
     fetchSalas();
   }, []);
+
   const handleView = (salaid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/view`);
   };
-  const handleAdd = async () => {
-    setLoading(true);
-    try {
-      await api.post("/escolas/sala/api/v1/", {
-        numero: numero,
-        quantidade_alunos: quantidade,
-        escola: id,
-      });
-      navigate(`/escola/${escolaid}/salas`);
-    } catch (error) {
-      toast.error("Erro ao cadastrar sala");
-      console.log("Erro ao cadastrar sala", error);
-      setLoading(false);
-    }
-  };
-  const handleEditar = async (salaid) => {
-    setLoading(true);
-    try {
-      await api.patch(`/escolas/sala/api/v1/${salaid}/`, {
-        numero: numero,
-        quantidade_alunos: quantidade,
-      });
-      navigate(`/escola/${escolaid}/sala/${salaid}/view`);
-    } catch (error) {
-      toast.error("Erro ao cadastrar escola");
-      console.log("Erro ao cadastrar escola", error);
-      setLoading(false);
-    }
-  };
+
   const handleExcluir = async (salaid) => {
     setLoading(true);
     try {
@@ -77,11 +53,17 @@ function EscolaSalas() {
       setSalas(response.data.objetos_salas);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir sala");
-      console.log("Erro ao excluir sala", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(salaid);
+      } else {
+        toast.error("Erro ao excluir sala");
+        console.log("Erro ao excluir sala", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -106,6 +88,7 @@ function EscolaSalas() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

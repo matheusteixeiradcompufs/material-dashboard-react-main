@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,13 +10,16 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { useNavigate, useParams } from "react-router-dom";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarItem() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { itemid } = useParams();
   const [loading, setLoading] = useState(true);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
+
   useEffect(() => {
     const fetchItens = async () => {
       try {
@@ -25,19 +28,27 @@ function EditarItem() {
         setDescricao(response.data.descricao);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados do ítem da merenda!");
-        console.log("Erro ao carregar os dados do ítem da merenda!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchItens();
+        } else {
+          toast.error("Erro ao carregar os dados do ítem da merenda!");
+          console.log("Erro ao carregar os dados do ítem da merenda!", error);
+        }
         setLoading(false);
       }
     };
     fetchItens();
   }, []);
+
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -47,15 +58,22 @@ function EditarItem() {
       });
       navigate(`/itemmerenda/${itemid}/view`);
     } catch (error) {
-      toast.error("Erro ao editar item!");
-      console.log("Erro ao editar item!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao editar item!");
+        console.log("Erro ao editar item!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/itemmerenda/${itemid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -80,6 +98,7 @@ function EditarItem() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

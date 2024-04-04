@@ -4,9 +4,10 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import { format } from "date-fns";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,12 +15,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
 function AddDiasLetivosBoletimFrequencia() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, boletimid } = useParams();
   const [boletim, setBoletim] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchBoletim = async () => {
       try {
@@ -27,19 +30,27 @@ function AddDiasLetivosBoletimFrequencia() {
         setBoletim(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar boletim!");
-        console.log("Erro ao carregar boletim", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchBoletim();
+        } else {
+          toast.error("Erro ao carregar boletim!");
+          console.log("Erro ao carregar boletim", error);
+        }
         setLoading(false);
       }
     };
     fetchBoletim();
   }, []);
+
   const handleChangeDate = (date) => {
     setSelectedDate(date);
   };
+
   const handleChangeChecked = () => {
     setChecked(!checked);
   };
+
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -50,15 +61,22 @@ function AddDiasLetivosBoletimFrequencia() {
       });
       navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`);
     } catch (error) {
-      toast.error("Erro ao adicionar presença!");
-      console.log("Erro ao adicionar presença!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao adicionar presença!");
+        console.log("Erro ao adicionar presença!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -83,6 +101,7 @@ function AddDiasLetivosBoletimFrequencia() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

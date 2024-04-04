@@ -7,15 +7,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import MDInput from "components/MDInput";
 import Funcao from "./components/Funcao";
 import Menu from "./components/Menu";
 import { AuthContext } from "context/AuthContext";
 
 function Professor() {
-  const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [grupos, setGrupos] = useState([]);
   const [grupo, setGrupo] = useState("");
@@ -30,6 +29,7 @@ function Professor() {
   const [endereco, setEndereco] = useState("");
   const [formacao, setFormacao] = useState("");
   const [retrato, setRetrato] = useState(null);
+
   useEffect(() => {
     const fetchFuncionario = async () => {
       try {
@@ -53,13 +53,19 @@ function Professor() {
         setGrupos(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados do professor");
-        console.log("Erro ao carregar os dados do professor", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchFuncionario();
+        } else {
+          toast.error("Erro ao carregar os dados do professor");
+          console.log("Erro ao carregar os dados do professor", error);
+        }
         setLoading(false);
       }
     };
     fetchFuncionario();
   }, []);
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -84,6 +90,7 @@ function Professor() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

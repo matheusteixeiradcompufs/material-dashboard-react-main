@@ -1,7 +1,7 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +10,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarAluno() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -26,6 +28,7 @@ function EditarAluno() {
   const [endereco, setEndereco] = useState("");
   const [retrato, setRetrato] = useState(null);
   const [novoRetrato, setNovoRetrato] = useState(null);
+
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -42,37 +45,51 @@ function EditarAluno() {
         setRetrato(response.data.retrato);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os dados do aluno");
-        console.log("Erro ao carregar os dados do aluno", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchAlunos();
+        } else {
+          toast.error("Erro ao carregar os dados do aluno");
+          console.log("Erro ao carregar os dados do aluno", error);
+        }
         setLoading(false);
       }
     };
     fetchAlunos();
   }, []);
+
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
+
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
+
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
+
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
+
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
+
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleFile = (e) => {
     if (!e.target.files) {
       return;
@@ -85,6 +102,7 @@ function EditarAluno() {
       setNovoRetrato(image);
     }
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -111,15 +129,22 @@ function EditarAluno() {
       });
       navigate(`/pessoas/aluno/${alunoid}/view`);
     } catch (error) {
-      toast.error("Erro ao modificar aluno!");
-      console.log("Erro ao modificar aluno!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao modificar aluno!");
+        console.log("Erro ao modificar aluno!", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -144,6 +169,7 @@ function EditarAluno() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

@@ -4,14 +4,16 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import Menu from "../components/Menu";
+import { AuthContext } from "context/AuthContext";
 
 function ViewEscola() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -19,6 +21,7 @@ function ViewEscola() {
   const [nome, setNome] = useState("");
   const [endereco, setEndereco] = useState("");
   const [descricao, setDescricao] = useState("");
+
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -29,21 +32,29 @@ function ViewEscola() {
         setDescricao(response.data.descricao);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar escolas");
-        console.error("Erro ao carregar escolas:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEscola();
+        } else {
+          toast.error("Erro ao carregar escolas");
+          console.error("Erro ao carregar escolas:", error);
+        }
         setLoading(false);
       }
     };
     fetchEscola();
   }, []);
+
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/editar`);
   };
+
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escolas`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -68,6 +79,7 @@ function ViewEscola() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

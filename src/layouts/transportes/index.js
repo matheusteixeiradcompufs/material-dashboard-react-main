@@ -3,18 +3,21 @@ import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
 function Transportes() {
+  const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [transportes, setTransportes] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchTransportes = async () => {
       try {
@@ -22,17 +25,24 @@ function Transportes() {
         setTransportes(response.data);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar os transportes!");
-        console.log("Erro ao carregar os transportes!", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTransportes();
+        } else {
+          toast.error("Erro ao carregar os transportes!");
+          console.log("Erro ao carregar os transportes!", error);
+        }
         setLoading(false);
       }
     };
     fetchTransportes();
   }, []);
+
   const handleView = async (transporteid) => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/view`);
   };
+
   const handleExcluir = async (transporteid) => {
     setLoading(true);
     try {
@@ -41,11 +51,17 @@ function Transportes() {
       setTransportes(response.data);
       setLoading(false);
     } catch (error) {
-      toast.error("Erro ao excluir o transporte!");
-      console.log("Erro ao excluir o transporte!", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluir(transporteid);
+      } else {
+        toast.error("Erro ao excluir o transporte!");
+        console.log("Erro ao excluir o transporte!", error);
+      }
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -70,6 +86,7 @@ function Transportes() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

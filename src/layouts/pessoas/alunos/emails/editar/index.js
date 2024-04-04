@@ -1,19 +1,19 @@
-import { Card, Fab, Grid } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
-import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
+import { AuthContext } from "context/AuthContext";
 
 function EditarAlunoEmail() {
+  const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { alunoid, emailid } = useParams();
   const [endereco, setEndereco] = useState("");
@@ -26,16 +26,23 @@ function EditarAlunoEmail() {
         setEndereco(response.data.endereco);
         setLoading(false);
       } catch (error) {
-        toast.error("Erro ao carregar aluno");
-        console.error("Erro ao carregar aluno:", error);
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchEmail();
+        } else {
+          toast.error("Erro ao carregar aluno");
+          console.error("Erro ao carregar aluno:", error);
+        }
         setLoading(false);
       }
     };
     fetchEmail();
   }, []);
+
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
+
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -44,15 +51,22 @@ function EditarAlunoEmail() {
       });
       navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/view`);
     } catch (error) {
-      toast.error("Erro ao cadastrar aluno");
-      console.log("Erro ao cadastrar aluno", error);
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditar();
+      } else {
+        toast.error("Erro ao cadastrar aluno");
+        console.log("Erro ao cadastrar aluno", error);
+      }
       setLoading(false);
     }
   };
+
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/view`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -77,6 +91,7 @@ function EditarAlunoEmail() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />
