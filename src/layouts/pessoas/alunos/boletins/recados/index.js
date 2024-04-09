@@ -13,6 +13,7 @@ import { Fab, Grid, Icon } from "@mui/material";
 import MDButton from "components/MDButton";
 import DownIcon from "@mui/icons-material/South";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function BoletimRecados() {
   const [controller] = useMaterialUIController();
@@ -48,7 +49,12 @@ function BoletimRecados() {
         setLoading(false);
       }
     };
+    fetchBoletim();
+  }, []);
+
+  useEffect(() => {
     const loadDataInterval = setInterval(async () => {
+      console.log(agendaRecados);
       try {
         const response = await api.get(`/pessoas/aluno/boletim/agenda/api/v1/${agendaRecados.id}/`);
         const { objetos_recados } = await response.data;
@@ -57,7 +63,6 @@ function BoletimRecados() {
         console.log(err);
       }
     }, 1000);
-    fetchBoletim();
     return () => clearInterval(loadDataInterval);
   }, []);
 
@@ -144,7 +149,8 @@ function BoletimRecados() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={12} flexDirection="column">
+      <DashboardNavbar />
+      <MDBox pt={6} mb={12} flexDirection="column">
         <Grid container>
           {recados?.map((objeto, index) => (
             <Grid item key={index} xs={12}>

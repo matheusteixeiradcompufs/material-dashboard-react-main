@@ -11,6 +11,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EditarAluno() {
   const { refreshToken } = useContext(AuthContext);
@@ -173,7 +174,8 @@ function EditarAluno() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

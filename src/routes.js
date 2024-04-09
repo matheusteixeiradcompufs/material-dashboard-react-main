@@ -1,6 +1,5 @@
 import Dashboard from "layouts/dashboard";
-import Billing from "layouts/billing";
-import Profile from "layouts/profile";
+import Perfil from "layouts/perfil";
 
 import Icon from "@mui/material/Icon";
 import Disciplinas from "layouts/disciplina";
@@ -832,22 +831,14 @@ const routes = [
   //LOGOUT
   //------------------------
   //REFATORANDO
-  // {
-  //   type: "item",
-  //   name: "Billing",
-  //   key: "billing",
-  //   icon: <Icon fontSize="small">receipt_long</Icon>,
-  //   route: "/billing",
-  //   component: <Billing />,
-  // },
-  // {
-  //   type: "item",
-  //   name: "Profile",
-  //   key: "profile",
-  //   icon: <Icon fontSize="small">person</Icon>,
-  //   route: "/profile",
-  //   component: <Profile />,
-  // },
+  {
+    type: "item",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/perfil",
+    component: <Perfil />,
+  },
 ];
 
 export default routes;

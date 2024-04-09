@@ -6,6 +6,7 @@ import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Select from "examples/Select";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +16,7 @@ import { api } from "services/apiClient";
 function AddTransportes() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [placa, setPlaca] = useState("");
   const [ano, setAno] = useState("");
   const [tipo, setTipo] = useState("");
@@ -99,7 +100,8 @@ function AddTransportes() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

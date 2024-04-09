@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import { Audio } from "react-loader-spinner";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EscolaSalaTurmaAgenda() {
   const { refreshToken } = useContext(AuthContext);
@@ -144,7 +145,8 @@ function EscolaSalaTurmaAgenda() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

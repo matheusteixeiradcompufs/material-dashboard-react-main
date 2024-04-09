@@ -13,6 +13,7 @@ import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import { format } from "date-fns";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EscolaMuralAvisos() {
   const { refreshToken } = useContext(AuthContext);
@@ -93,7 +94,8 @@ function EscolaMuralAvisos() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

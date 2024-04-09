@@ -12,6 +12,7 @@ import Transfer from "./components/Transfer";
 import { parseISO, getDay } from "date-fns";
 import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
@@ -176,6 +177,7 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   return (
     <DashboardLayout>
       <ToastContainer />
+      <DashboardNavbar />
       <MDBox pt={6} mb={3}>
         <Card>
           <MDBox

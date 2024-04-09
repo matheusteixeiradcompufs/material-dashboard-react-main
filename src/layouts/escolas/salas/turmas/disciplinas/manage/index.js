@@ -3,7 +3,6 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DataTable from "examples/Tables/DataTable";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import Transfer from "../components/Transfer";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function ManageEscolaSalaTurmaDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
@@ -99,7 +99,8 @@ function ManageEscolaSalaTurmaDisciplinas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

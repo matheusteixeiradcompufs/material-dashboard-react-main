@@ -5,6 +5,7 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,7 +24,7 @@ function ViewEscolaTelefone() {
       try {
         const response = await api.get(`/escolas/telefone/api/v1/${telefoneid}/`);
         setNumero(response.data.numero);
-        fetchTelefone(false);
+        setLoading(false);
       } catch (error) {
         if (error.response.status === 401) {
           await refreshToken();
@@ -72,7 +73,8 @@ function ViewEscolaTelefone() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

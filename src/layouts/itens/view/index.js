@@ -11,6 +11,7 @@ import MDButton from "components/MDButton";
 import { useNavigate, useParams } from "react-router-dom";
 import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function ViewItem() {
   const { refreshToken } = useContext(AuthContext);
@@ -79,7 +80,8 @@ function ViewItem() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

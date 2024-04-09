@@ -11,6 +11,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function AddAlunoResponsaveis() {
   const { refreshToken } = useContext(AuthContext);
@@ -88,6 +89,7 @@ function AddAlunoResponsaveis() {
   return (
     <DashboardLayout>
       <ToastContainer />
+      <DashboardNavbar />
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>

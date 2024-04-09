@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function Disciplinas() {
   const navigate = useNavigate();
@@ -94,6 +95,7 @@ function Disciplinas() {
   ];
   return (
     <DashboardLayout>
+      <DashboardNavbar />
       <ToastContainer />
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>

@@ -112,7 +112,6 @@ export default function Transfer({ day, left, setLeft, right, setRight }) {
             bgColor="secondary"
             borderRadius="lg"
             coloredShadow="secondary"
-            fullWidth
           >
             <MDTypography variant="h6" color="white" align="center">
               {day}

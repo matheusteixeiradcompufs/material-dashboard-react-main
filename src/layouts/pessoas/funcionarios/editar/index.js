@@ -12,6 +12,7 @@ import MDButton from "components/MDButton";
 import Funcao from "../components/Funcao";
 import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EditarFuncionario() {
   const { refreshToken } = useContext(AuthContext);
@@ -195,7 +196,8 @@ function EditarFuncionario() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>
@@ -217,7 +219,7 @@ function EditarFuncionario() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <MDBox px={2} color="info" display="flex" justifyContent="center">
-                      <Funcao value={grupo} onChange={handleSetGrupo} groups={grupos} />
+                      <Funcao value={`${grupo}`} onChange={handleSetGrupo} groups={grupos} />
                     </MDBox>
                   </Grid>
                   <Grid item xs={12}>

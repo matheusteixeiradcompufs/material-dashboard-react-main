@@ -1,5 +1,4 @@
-import { Card, Fab, Grid } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useContext, useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import MDInput from "components/MDInput";
 import Funcao from "../components/Funcao";
 import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function ViewFuncionario() {
   const { refreshToken } = useContext(AuthContext);
@@ -106,7 +106,8 @@ function ViewFuncionario() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>
@@ -128,7 +129,7 @@ function ViewFuncionario() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <MDBox px={2} color="info" display="flex" justifyContent="center">
-                      <Funcao value={grupo} groups={grupos} disabled />
+                      <Funcao value={`${grupo}`} groups={grupos} disabled />
                     </MDBox>
                   </Grid>
                   <Grid item xs={12}>

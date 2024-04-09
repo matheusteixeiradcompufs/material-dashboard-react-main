@@ -5,6 +5,7 @@ import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
@@ -72,7 +73,8 @@ function EscolaSalaTurmaDisciplinas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

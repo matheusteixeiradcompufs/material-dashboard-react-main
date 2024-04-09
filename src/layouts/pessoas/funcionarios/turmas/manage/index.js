@@ -1,5 +1,4 @@
-import { Card, Fab, Grid, MenuItem } from "@mui/material";
-import ManageIcon from "@mui/icons-material/Settings";
+import { Card, Grid, MenuItem } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useContext, useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import Transfer from "../components/Transfer";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function ManageFuncionarioTurmas() {
   const { refreshToken } = useContext(AuthContext);
@@ -110,7 +110,8 @@ function ManageFuncionarioTurmas() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

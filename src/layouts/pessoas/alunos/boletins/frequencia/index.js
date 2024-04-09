@@ -8,6 +8,7 @@ import { AuthContext } from "context/AuthContext";
 import { format } from "date-fns";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DataTable from "examples/Tables/DataTable";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -96,7 +97,8 @@ function BoletimFrequencia() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Card>
           <MDBox
             mx={2}

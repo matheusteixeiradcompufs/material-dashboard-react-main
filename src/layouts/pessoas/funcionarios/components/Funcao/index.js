@@ -8,7 +8,7 @@ function Funcao({ value, onChange, groups, disabled }) {
         <FormControlLabel
           key={index}
           disabled={disabled}
-          value={objeto.id}
+          value={`${objeto.id}`}
           control={<Radio />}
           label={objeto.name}
         />
@@ -19,7 +19,7 @@ function Funcao({ value, onChange, groups, disabled }) {
 
 Funcao.propTypes = {
   disabled: PropTypes.bool,
-  value: PropTypes.number,
+  value: PropTypes.string,
   onChange: PropTypes.func,
   groups: PropTypes.array.isRequired,
 };

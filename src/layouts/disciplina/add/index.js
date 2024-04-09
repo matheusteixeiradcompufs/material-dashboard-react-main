@@ -5,6 +5,7 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate } from "react-router-dom";
@@ -72,6 +73,7 @@ function AddDisciplinas() {
 
   return (
     <DashboardLayout>
+      <DashboardNavbar />
       <ToastContainer />
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>

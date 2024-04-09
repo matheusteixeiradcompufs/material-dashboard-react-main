@@ -11,6 +11,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function AddAlunos() {
   const { refreshToken } = useContext(AuthContext);
@@ -23,7 +24,7 @@ function AddAlunos() {
   const [senha, setSenha] = useState("");
   const [matricula, setMatricula] = useState("");
   const [cpf, setCpf] = useState("");
-  const [dataNascimento, setDataNascimento] = useState(null);
+  const [dataNascimento, setDataNascimento] = useState("");
   const [endereco, setEndereco] = useState("");
   const [novoRetrato, setNovoRetrato] = useState(null);
 
@@ -147,7 +148,8 @@ function AddAlunos() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

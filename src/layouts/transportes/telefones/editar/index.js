@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function EditarTransporteTelefone() {
   const { refreshToken } = useContext(AuthContext);
@@ -94,7 +95,8 @@ function EditarTransporteTelefone() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>

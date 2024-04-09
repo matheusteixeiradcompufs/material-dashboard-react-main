@@ -12,6 +12,7 @@ import { api } from "services/apiClient";
 import { Audio } from "react-loader-spinner";
 import ManageIcon from "@mui/icons-material/Settings";
 import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function TransporteAlunos() {
   const { refreshToken } = useContext(AuthContext);
@@ -67,7 +68,8 @@ function TransporteAlunos() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <MDBox pt={2} mb={3}>
+      <DashboardNavbar />
+      <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Card>
@@ -132,7 +134,7 @@ function TransporteAlunos() {
           <Grid item xs={12} mt={6}>
             <Link to={`/transportes/${transporteid}/alunos/gerenciar`}>
               <Fab
-                color="success"
+                color="info"
                 aria-label="Gerenciar"
                 style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
               >

@@ -21,10 +21,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const fetchUsername = async () => {
       const cookies = parseCookies(AuthContext);
-      const username = cookies["@nextauth.username"];
-      const first_name = cookies["@nextauth.first_name"];
-      const access = cookies["@nextauth.access"];
-      const refresh = cookies["@nextauth.refresh"];
+      const access = cookies["@seeduca.access"];
+      const refresh = cookies["@seeduca.refresh"];
 
       if (access) {
         try {
@@ -61,11 +59,11 @@ export function AuthProvider({ children }) {
 
       const { access, refresh } = await response.data;
 
-      setCookie(AuthContext, "@nextauth.access", access, {
+      setCookie(AuthContext, "@seeduca.access", access, {
         maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
         path: "/", // Quais caminhos terao acesso ao cookie
       });
-      setCookie(AuthContext, "@nextauth.refresh", refresh, {
+      setCookie(AuthContext, "@seeduca.refresh", refresh, {
         maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
         path: "/", // Quais caminhos terao acesso ao cookie
       });
@@ -100,20 +98,21 @@ export function AuthProvider({ children }) {
 
       api.defaults.headers["Authorization"] = `Bearer ${access}`;
 
-      setCookie(AuthContext, "@nextauth.access", access, {
+      setCookie(AuthContext, "@seeduca.access", access, {
         maxAge: 60 * 60 * 24 * 30,
         path: "/",
       });
 
       console.log("Token de acesso atualizado com sucesso!");
     } catch (error) {
-      toast.error("Erro ao atualizar o token!");
-      console.log("Erro ao atualizar o token:", error);
-
       if (error.response.status === 401) {
         toast.error("Sua sessão expirou. Faça login novamente.");
+        console.log("Sua sessão expirou. Faça login novamente.");
         await logout();
         navigate("/");
+      } else {
+        toast.error("Erro ao atualizar o token!");
+        console.log("Erro ao atualizar o token:", error);
       }
     }
   }
@@ -129,15 +128,6 @@ export function AuthProvider({ children }) {
       const { objeto_usuario } = response.data;
       const { first_name } = objeto_usuario;
 
-      setCookie(AuthContext, "@nextauth.username", username, {
-        maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
-        path: "/", // Quais caminhos terao acesso ao cookie
-      });
-      setCookie(AuthContext, "@nextauth.first_name", first_name, {
-        maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
-        path: "/", // Quais caminhos terao acesso ao cookie
-      });
-
       setUser((prevUser) => ({
         ...prevUser,
         username: username,
@@ -147,18 +137,16 @@ export function AuthProvider({ children }) {
       console.log("Dados do usuário obtidos com sucesso!");
       navigate("/");
     } catch (err) {
-      toast.error("Erro ao acessar!");
-      console.log("ERRO AO ACESSAR!", err);
+      toast.error("Erro ao buscar dados do usuário!");
+      console.log("Erro ao buscar dados do usuário!", err);
       setLoading(false);
     }
   }
 
   async function logout() {
     try {
-      destroyCookie(undefined, "@nextauth.username");
-      destroyCookie(undefined, "@nextauth.first_name");
-      destroyCookie(undefined, "@nextauth.access");
-      destroyCookie(undefined, "@nextauth.refresh");
+      destroyCookie(undefined, "@seeduca.access");
+      destroyCookie(undefined, "@seeduca.refresh");
       setUser((prevUser) => ({
         ...prevUser,
         username: "",
