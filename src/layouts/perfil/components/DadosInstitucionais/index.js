@@ -65,6 +65,12 @@ function DadosInstitucionais({ matricula, username, email }) {
   );
 }
 
+DadosInstitucionais.defaultProps = {
+  matricula: "",
+  username: "",
+  email: "",
+};
+
 DadosInstitucionais.propTypes = {
   matricula: PropTypes.string,
   username: PropTypes.string,

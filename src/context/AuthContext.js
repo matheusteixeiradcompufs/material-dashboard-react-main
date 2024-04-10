@@ -12,6 +12,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState({
     username: "",
     first_name: "",
+    grupo: "",
+    is_superuser: false,
     access: "",
     refresh: "",
   });
@@ -28,12 +30,14 @@ export function AuthProvider({ children }) {
         try {
           const response = await api.post("/pessoas/me/", { username });
           const { objeto_usuario } = response.data;
-          const { username, first_name } = objeto_usuario;
+          const { username, first_name, objetos_grupos, is_superuser } = objeto_usuario;
 
           setUser((prevUser) => ({
             ...prevUser,
             username: username,
             first_name: first_name,
+            grupo: objetos_grupos[0].name,
+            is_superuser: is_superuser,
             access: access,
             refresh: refresh,
           }));
@@ -121,17 +125,27 @@ export function AuthProvider({ children }) {
     setLoading(true);
     await obterTokens({ username, password });
     console.log("Tentando buscar os dados do usuário!");
+
+    let first_name, objetos_grupos, is_superuser;
     try {
       const response = await api.post("/pessoas/me/", {
         username,
       });
-      const { objeto_usuario } = response.data;
-      const { first_name } = objeto_usuario;
+      if (response.data.is_superuser) {
+        (first_name = "Administrador"),
+          (objetos_grupos = [{ name: "Administrador" }]),
+          (is_superuser = response.data.is_superuser);
+      } else {
+        const { objeto_usuario } = response.data;
+        ({ first_name, objetos_grupos, is_superuser } = objeto_usuario);
+      }
 
       setUser((prevUser) => ({
         ...prevUser,
         username: username,
         first_name: first_name,
+        grupo: objetos_grupos[0].name,
+        is_superuser: is_superuser,
       }));
 
       console.log("Dados do usuário obtidos com sucesso!");
@@ -144,6 +158,7 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+    setLoading(true);
     try {
       destroyCookie(undefined, "@seeduca.access");
       destroyCookie(undefined, "@seeduca.refresh");
@@ -151,12 +166,16 @@ export function AuthProvider({ children }) {
         ...prevUser,
         username: "",
         first_name: "",
+        grupo: "",
+        is_superuser: false,
         access: "",
         refresh: "",
       }));
+      setLoading(false);
       navigate("/");
     } catch {
       console.log("erro ao deslogar");
+      setLoading(false);
     }
   }
 

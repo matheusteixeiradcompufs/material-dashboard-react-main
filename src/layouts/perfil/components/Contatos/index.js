@@ -68,6 +68,11 @@ function Contatos({ telefones, emails }) {
   );
 }
 
+Contatos.defaultProps = {
+  telefones: [],
+  emails: [],
+};
+
 Contatos.propTypes = {
   telefones: PropTypes.array,
   emails: PropTypes.array,

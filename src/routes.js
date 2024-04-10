@@ -110,6 +110,17 @@ const routes = [
   },
   //DASHBOARD
   //------------------------
+  //PERFIL
+  {
+    type: "item",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/perfil",
+    component: <Perfil />,
+  },
+  //PERFIL
+  //------------------------
   //ESCOLAS
   {
     type: "collapse",
@@ -792,33 +803,6 @@ const routes = [
   },
   //TRANSPORTES
   //------------------------
-  //PROFESSOR
-  {
-    type: "collapse",
-    name: "Professor",
-    key: "professor",
-    icon: <Icon fontSize="small">school</Icon>,
-    route: "/professor",
-    component: <Professor />,
-  },
-  {
-    type: "item",
-    name: "ProfessorTurmas",
-    key: "professor_turmas",
-    icon: <Icon fontSize="small">school</Icon>,
-    route: "/professor/turmas",
-    component: <ProfessorTurmas />,
-  },
-  {
-    type: "item",
-    name: "ViewProfessorTurma",
-    key: "view_professor_turma",
-    icon: <Icon fontSize="small">school</Icon>,
-    route: "/professor/turma/:turmaid/view",
-    component: <ViewProfessorTurma />,
-  },
-  //PROFESSOR
-  //------------------------
   //LOGOUT
   {
     type: "collapse",
@@ -829,16 +813,6 @@ const routes = [
     component: <Logout />,
   },
   //LOGOUT
-  //------------------------
-  //REFATORANDO
-  {
-    type: "item",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/perfil",
-    component: <Perfil />,
-  },
 ];
 
 export default routes;

@@ -14,7 +14,7 @@ import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function ViewEscola() {
-  const { refreshToken } = useContext(AuthContext);
+  const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const { escolaid } = useParams();
   const [loading, setLoading] = useState(true);
@@ -149,7 +149,12 @@ function ViewEscola() {
                   </MDBox>
                   <MDBox display="flex" justifyContent="center" pt={2} px={2}>
                     <MDBox mr={1}>
-                      <MDButton variant="contained" color="warning" onClick={handleOnEditar}>
+                      <MDButton
+                        variant="contained"
+                        color="warning"
+                        onClick={handleOnEditar}
+                        disabled={!user.is_superuser}
+                      >
                         Modificar
                       </MDButton>
                     </MDBox>

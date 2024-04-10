@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -23,6 +23,8 @@ import themeDark from "assets/theme-dark";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
+import authroutes from "auth.routes";
+import professorroutes from "professor.routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -31,7 +33,6 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import { AuthContext } from "context/AuthContext";
-import authroutes from "auth.routes";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -47,7 +48,7 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -123,8 +124,19 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Material Dashboard 2"
-            routes={routes}
+            brandName="SEEDUCA"
+            routes={(() => {
+              switch (user.grupo) {
+                case "Professor":
+                  return professorroutes;
+                case "Coordenador":
+                case "Diretor":
+                case "Administrador":
+                  return routes;
+                default:
+                  return routes;
+              }
+            })()}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -133,7 +145,26 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-      <Routes>{isAuthenticated ? getRoutes(routes) : getRoutes(authroutes)}</Routes>
+      <Routes>
+        {isAuthenticated ? (
+          <>
+            {(() => {
+              switch (user.grupo) {
+                case "Professor":
+                  return getRoutes(professorroutes);
+                case "Coordenador":
+                case "Diretor":
+                case "Administrador":
+                  return getRoutes(routes);
+                default:
+                  return getRoutes(authroutes);
+              }
+            })()}
+          </>
+        ) : (
+          getRoutes(authroutes)
+        )}
+      </Routes>
     </ThemeProvider>
   );
 }

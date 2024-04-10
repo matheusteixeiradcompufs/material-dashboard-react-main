@@ -15,7 +15,7 @@ import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function AddFuncionarios() {
-  const { refreshToken } = useContext(AuthContext);
+  const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [grupos, setGrupos] = useState([]);
@@ -203,7 +203,7 @@ function AddFuncionarios() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <MDBox px={2} color="info" display="flex" justifyContent="center">
-                      <Funcao value={grupo} onChange={handleSetGrupo} groups={grupos} />
+                      <Funcao user={user} value={grupo} onChange={handleSetGrupo} groups={grupos} />
                     </MDBox>
                   </Grid>
                   <Grid item xs={12}>

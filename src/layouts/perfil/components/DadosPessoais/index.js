@@ -77,6 +77,13 @@ function DadosPessoais({ cpf, dataNascimento, endereco, formacao }) {
   );
 }
 
+DadosPessoais.defaultProps = {
+  cpf: "",
+  dataNascimento: "",
+  endereco: "",
+  formacao: "",
+};
+
 DadosPessoais.propTypes = {
   cpf: PropTypes.string,
   dataNascimento: PropTypes.string,

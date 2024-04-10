@@ -15,7 +15,7 @@ import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
 function Escolas() {
-  const { refreshToken } = useContext(AuthContext);
+  const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [escolas, setEscolas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,6 +153,7 @@ function Escolas() {
                               color="error"
                               size="small"
                               onClick={() => handleExcluir(escola.id)}
+                              disabled={!user.is_superuser}
                             >
                               Excluir
                             </MDButton>
@@ -169,17 +170,21 @@ function Escolas() {
               </MDBox>
             </Card>
           </Grid>
-          <Grid item xs={12} mt={6}>
-            <Link to="/escolas/add">
-              <Fab
-                color="success"
-                aria-label="add"
-                style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
-              >
-                <AddIcon color="white" />
-              </Fab>
-            </Link>
-          </Grid>
+          {user.is_superuser ? (
+            <Grid item xs={12} mt={6}>
+              <Link to="/escolas/add">
+                <Fab
+                  color="success"
+                  aria-label="add"
+                  style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
+                >
+                  <AddIcon color="white" />
+                </Fab>
+              </Link>
+            </Grid>
+          ) : (
+            <></>
+          )}
         </Grid>
       </MDBox>
     </DashboardLayout>

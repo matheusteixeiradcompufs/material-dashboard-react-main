@@ -20,7 +20,7 @@ import { AuthContext } from "context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import { Audio } from "react-loader-spinner";
 
-function Overview() {
+function Perfil() {
   const { user, refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [pessoa, setPessoa] = useState(null);
@@ -110,4 +110,4 @@ function Overview() {
   );
 }
 
-export default Overview;
+export default Perfil;
