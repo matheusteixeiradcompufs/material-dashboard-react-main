@@ -97,6 +97,7 @@ import Professor from "layouts/professor";
 import ProfessorTurmas from "layouts/professor/turmas";
 import ViewProfessorTurma from "layouts/professor/turmas/view";
 import ViewTurmaAluno from "layouts/escolas/salas/turmas/alunos/view";
+import QRCodeReaderPage from "layouts/leitorqr";
 
 const routes = [
   //DASHBOARD
@@ -813,6 +814,16 @@ const routes = [
     component: <Logout />,
   },
   //LOGOUT
+  //------------------------
+  //QRCODE
+  {
+    type: "item",
+    name: "Leitor QR",
+    key: "leitorqr",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/leitorqr",
+    component: <QRCodeReaderPage />,
+  },
 ];
 
 export default routes;

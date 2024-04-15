@@ -10,6 +10,7 @@ import Dashboard from "layouts/dashboard";
 import EscolaSalaTurmaAgenda from "layouts/escolas/salas/turmas/agenda";
 import EscolaSalaTurmaAgendaGerenciarDisciplinas from "layouts/escolas/salas/turmas/agenda/gerenciar";
 import EscolaSalaTurmaAgendaDiaAgenda from "layouts/escolas/salas/turmas/agenda/diaagenda";
+import QRCodeReaderPage from "layouts/leitorqr";
 
 const professorroutes = [
   //DASHBOARD
@@ -92,6 +93,16 @@ const professorroutes = [
     component: <Logout />,
   },
   //LOGOUT
+  //------------------------
+  //QRCODE
+  {
+    type: "item",
+    name: "Leitor QR",
+    key: "leitorqr",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/leitorqr",
+    component: <QRCodeReaderPage />,
+  },
 ];
 
 export default professorroutes;

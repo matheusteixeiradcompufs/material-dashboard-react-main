@@ -25,12 +25,14 @@ export function AuthProvider({ children }) {
       const cookies = parseCookies(AuthContext);
       const access = cookies["@seeduca.access"];
       const refresh = cookies["@seeduca.refresh"];
+      const username = cookies["@seeduca.username"];
 
       if (access) {
+        api.defaults.headers["Authorization"] = `Bearer ${access}`;
         try {
           const response = await api.post("/pessoas/me/", { username });
           const { objeto_usuario } = response.data;
-          const { username, first_name, objetos_grupos, is_superuser } = objeto_usuario;
+          const { first_name, objetos_grupos, is_superuser } = objeto_usuario;
 
           setUser((prevUser) => ({
             ...prevUser,
@@ -41,10 +43,10 @@ export function AuthProvider({ children }) {
             access: access,
             refresh: refresh,
           }));
-
           api.defaults.headers["Authorization"] = `Bearer ${access}`;
           setLoading(false);
         } catch (error) {
+          console.log(error);
           logout();
           setLoading(false);
         }
@@ -137,7 +139,7 @@ export function AuthProvider({ children }) {
           (is_superuser = response.data.is_superuser);
       } else {
         const { objeto_usuario } = response.data;
-        ({ first_name, objetos_grupos, is_superuser } = objeto_usuario);
+        ({ username, first_name, objetos_grupos, is_superuser } = objeto_usuario);
       }
 
       setUser((prevUser) => ({
@@ -147,6 +149,11 @@ export function AuthProvider({ children }) {
         grupo: objetos_grupos[0].name,
         is_superuser: is_superuser,
       }));
+
+      setCookie(AuthContext, "@seeduca.username", username, {
+        maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
+        path: "/", // Quais caminhos terao acesso ao cookie
+      });
 
       console.log("Dados do usuário obtidos com sucesso!");
       navigate("/");
@@ -162,6 +169,7 @@ export function AuthProvider({ children }) {
     try {
       destroyCookie(undefined, "@seeduca.access");
       destroyCookie(undefined, "@seeduca.refresh");
+      destroyCookie(undefined, "@seeduca.username");
       setUser((prevUser) => ({
         ...prevUser,
         username: "",

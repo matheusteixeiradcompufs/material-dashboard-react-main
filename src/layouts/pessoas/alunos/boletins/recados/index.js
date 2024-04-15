@@ -54,7 +54,6 @@ function BoletimRecados() {
 
   useEffect(() => {
     const loadDataInterval = setInterval(async () => {
-      console.log(agendaRecados);
       try {
         const response = await api.get(`/pessoas/aluno/boletim/agenda/api/v1/${agendaRecados.id}/`);
         const { objetos_recados } = await response.data;

@@ -1,19 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
@@ -26,11 +10,43 @@ import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
-import bgImage from "assets/images/bg-reset-cover.jpeg";
+import bgImage from "assets/images/Escola.png";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function Cover() {
+  const [email, setEmail] = useState("");
+
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleRedefinir = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/pessoas/reset-password/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        toast.success("As instruções para redefinição de senha foram enviadas para o seu e-mail.");
+        setEmail("");
+      } else {
+        const data = await response.json();
+        toast.error(data.message || "Ocorreu um erro ao processar a solicitação.");
+      }
+    } catch (error) {
+      console.error("Erro:", error);
+      toast.error("Ocorreu um erro ao processar a solicitação.");
+    }
+  };
+
   return (
     <CoverLayout coverHeight="50vh" image={bgImage}>
+      <ToastContainer />
       <Card>
         <MDBox
           variant="gradient"
@@ -44,22 +60,34 @@ function Cover() {
           textAlign="center"
         >
           <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
-            Reset Password
+            Redefinir Senha
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            You will receive an e-mail in maximum 60 seconds
+            Você receberá um email para resetar a senha em no maximo 60 seg
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={4}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                value={email}
+                onChange={handleChangeEmail}
+                variant="standard"
+                fullWidth
+              />
             </MDBox>
             <MDBox mt={6} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                reset
+              <MDButton variant="gradient" color="info" onClick={handleRedefinir} fullWidth>
+                redefinir
               </MDButton>
             </MDBox>
+            {/* {message && (
+              <MDTypography variant="body1" align="center" style={{ marginTop: "1rem" }}>
+                {message}
+              </MDTypography>
+            )} */}
           </MDBox>
         </MDBox>
       </Card>
