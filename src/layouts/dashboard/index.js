@@ -20,18 +20,21 @@ import { api } from "services/apiClient";
 import { AuthContext } from "context/AuthContext";
 import GraficoAlunos from "./data/graficoAlunos";
 import GraficoEscolas from "./data/graficoEscolas";
+import { Audio } from "react-loader-spinner";
+import { ToastContainer, toast } from "react-toastify";
 
 function Dashboard() {
-  const { user } = useContext(AuthContext);
   const { graficoTurmas } = GraficoTurmas();
   const { graficoAlunos } = GraficoAlunos();
   const { graficoEscolas } = GraficoEscolas();
   const { refreshToken } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
   const [escolas, setEscolas] = useState([]);
   const [alunos, setAlunos] = useState([]);
   const [funcionarios, setFuncionarios] = useState([]);
   const [turmas, setTurmas] = useState([]);
   const data = new Date();
+
   useEffect(() => {
     const fetchDados = async () => {
       try {
@@ -43,21 +46,50 @@ function Dashboard() {
         setFuncionarios(response.data);
         response = await api.get("/escolas/sala/turma/api/v1/");
         setTurmas(response.data);
+        setLoading(false);
       } catch (error) {
         if (error.response.status === 401) {
           await refreshToken();
           await fetchDados();
         } else {
+          toast.error("Erro ao carregar os dados!");
           console.log(error);
+          setLoading(false);
         }
       }
     };
     fetchDados();
   }, []);
 
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Audio
+            height="80"
+            width="80"
+            radius="9"
+            color="#3089ec"
+            ariaLabel="three-dots-loading"
+            wrapperStyle
+            wrapperClass
+          />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <ToastContainer />
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>

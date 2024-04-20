@@ -19,7 +19,7 @@ function AddFuncionarios() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [grupos, setGrupos] = useState([]);
-  const [grupo, setGrupo] = useState("");
+  const [grupo, setGrupo] = useState(-1);
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [email, setEmail] = useState("");
@@ -127,7 +127,9 @@ function AddFuncionarios() {
       formData.append("endereco", endereco);
       formData.append("formacao", formacao);
       formData.append("usuario", response.data.id);
-      formData.append("retrato", novoRetrato);
+      if (novoRetrato) {
+        formData.append("retrato", novoRetrato);
+      }
 
       response = await api.post("/pessoas/funcionario/api/v1/", formData, {
         headers: {
@@ -291,7 +293,7 @@ function AddFuncionarios() {
                   </Grid>
                   <Grid item xs={12}>
                     <MDInput
-                      label="Fornação"
+                      label="Formação"
                       type="text"
                       multiline
                       rows={3}

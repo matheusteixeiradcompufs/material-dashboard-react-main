@@ -109,14 +109,11 @@ function TransporteAlunos() {
                         opcoes: (
                           <MDBox display="flex" flexDirection="row">
                             <MDBox>
-                              <MDButton
-                                variant="gradient"
-                                color="info"
-                                size="small"
-                                // onClick={() => handleOnViewAluno(aluno.id)}
-                              >
-                                Visualizar
-                              </MDButton>
+                              <Link to={`/pessoas/aluno/${aluno.id}/view`}>
+                                <MDButton variant="gradient" color="info" size="small">
+                                  Visualizar
+                                </MDButton>
+                              </Link>
                             </MDBox>
                           </MDBox>
                         ),

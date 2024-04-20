@@ -102,7 +102,7 @@ function BoletimNotas() {
           })
           .then(function (response) {
             // handle success
-            console.log(response);
+            console.log(response.status);
           })
           .catch(function (error) {
             // handle error
@@ -115,6 +115,7 @@ function BoletimNotas() {
       setAvaliacoes(objetos_avaliacoes);
       setMedias(objetos_medias);
       setSituacoes(objetos_situacoes);
+      handleOnList();
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {
@@ -149,6 +150,7 @@ function BoletimNotas() {
       setAvaliacoes(objetos_avaliacoes);
       setMedias(objetos_medias);
       setSituacoes(objetos_situacoes);
+      handleOnList();
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {

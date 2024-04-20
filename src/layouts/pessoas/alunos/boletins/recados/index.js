@@ -55,9 +55,13 @@ function BoletimRecados() {
   useEffect(() => {
     const loadDataInterval = setInterval(async () => {
       try {
-        const response = await api.get(`/pessoas/aluno/boletim/agenda/api/v1/${agendaRecados.id}/`);
-        const { objetos_recados } = await response.data;
-        setRecados(objetos_recados);
+        if (agendaRecados) {
+          const response = await api.get(
+            `/pessoas/aluno/boletim/agenda/api/v1/${agendaRecados.id}/`
+          );
+          const { objetos_recados } = await response.data;
+          setRecados(objetos_recados);
+        }
       } catch (err) {
         console.log(err);
       }

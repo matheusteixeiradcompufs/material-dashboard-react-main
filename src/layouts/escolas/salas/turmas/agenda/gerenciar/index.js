@@ -135,7 +135,7 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
         qui: quiRight.map((item) => item.id),
         sex: sexRight.map((item) => item.id),
       });
-      navigate(`/escolas/${escolaid}/salas/${salaid}/turmas/${turmaid}/agenda`);
+      navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/agenda`);
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {

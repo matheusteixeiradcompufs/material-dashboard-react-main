@@ -121,30 +121,32 @@ function FuncionarioTurmas() {
                       { Header: "turno", accessor: "turno", align: "center" },
                       { Header: "", accessor: "opcoes", align: "right" },
                     ],
-                    rows: turmas.map((turma) => ({
-                      nome: turma.nome,
-                      ano: turma.ano,
-                      turno: getTurno(turma.turno),
-                      opcoes: (
-                        <Grid
-                          container
-                          spacing={2}
-                          alignItems="center"
-                          justifyContent="space-between"
-                        >
-                          <Grid item xs={12}>
-                            <MDButton
-                              variant="gradient"
-                              color="info"
-                              size="small"
-                              onClick={() => handleView(turma.id)}
+                    rows: turmas
+                      ? turmas.map((turma) => ({
+                          nome: turma.nome,
+                          ano: turma.ano,
+                          turno: getTurno(turma.turno),
+                          opcoes: (
+                            <Grid
+                              container
+                              spacing={2}
+                              alignItems="center"
+                              justifyContent="space-between"
                             >
-                              Visualizar
-                            </MDButton>
-                          </Grid>
-                        </Grid>
-                      ),
-                    })),
+                              <Grid item xs={12}>
+                                <MDButton
+                                  variant="gradient"
+                                  color="info"
+                                  size="small"
+                                  onClick={() => handleView(turma.id)}
+                                >
+                                  Visualizar
+                                </MDButton>
+                              </Grid>
+                            </Grid>
+                          ),
+                        }))
+                      : [],
                   }}
                   isSorted={false}
                   entriesPerPage={false}

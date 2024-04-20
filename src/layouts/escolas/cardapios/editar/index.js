@@ -50,7 +50,7 @@ function EditarEscolaCardapio() {
     setTurno(e.target.value);
   };
 
-  const handleEditar = async (cardapioid) => {
+  const handleEditar = async () => {
     setLoading(true);
     try {
       await api.patch(`/escolas/cardapio/api/v1/${cardapioid}/`, {

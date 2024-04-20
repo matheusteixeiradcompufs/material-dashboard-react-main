@@ -2,11 +2,13 @@ import axios from "axios";
 import { parseCookies } from "nookies";
 import { AuthTokenError } from "./errors/AuthTokenError";
 
+export const BASE_URL = "http://192.168.0.113";
+
 export function setupAPIClient(ctx = undefined) {
   let cookies = parseCookies(ctx);
 
   const api = axios.create({
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: BASE_URL,
     headers: {
       Authorization: `Bearer ${cookies["@seeduca.access"]}`,
     },
@@ -21,7 +23,7 @@ export function setupAPIClient(ctx = undefined) {
         // qualquer erro 401 (nao autorizado) devemos deslogar o usuario
         if (typeof window !== undefined) {
           // Chamar a funçao para deslogar o usuario
-          // refreshToken();
+          window.location.href = "/authentication/logout";
         } else {
           return Promise.reject(new AuthTokenError());
         }

@@ -13,6 +13,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/Escola.png";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { BASE_URL } from "services/api";
 
 function Cover() {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ function Cover() {
 
   const handleRedefinir = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/pessoas/reset-password/", {
+      const response = await fetch(`${BASE_URL}/pessoas/reset-password/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -6,8 +6,16 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import { format } from "date-fns";
 
 function DadosPessoais({ cpf, dataNascimento, endereco, formacao }) {
+  const formatarData = (date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1);
+    newDate.setHours(0);
+    return format(newDate, "dd/MM/yyy");
+  };
+
   return (
     <Card sx={{ boxShadow: "none" }}>
       <MDBox p={2}>
@@ -39,7 +47,7 @@ function DadosPessoais({ cpf, dataNascimento, endereco, formacao }) {
           </MDBox>
           <MDBox display="flex" justifyContent="flex-end" width="80%" ml={0.5} py={1.5}>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              {dataNascimento}
+              {formatarData(dataNascimento)}
             </MDTypography>
           </MDBox>
         </MDBox>

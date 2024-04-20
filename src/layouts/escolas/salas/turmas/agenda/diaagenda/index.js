@@ -258,6 +258,13 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       } else {
         toast.error("Erro ao excluir aviso!");
         console.error("Erro ao excluir aviso:", error);
+        if (error.response.status === 403) {
+          toast.error("Você não tem permissão pra excluir avisos! Solicite ao seu Coordenador!");
+          console.error(
+            "Você não tem permissão pra excluir avisos! Solicite ao seu Coordenador!",
+            error
+          );
+        }
       }
       setLoading(false);
     }
@@ -326,6 +333,13 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       } else {
         toast.error("Erro ao excluir tarefa!");
         console.error("Erro ao excluir tarefa:", error);
+        if (error.response.status === 403) {
+          toast.error("Você não tem permissão pra excluir tarefas! Solicite ao seu Coordenador!");
+          console.error(
+            "Você não tem permissão pra excluir tarefas! Solicite ao seu Coordenador!",
+            error
+          );
+        }
       }
       setLoading(false);
     }

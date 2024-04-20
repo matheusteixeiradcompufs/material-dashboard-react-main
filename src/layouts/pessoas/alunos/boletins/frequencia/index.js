@@ -43,6 +43,13 @@ function BoletimFrequencia() {
     fetchBoletim();
   }, []);
 
+  const formatarData = (date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1);
+    newDate.setHours(0);
+    return format(newDate, "dd/MM/yyyy");
+  };
+
   const handleEdit = (dialetivoid) => {
     setLoading(true);
     navigate(
@@ -53,7 +60,7 @@ function BoletimFrequencia() {
   const handleExcluir = async (dialetivoid) => {
     setLoading(true);
     try {
-      await api.post(`/pessoas/aluno/frequencia/dialetivo/api/v1/${dialetivoid}/`);
+      await api.delete(`/pessoas/aluno/frequencia/dialetivo/api/v1/${dialetivoid}/`);
       const response = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
       setBoletim(response.data);
       setLoading(false);
@@ -152,7 +159,7 @@ function BoletimFrequencia() {
                     rows: boletim?.objeto_frequencia.objetos_diasletivos
                       .sort((a, b) => new Date(b.data) - new Date(a.data))
                       .map((dialetivo) => ({
-                        data: format(new Date(dialetivo.data), "dd/MM/yyyy"),
+                        data: formatarData(dialetivo.data),
                         presenca: <Switch size="small" checked={dialetivo.presenca} />,
                         opcoes: (
                           <MDBox display="flex" flexDirection="row">

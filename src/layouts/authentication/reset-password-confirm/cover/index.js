@@ -15,11 +15,12 @@ import bgImage from "assets/images/Escola.png";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
+import { BASE_URL } from "services/api";
 
 function Cover() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const { pid, puid, ptoken } = useParams();
-  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [confirm, setConfirm] = useState(false);
@@ -28,7 +29,7 @@ function Cover() {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/pessoas/usuario/api/v1/${pid}/`, {
+        const response = await fetch(`${BASE_URL}/pessoas/usuario/api/v1/${pid}/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -37,13 +38,13 @@ function Cover() {
 
         const usuario = await response.json();
 
-        console.log(usuario);
-
         setConfirm(
           usuario.objeto_pessoa &&
             usuario.objeto_pessoa.uid === puid &&
             usuario.objeto_pessoa.token === ptoken
         );
+
+        setLoading(false);
       } catch (error) {
         console.error("Erro:", error);
         toast.error("Ocorreu um erro ao processar a solicitação.");
@@ -83,7 +84,7 @@ function Cover() {
   const handleRedefinir = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/pessoas/usuario/api/v1/${pid}/`, {
+      const response = await fetch(`${BASE_URL}/pessoas/usuario/api/v1/${pid}/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +115,7 @@ function Cover() {
   return (
     <CoverLayout coverHeight="50vh" image={bgImage}>
       <ToastContainer />
-      {confirm ? (
+      {confirm || loading ? (
         <Card>
           <MDBox
             variant="gradient"

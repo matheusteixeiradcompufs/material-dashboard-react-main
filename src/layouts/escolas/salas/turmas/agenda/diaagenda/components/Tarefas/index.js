@@ -70,7 +70,7 @@ function Tarefas({
             ? diaAgenda.objetos_tarefas.map((objeto) => ({
                 tarefa: objeto.nome,
                 tipo: objeto.tipo === "C" ? "Casa" : "Escola",
-                entrega: format(new Date(objeto.entrega), "dd/MM/yyyy"),
+                entrega: format(objeto.entrega, "dd/MM/yyyy"),
                 opcoes: (
                   <MDBox display="flex" flexDirection="row">
                     <MDBox mr={1}>

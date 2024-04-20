@@ -51,7 +51,7 @@ function AlunoResponsaveis() {
     try {
       await api.delete(`/pessoas/aluno/responsavel/api/v1/${responsavelid}/`);
       const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
-      setAluno(response.data);
+      setResponsaveis(response.data.objetos_responsaveis);
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {

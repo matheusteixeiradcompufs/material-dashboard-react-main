@@ -33,7 +33,7 @@ function ManageFuncionarioTurmas() {
         const resTurmas = await api.get(`/escolas/sala/turma/api/v1/`);
         setTurmas(resTurmas.data);
         const resFunc = await api.get(`/pessoas/funcionario/api/v1/${funcionarioid}/`);
-        setRight(resFunc.data.objetos_turmas);
+        setRight(resFunc.data.objetos_turmas || []);
         setLoading(false);
       } catch (error) {
         if (error.response.status === 401) {
@@ -52,13 +52,12 @@ function ManageFuncionarioTurmas() {
   const handleChangeEscola = (e) => {
     const newValue = e.target.value;
     setEscola(newValue);
-    console.log("newValue: ", newValue);
-    console.log(turmas);
     const turmasFiltradas = turmas.filter((item) => newValue === item.objeto_sala.objeto_escola.id);
     setLeft(turmasFiltradas.filter((item) => !right.some((element) => element.id === item.id)));
   };
 
   const handleSalvar = async () => {
+    console.log(right.map((objeto) => objeto.id));
     setLoading(true);
     try {
       await api.patch(`/pessoas/funcionario/api/v1/${funcionarioid}/`, {

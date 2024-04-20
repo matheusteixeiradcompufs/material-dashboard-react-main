@@ -20,7 +20,7 @@ function EditarFuncionario() {
   const { funcionarioid } = useParams();
   const [loading, setLoading] = useState(true);
   const [grupos, setGrupos] = useState([]);
-  const [grupo, setGrupo] = useState("");
+  const [grupo, setGrupo] = useState(-1);
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [email, setEmail] = useState("");

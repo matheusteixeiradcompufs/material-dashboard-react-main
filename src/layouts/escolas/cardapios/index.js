@@ -13,6 +13,7 @@ import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
+import { format } from "date-fns";
 
 function EscolaCardapios() {
   const { refreshToken } = useContext(AuthContext);
@@ -40,6 +41,13 @@ function EscolaCardapios() {
     };
     fetchCardapios();
   }, []);
+
+  const formatarData = (date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 1);
+    newDate.setHours(0);
+    return format(newDate, "dd/MM/yyyy");
+  };
 
   const handleView = (cardapioid) => {
     setLoading(true);
@@ -123,7 +131,7 @@ function EscolaCardapios() {
                     rows: cardapios
                       .sort((a, b) => new Date(b.data) - new Date(a.data))
                       .map((cardapio) => ({
-                        data: cardapio.data,
+                        data: formatarData(cardapio.data),
                         turno: cardapio.turno,
                         opcoes: (
                           <Grid

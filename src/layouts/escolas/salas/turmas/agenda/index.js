@@ -112,6 +112,15 @@ function EscolaSalaTurmaAgenda() {
       } else {
         toast.error("Erro ao iniciar agenda da turma");
         console.log("Erro ao iniciar agenda da turma", error);
+        if (error.response.status === 403) {
+          toast.error(
+            "Você não tem autorização para iniciar uma agenda! Solicite ao seu coordenador!"
+          );
+          console.log(
+            "Você não tem autorização para iniciar uma agenda! Solicite ao seu coordenador!",
+            error
+          );
+        }
       }
       setLoading(false);
     }

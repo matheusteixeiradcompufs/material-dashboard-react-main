@@ -35,7 +35,7 @@ function View({ titulo, handleSetTitulo, texto, handleSetTexto, handleOnEditAvis
         <Grid item xs={12}>
           <MDBox display="flex" flexDirection="row" justifyContent="center">
             <MDBox mr={1}>
-              <MDButton variant="gradient" color="info" onClick={handleOnEditAviso}>
+              <MDButton variant="gradient" color="warning" onClick={handleOnEditAviso}>
                 Modificar
               </MDButton>
             </MDBox>

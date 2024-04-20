@@ -169,7 +169,7 @@ function ViewFuncionario() {
                   </Grid>
                   <Grid item xs={12}>
                     <MDInput
-                      label="Formacção"
+                      label="Formação"
                       type="text"
                       multiline
                       rows={3}
