@@ -11,6 +11,11 @@ import EscolaSalaTurmaAgenda from "layouts/escolas/salas/turmas/agenda";
 import EscolaSalaTurmaAgendaGerenciarDisciplinas from "layouts/escolas/salas/turmas/agenda/gerenciar";
 import EscolaSalaTurmaAgendaDiaAgenda from "layouts/escolas/salas/turmas/agenda/diaagenda";
 import QRCodeReaderPage from "layouts/leitorqr";
+import ViewTurmaAluno from "layouts/escolas/salas/turmas/alunos/view";
+import BoletimFrequencia from "layouts/pessoas/alunos/boletins/frequencia";
+import AddDiasLetivosBoletimFrequencia from "layouts/pessoas/alunos/boletins/frequencia/add";
+import EditDiaLetivoBoletimFrequencia from "layouts/pessoas/alunos/boletins/frequencia/editar";
+import BoletimNotas from "layouts/pessoas/alunos/boletins/notas";
 
 const professorroutes = [
   //DASHBOARD
@@ -36,6 +41,10 @@ const professorroutes = [
   //PERFIL
   //------------------------
   //PROFESSOR
+  {
+    type: "divider",
+    key: "divider1",
+  },
   {
     type: "collapse",
     name: "Professor",
@@ -81,9 +90,48 @@ const professorroutes = [
     route: "/escola/:escolaid/sala/:salaid/turma/:turmaid/agenda/diaagenda",
     component: <EscolaSalaTurmaAgendaDiaAgenda />,
   },
+  {
+    type: "item",
+    name: "View Aluno da Turma",
+    key: "view_aluno_turma",
+    route: "/escola/:escolaid/sala/:salaid/turma/:turmaid/aluno/:alunoid/view",
+    component: <ViewTurmaAluno />,
+  },
+  {
+    type: "item",
+    name: "Frequência do Aluno",
+    key: "frequencia_aluno",
+    route: "/pessoas/aluno/:alunoid/boletim/:boletimid/frequencia",
+    component: <BoletimFrequencia />,
+  },
+  {
+    type: "item",
+    name: "Add Frequência do Aluno",
+    key: "add_frequencia_aluno",
+    route: "/pessoas/aluno/:alunoid/boletim/:boletimid/frequencia/diasletivos/add",
+    component: <AddDiasLetivosBoletimFrequencia />,
+  },
+  {
+    type: "item",
+    name: "Editar DiaLetivo Frequência do Aluno",
+    key: "editar_dialetivo_frequencia_aluno",
+    route: "/pessoas/aluno/:alunoid/boletim/:boletimid/frequencia/dialetivo/:dialetivoid/edit",
+    component: <EditDiaLetivoBoletimFrequencia />,
+  },
+  {
+    type: "item",
+    name: "Boletim do Aluno",
+    key: "boletim_aluno",
+    route: "/pessoas/aluno/:alunoid/boletim/:boletimid/notas",
+    component: <BoletimNotas />,
+  },
   //PROFESSOR
   //------------------------
   //LOGOUT
+  {
+    type: "divider",
+    key: "divider2",
+  },
   {
     type: "collapse",
     name: "Logout",

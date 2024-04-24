@@ -4,6 +4,7 @@ import ResetPasswordConfirm from "layouts/authentication/reset-password-confirm/
 
 import Icon from "@mui/material/Icon";
 import QRCodeReaderPage from "layouts/leitorqr";
+import Logout from "layouts/authentication/logout";
 
 const authroutes = [
   {
@@ -39,6 +40,14 @@ const authroutes = [
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/leitorqr",
     component: <QRCodeReaderPage />,
+  },
+  {
+    type: "collapse",
+    name: "Logout",
+    key: "logout",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/logout",
+    component: <Logout />,
   },
 ];
 

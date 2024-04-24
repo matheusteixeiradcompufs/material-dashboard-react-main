@@ -148,7 +148,7 @@ function AddDiasLetivosBoletimFrequencia() {
                   coloredShadow="info"
                 >
                   <MDTypography variant="h6" color="white">
-                    Lista de Presenças
+                    Add Presença
                   </MDTypography>
                 </MDBox>
                 <MDBox display="flex" flexDirection="row">

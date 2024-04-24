@@ -179,8 +179,8 @@ export function AuthProvider({ children }) {
         access: "",
         refresh: "",
       }));
-      setLoading(false);
       navigate("/");
+      setLoading(false);
     } catch {
       console.log("erro ao deslogar");
       setLoading(false);

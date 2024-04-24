@@ -93,9 +93,6 @@ import EditDiaLetivoBoletimFrequencia from "layouts/pessoas/alunos/boletins/freq
 import FuncionarioTurmas from "layouts/pessoas/funcionarios/turmas";
 import ManageFuncionarioTurmas from "layouts/pessoas/funcionarios/turmas/manage";
 import ViewFuncionarioTurma from "layouts/pessoas/funcionarios/turmas/view";
-import Professor from "layouts/professor";
-import ProfessorTurmas from "layouts/professor/turmas";
-import ViewProfessorTurma from "layouts/professor/turmas/view";
 import ViewTurmaAluno from "layouts/escolas/salas/turmas/alunos/view";
 import QRCodeReaderPage from "layouts/leitorqr";
 
@@ -124,8 +121,17 @@ const routes = [
   //------------------------
   //ESCOLAS
   {
+    type: "divider",
+    key: "divider2",
+  },
+  {
+    type: "title",
+    title: "Gestão de Escolas",
+    key: "gestaoEscolas",
+  },
+  {
     type: "collapse",
-    name: "Gestão de Escolas",
+    name: "Escolas",
     key: "escolas",
     icon: <Icon fontSize="small">house</Icon>,
     route: "/escolas",
@@ -423,28 +429,176 @@ const routes = [
   },
   //ESCOLAS
   //------------------------
-  //PESSOAS
+  //DISCIPLINAS
   {
     type: "collapse",
-    name: "Gestão de Pessoas",
-    key: "pessoas",
+    name: "Disciplinas",
+    key: "disciplinas",
+    icon: <Icon fontSize="small">menu_book</Icon>,
+    route: "/disciplinas",
+    component: <Disciplinas />,
+  },
+  {
+    type: "item",
+    name: "Add Disciplinas",
+    key: "add_disciplinas",
+    icon: <Icon fontSize="small">menu_book</Icon>,
+    route: "/disciplinas/add",
+    component: <AddDisciplinas />,
+  },
+  {
+    type: "item",
+    name: "Editar Disciplinas",
+    key: "editar_disciplinas",
+    icon: <Icon fontSize="small">menu_book</Icon>,
+    route: "/disciplinas/:disciplinaid/editar",
+    component: <EditarDisciplina />,
+  },
+  //DISCIPLINAS
+  //------------------------
+  //ITENS DA MERENDA
+  {
+    type: "collapse",
+    name: "Ítens da Merenda",
+    key: "itensmerenda",
+    icon: <Icon fontSize="small">restaurant</Icon>,
+    route: "/itensmerenda",
+    component: <Itens />,
+  },
+  {
+    type: "item",
+    name: "Add Ítens da Merenda",
+    key: "additensmerenda",
+    icon: <Icon fontSize="small">restaurant</Icon>,
+    route: "/itensmerenda/add",
+    component: <AddItens />,
+  },
+  {
+    type: "item",
+    name: "View Ítem da Merenda",
+    key: "Viewitensmerenda",
+    icon: <Icon fontSize="small">restaurant</Icon>,
+    route: "/itemmerenda/:itemid/view",
+    component: <ViewItem />,
+  },
+  {
+    type: "item",
+    name: "Editar Ítem da Merenda",
+    key: "Editaritensmerenda",
+    icon: <Icon fontSize="small">restaurant</Icon>,
+    route: "/itemmerenda/:itemid/editar",
+    component: <EditarItem />,
+  },
+  //ITENS DA MERENDA
+  //------------------------
+  //TRANSPORTES
+  {
+    type: "collapse",
+    name: "Transportes",
+    key: "transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes",
+    component: <Transportes />,
+  },
+  {
+    type: "item",
+    name: "Add Transportes",
+    key: "add_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/add",
+    component: <AddTransportes />,
+  },
+  {
+    type: "item",
+    name: "Visualizar Transportes",
+    key: "view_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/view",
+    component: <ViewTransportes />,
+  },
+  {
+    type: "item",
+    name: "Editar Transportes",
+    key: "editar_transportes",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/editar",
+    component: <EditarTransportes />,
+  },
+  {
+    type: "item",
+    name: "Telefones do Transporte",
+    key: "telefones_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefones",
+    component: <TransporteTelefones />,
+  },
+  {
+    type: "item",
+    name: "Adicionar Telefones do Transporte",
+    key: "add_telefones_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefones/add",
+    component: <AddTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Visualizar Telefone do Transporte",
+    key: "view_telefone_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefone/:telefoneid/view",
+    component: <ViewTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Modificar Telefone do Transporte",
+    key: "editar_telefone_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/telefone/:telefoneid/editar",
+    component: <EditarTransporteTelefone />,
+  },
+  {
+    type: "item",
+    name: "Alunos do Transporte",
+    key: "alunos_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/alunos",
+    component: <TransporteAlunos />,
+  },
+  {
+    type: "item",
+    name: "Gerenciar Alunos do Transporte",
+    key: "gerenciar_alunos_transporte",
+    icon: <Icon fontSize="small">directions_bus</Icon>,
+    route: "/transportes/:transporteid/alunos/gerenciar",
+    component: <GerenciarTransporteAlunos />,
+  },
+  //TRANSPORTES
+  //------------------------
+  //PESSOAS
+  {
+    type: "divider",
+    key: "divider3",
+  },
+  {
+    type: "title",
+    title: "Gestão de Pessoas",
+    key: "gestaoPessoas",
+  },
+  {
+    type: "collapse",
+    name: "Alunos",
+    key: "pessoas_alunos",
     icon: <Icon fontSize="small">person</Icon>,
-    collapse: [
-      {
-        type: "collapse",
-        name: "Alunos",
-        key: "pessoas_alunos",
-        route: "/pessoas/alunos",
-        component: <Alunos />,
-      },
-      {
-        type: "collapse",
-        name: "Funcionários",
-        key: "pessoas_funcionarios",
-        route: "/pessoas/funcionarios",
-        component: <Funcionarios />,
-      },
-    ],
+    route: "/pessoas/alunos",
+    component: <Alunos />,
+  },
+  {
+    type: "collapse",
+    name: "Funcionários",
+    key: "pessoas_funcionarios",
+    icon: <Icon fontSize="small">work</Icon>,
+    route: "/pessoas/funcionarios",
+    component: <Funcionarios />,
   },
   {
     type: "item",
@@ -658,153 +812,11 @@ const routes = [
   },
   //PESSOAS
   //------------------------
-  //DISCIPLINAS
-  {
-    type: "collapse",
-    name: "Disciplinas",
-    key: "disciplinas",
-    icon: <Icon fontSize="small">menu_book</Icon>,
-    route: "/disciplinas",
-    component: <Disciplinas />,
-  },
-  {
-    type: "item",
-    name: "Add Disciplinas",
-    key: "add_disciplinas",
-    icon: <Icon fontSize="small">menu_book</Icon>,
-    route: "/disciplinas/add",
-    component: <AddDisciplinas />,
-  },
-  {
-    type: "item",
-    name: "Editar Disciplinas",
-    key: "editar_disciplinas",
-    icon: <Icon fontSize="small">menu_book</Icon>,
-    route: "/disciplinas/:disciplinaid/editar",
-    component: <EditarDisciplina />,
-  },
-  //DISCIPLINAS
-  //------------------------
-  //ITENS DA MERENDA
-  {
-    type: "collapse",
-    name: "Ítens da Merenda",
-    key: "itensmerenda",
-    icon: <Icon fontSize="small">restaurant</Icon>,
-    route: "/itensmerenda",
-    component: <Itens />,
-  },
-  {
-    type: "item",
-    name: "Add Ítens da Merenda",
-    key: "additensmerenda",
-    icon: <Icon fontSize="small">restaurant</Icon>,
-    route: "/itensmerenda/add",
-    component: <AddItens />,
-  },
-  {
-    type: "item",
-    name: "View Ítem da Merenda",
-    key: "Viewitensmerenda",
-    icon: <Icon fontSize="small">restaurant</Icon>,
-    route: "/itemmerenda/:itemid/view",
-    component: <ViewItem />,
-  },
-  {
-    type: "item",
-    name: "Editar Ítem da Merenda",
-    key: "Editaritensmerenda",
-    icon: <Icon fontSize="small">restaurant</Icon>,
-    route: "/itemmerenda/:itemid/editar",
-    component: <EditarItem />,
-  },
-  //ITENS DA MERENDA
-  //------------------------
-  //TRANSPORTES
-  {
-    type: "collapse",
-    name: "Transportes",
-    key: "transportes",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes",
-    component: <Transportes />,
-  },
-  {
-    type: "item",
-    name: "Add Transportes",
-    key: "add_transportes",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/add",
-    component: <AddTransportes />,
-  },
-  {
-    type: "item",
-    name: "Visualizar Transportes",
-    key: "view_transportes",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/view",
-    component: <ViewTransportes />,
-  },
-  {
-    type: "item",
-    name: "Editar Transportes",
-    key: "editar_transportes",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/editar",
-    component: <EditarTransportes />,
-  },
-  //------------------------
-  {
-    type: "item",
-    name: "Telefones do Transporte",
-    key: "telefones_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/telefones",
-    component: <TransporteTelefones />,
-  },
-  {
-    type: "item",
-    name: "Adicionar Telefones do Transporte",
-    key: "add_telefones_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/telefones/add",
-    component: <AddTransporteTelefone />,
-  },
-  {
-    type: "item",
-    name: "Visualizar Telefone do Transporte",
-    key: "view_telefone_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/telefone/:telefoneid/view",
-    component: <ViewTransporteTelefone />,
-  },
-  {
-    type: "item",
-    name: "Modificar Telefone do Transporte",
-    key: "editar_telefone_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/telefone/:telefoneid/editar",
-    component: <EditarTransporteTelefone />,
-  },
-  {
-    type: "item",
-    name: "Alunos do Transporte",
-    key: "alunos_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/alunos",
-    component: <TransporteAlunos />,
-  },
-  {
-    type: "item",
-    name: "Gerenciar Alunos do Transporte",
-    key: "gerenciar_alunos_transporte",
-    icon: <Icon fontSize="small">directions_bus</Icon>,
-    route: "/transportes/:transporteid/alunos/gerenciar",
-    component: <GerenciarTransporteAlunos />,
-  },
-  //TRANSPORTES
-  //------------------------
   //LOGOUT
+  {
+    type: "divider",
+    key: "divider4",
+  },
   {
     type: "collapse",
     name: "Logout",

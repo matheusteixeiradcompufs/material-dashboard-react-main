@@ -150,7 +150,7 @@ function EditDiaLetivoBoletimFrequencia() {
                   coloredShadow="info"
                 >
                   <MDTypography variant="h6" color="white">
-                    Lista de Presenças
+                    Modificar Presença
                   </MDTypography>
                 </MDBox>
                 <MDBox display="flex" flexDirection="row">
@@ -180,7 +180,7 @@ function EditDiaLetivoBoletimFrequencia() {
                             size="small"
                             onClick={handleEditar}
                           >
-                            Editar
+                            Salvar
                           </MDButton>
                         </MDBox>
                         <MDBox ml={1}>
