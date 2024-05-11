@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar um novo aviso ao mural de uma escola.
+ * @module escolas/murais/avisos
+ * @returns {JSX.Element} Componente para adicionar um novo aviso ao mural de uma escola.
+ */
 function AddEscolaMuralAvisos() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,14 +25,25 @@ function AddEscolaMuralAvisos() {
   const [titulo, setTitulo] = useState("");
   const [texto, setTexto] = useState("");
 
+  /**
+   * Função para lidar com a mudança do título do aviso.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança do input.
+   */
   const handleChangeTitulo = (e) => {
     setTitulo(e.target.value);
   };
 
+  /**
+   * Função para lidar com a mudança do texto do aviso.
+   * @param {React.ChangeEvent<HTMLTextAreaElement>} e - Evento de mudança do textarea.
+   */
   const handleChangeTexto = (e) => {
     setTexto(e.target.value);
   };
 
+  /**
+   * Função para adicionar um novo aviso.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -49,6 +65,9 @@ function AddEscolaMuralAvisos() {
     }
   };
 
+  /**
+   * Função para cancelar a adição de um novo aviso.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/avisos`);

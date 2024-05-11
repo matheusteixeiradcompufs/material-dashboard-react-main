@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar um responsável de aluno.
+ * @module pessoas/alunos/responsaveis
+ * @returns {JSX.Element} JSX para a página de edição de responsável de aluno.
+ */
 function EditarAlunoResponsavel() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function EditarAlunoResponsavel() {
   const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Função para buscar os dados do responsável do aluno na API.
+   */
   useEffect(() => {
     const fetchResponsavel = async () => {
       try {
@@ -44,18 +52,33 @@ function EditarAlunoResponsavel() {
     fetchResponsavel();
   }, []);
 
+  /**
+   * Define o valor do CPF.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
 
+  /**
+   * Define o valor do nome.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Define o valor da observação.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetObservacao = (e) => {
     setObservacao(e.target.value);
   };
 
+  /**
+   * Manipula a edição do responsável de aluno.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -77,6 +100,9 @@ function EditarAlunoResponsavel() {
     }
   };
 
+  /**
+   * Cancela a edição do responsável de aluno e retorna à visualização.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsavel/${responsavelid}/view`);

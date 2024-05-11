@@ -14,6 +14,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar uma turma de uma sala.
+ * @module escolas/salas/turmas
+ * @returns {JSX.Element} Componente de edição de turma.
+ */
 function EditarEscolaSalaTurma() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -37,7 +42,7 @@ function EditarEscolaSalaTurma() {
           await fetchTurma();
         } else {
           toast.error("Erro ao carregar os dados da turma!");
-          console.log("Erro ao carregar os dados da turma!", error);
+          console.error("Erro ao carregar os dados da turma!", error);
         }
         setLoading(false);
       }
@@ -45,18 +50,33 @@ function EditarEscolaSalaTurma() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para lidar com a alteração do nome da turma.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de alteração.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Função para lidar com a alteração do turno da turma.
+   * @param {React.ChangeEvent<{ value: unknown }>} e O evento de alteração.
+   */
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
 
+  /**
+   * Função para lidar com a alteração do ano da turma.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de alteração.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Função para lidar com a edição da turma.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -72,12 +92,15 @@ function EditarEscolaSalaTurma() {
         await handleEditar();
       } else {
         toast.error("Erro ao modificar turma!");
-        console.log("Erro ao modificar turma!", error);
+        console.error("Erro ao modificar turma!", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da edição da turma.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/view`);

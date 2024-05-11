@@ -14,6 +14,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de uma sala de uma escola.
+ * @module escolas/salas
+ * @returns {JSX.Element} Componente para visualizar os detalhes de uma sala.
+ */
 function ViewEscolaSala() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -43,19 +48,33 @@ function ViewEscolaSala() {
     fetchSala();
   }, []);
 
+  /**
+   * Manipula a mudança do número da sala.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Manipula a mudança da quantidade de alunos da sala.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeQuantidade = (e) => {
     setQuantidade(e.target.value);
   };
 
+  /**
+   * Redireciona para a página de edição da sala.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/editar`);
   };
 
+  /**
+   * Redireciona para a página de visualização de todas as salas da escola.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/salas`);

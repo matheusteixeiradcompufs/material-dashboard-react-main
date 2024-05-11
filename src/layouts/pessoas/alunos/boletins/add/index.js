@@ -13,6 +13,11 @@ import Select from "examples/Select";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar uma nova matrículas de um aluno em turmas.
+ * @module pessoas/alunos/boletins
+ * @returns {JSX.Element} JSX para a página de adição de matrículas do aluno.
+ */
 function AddAlunoBoletins() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -26,7 +31,10 @@ function AddAlunoBoletins() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAluno = async () => {
+    /**
+     * Função assíncrona para buscar os dados das escolas.
+     */
+    const fetchEscolas = async () => {
       try {
         const response = await api.get("/escolas/api/v1/");
         setEscolas(response.data);
@@ -34,7 +42,7 @@ function AddAlunoBoletins() {
       } catch (error) {
         if (error.response.status === 401) {
           await refreshToken();
-          await fetchAluno();
+          await fetchEscolas();
         } else {
           toast.error("Erro ao carregar dados");
           console.error("Erro ao carregar dados:", error);
@@ -42,9 +50,13 @@ function AddAlunoBoletins() {
         setLoading(false);
       }
     };
-    fetchAluno();
+    fetchEscolas();
   }, []);
 
+  /**
+   * Atualiza as salas disponíveis quando uma escola é selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeEscola = (e) => {
     setSelectedEscola(e.target.value);
     const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
@@ -54,6 +66,10 @@ function AddAlunoBoletins() {
     setSelectedTurma("");
   };
 
+  /**
+   * Atualiza as turmas disponíveis quando uma sala é selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeSala = (e) => {
     setSelectedSala(e.target.value);
     const salaView = salas.find((objeto) => objeto.id === e.target.value);
@@ -61,10 +77,17 @@ function AddAlunoBoletins() {
     setSelectedTurma("");
   };
 
+  /**
+   * Atualiza a turma selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeTurma = (e) => {
     setSelectedTurma(e.target.value);
   };
 
+  /**
+   * Adiciona uma nova matrícula para o aluno na turma selecionada.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -85,6 +108,9 @@ function AddAlunoBoletins() {
     }
   };
 
+  /**
+   * Cancela a adição de uma nova matrícula e retorna à página de matrículas do aluno.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletins`);

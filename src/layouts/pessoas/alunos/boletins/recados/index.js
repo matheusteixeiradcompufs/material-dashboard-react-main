@@ -15,6 +15,11 @@ import DownIcon from "@mui/icons-material/South";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir o boletim de recados do aluno.
+ * @module pessoas/alunos/boletins/recados
+ * @returns {JSX.Element} JSX para exibir o boletim de recados.
+ */
 function BoletimRecados() {
   const [controller] = useMaterialUIController();
   const { miniSidenav } = controller;
@@ -29,6 +34,9 @@ function BoletimRecados() {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [scrollAtBottom, setScrollAtBottom] = useState(true);
 
+  /**
+   * Função para carregar os recados do boletim.
+   */
   useEffect(() => {
     const fetchBoletim = async () => {
       try {
@@ -52,6 +60,9 @@ function BoletimRecados() {
     fetchBoletim();
   }, []);
 
+  /**
+   * Função para carregar os recados do boletim em intervalos regulares.
+   */
   useEffect(() => {
     const loadDataInterval = setInterval(async () => {
       try {
@@ -69,6 +80,9 @@ function BoletimRecados() {
     return () => clearInterval(loadDataInterval);
   }, []);
 
+  /**
+   * Função para verificar se o scroll está no final da página.
+   */
   useEffect(() => {
     const handleScroll = () => {
       const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight;
@@ -80,6 +94,9 @@ function BoletimRecados() {
     };
   }, []);
 
+  /**
+   * Função para rolar até o final da página sempre que houver novos recados.
+   */
   useEffect(() => {
     const scrollToBottom = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -87,6 +104,9 @@ function BoletimRecados() {
     scrollToBottom();
   }, [recados, click]);
 
+  /**
+   * Função para calcular a posição do botão de envio de recados.
+   */
   useEffect(() => {
     const calculateButtonPosition = () => {
       const windowWidth = window.innerWidth;
@@ -97,14 +117,24 @@ function BoletimRecados() {
     calculateButtonPosition();
   }, [miniSidenav]);
 
+  /**
+   * Função para lidar com a mudança de texto no input de mensagem.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleChangeTexto = (e) => {
     setTexto(e.target.value);
   };
 
+  /**
+   * Função para lidar com o clique no botão de envio de recado.
+   */
   const handleClick = () => {
     setClick(!click);
   };
 
+  /**
+   * Função para enviar um recado.
+   */
   const handleEnviar = async () => {
     try {
       const response = await api.post("/pessoas/aluno/boletim/agenda/recado/api/v1/", {

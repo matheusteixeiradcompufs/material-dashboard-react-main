@@ -14,6 +14,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de um transporte.
+ * @module transportes
+ * @returns {JSX.Element} Componente para visualizar os detalhes de um transporte.
+ */
 function ViewTransportes() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
@@ -27,6 +32,9 @@ function ViewTransportes() {
   const [itinerario, setItinerario] = useState("");
 
   useEffect(() => {
+    /**
+     * Função para buscar os detalhes do transporte.
+     */
     const fetchTransporte = async () => {
       try {
         const response = await api.get(`/pessoas/transporte/api/v1/${transporteid}/`);
@@ -52,11 +60,17 @@ function ViewTransportes() {
     fetchTransporte();
   }, []);
 
+  /**
+   * Navega para a página de edição do transporte.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/editar`);
   };
 
+  /**
+   * Navega de volta para a lista de transportes.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/transportes`);

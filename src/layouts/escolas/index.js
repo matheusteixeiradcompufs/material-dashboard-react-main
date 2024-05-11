@@ -1,3 +1,8 @@
+/**
+ * ESCOLAS. Esse é o layout que renderiza a página que lista as escolas cadastradas.
+ * A partir dela é possível também acessar as outras funções do CRUD de escolas.
+ * @file
+ */
 import React, { useContext, useEffect, useState } from "react";
 import { Grid, Fab, Card } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,6 +19,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir a lista de escolas e suas opções.
+ * @module escolas
+ * @returns {JSX.Element} Componente Escolas.
+ */
 function Escolas() {
   const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +31,9 @@ function Escolas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função para buscar as escolas do servidor.
+     */
     const fetchEscolas = async () => {
       try {
         const response = await api.get("/escolas/api/v1/");
@@ -40,11 +53,19 @@ function Escolas() {
     fetchEscolas();
   }, []);
 
+  /**
+   * Manipulador para visualizar uma escola.
+   * @param {string} escolaid - O ID da escola a ser visualizada.
+   */
   const handleView = (escolaid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/view`);
   };
 
+  /**
+   * Manipulador para excluir uma escola.
+   * @param {string} escolaid - O ID da escola a ser excluída.
+   */
   const handleExcluir = async (escolaid) => {
     setLoading(true);
     try {

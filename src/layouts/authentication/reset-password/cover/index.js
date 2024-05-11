@@ -1,27 +1,35 @@
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-
-// Images
 import bgImage from "assets/images/Escola.png";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { BASE_URL } from "services/api";
 
+/**
+ * Componente para redefinir a senha do usuário.
+ * @module authentication/reset-password/cover
+ * @returns {JSX.Element} Componente de redefinição de senha.
+ */
 function Cover() {
   const [email, setEmail] = useState("");
 
+  /**
+   * Manipulador de evento para alterar o email no estado.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de alteração.
+   * @returns {void}
+   */
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
   };
 
+  /**
+   * Função para enviar uma solicitação de redefinição de senha para o servidor.
+   * @returns {Promise<void>}
+   */
   const handleRedefinir = async () => {
     try {
       const response = await fetch(`${BASE_URL}/pessoas/reset-password/`, {
@@ -64,7 +72,7 @@ function Cover() {
             Redefinir Senha
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
-            Você receberá um email para resetar a senha em no maximo 60 seg
+            Você receberá um email para resetar a senha em no máximo 60 segundos
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -81,14 +89,9 @@ function Cover() {
             </MDBox>
             <MDBox mt={6} mb={1}>
               <MDButton variant="gradient" color="info" onClick={handleRedefinir} fullWidth>
-                redefinir
+                Redefinir
               </MDButton>
             </MDBox>
-            {/* {message && (
-              <MDTypography variant="body1" align="center" style={{ marginTop: "1rem" }}>
-                {message}
-              </MDTypography>
-            )} */}
           </MDBox>
         </MDBox>
       </Card>

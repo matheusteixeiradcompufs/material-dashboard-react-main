@@ -1,17 +1,10 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * Função que retorna os estilos da barra de navegação.
+ * @module dashboard/components
+ * @param {Object} theme - O tema do Material-UI.
+ * @param {Object} ownerState - O estado do proprietário da barra de navegação.
+ * @returns {Object} Estilos da barra de navegação.
+ */
 function navbar(theme, ownerState) {
   const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
   const { transparentNavbar, absolute, light, darkMode } = ownerState;
@@ -29,6 +22,10 @@ function navbar(theme, ownerState) {
         ? `${transparent.main} !important`
         : rgba(darkMode ? background.default : white.main, 0.8),
 
+    /**
+     * Função para definir a cor do texto da barra de navegação.
+     * @returns {string} Cor do texto.
+     */
     color: () => {
       let color;
 
@@ -72,6 +69,11 @@ function navbar(theme, ownerState) {
   };
 }
 
+/**
+ * Estilos para o contêiner da barra de navegação.
+ * @param {Object} breakpoints - Pontos de interrupção do Material-UI.
+ * @returns {Object} Estilos do contêiner da barra de navegação.
+ */
 const navbarContainer = ({ breakpoints }) => ({
   flexDirection: "column",
   alignItems: "flex-start",
@@ -87,6 +89,13 @@ const navbarContainer = ({ breakpoints }) => ({
   },
 });
 
+/**
+ * Estilos para a linha da barra de navegação.
+ * @param {Object} breakpoints - Pontos de interrupção do Material-UI.
+ * @param {Object} options - Opções adicionais para a linha da barra de navegação.
+ * @param {boolean} options.isMini - Define se a barra de navegação está em modo mini.
+ * @returns {Object} Estilos da linha da barra de navegação.
+ */
 const navbarRow = ({ breakpoints }, { isMini }) => ({
   display: "flex",
   alignItems: "center",
@@ -104,6 +113,12 @@ const navbarRow = ({ breakpoints }, { isMini }) => ({
   },
 });
 
+/**
+ * Estilos para o botão de ícone da barra de navegação.
+ * @param {Object} typography - Tipografia do Material-UI.
+ * @param {Object} breakpoints - Pontos de interrupção do Material-UI.
+ * @returns {Object} Estilos do botão de ícone da barra de navegação.
+ */
 const navbarIconButton = ({ typography: { size }, breakpoints }) => ({
   px: 1,
 
@@ -122,6 +137,11 @@ const navbarIconButton = ({ typography: { size }, breakpoints }) => ({
   },
 });
 
+/**
+ * Estilos para o menu móvel da barra de navegação.
+ * @param {Object} breakpoints - Pontos de interrupção do Material-UI.
+ * @returns {Object} Estilos do menu móvel da barra de navegação.
+ */
 const navbarMobileMenu = ({ breakpoints }) => ({
   display: "inline-block",
   lineHeight: 0,

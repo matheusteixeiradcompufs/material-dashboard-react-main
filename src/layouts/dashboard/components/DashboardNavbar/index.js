@@ -1,52 +1,24 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
-
-// react-router components
 import { useLocation, Link } from "react-router-dom";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
-// @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
-import NotificationItem from "examples/Items/NotificationItem";
-
-// Custom styles for DashboardNavbar
-import {
-  navbar,
-  navbarContainer,
-  navbarRow,
-  navbarIconButton,
-  navbarMobileMenu,
-} from "examples/Navbars/DashboardNavbar/styles";
-
-// Material Dashboard 2 React context
+import { navbar, navbarContainer, navbarRow, navbarIconButton, navbarMobileMenu } from "./styles";
 import { useMaterialUIController, setTransparentNavbar, setMiniSidenav } from "context";
 
+/**
+ * Componente de barra de navegação do painel de controle.
+ * @module dashboard/components
+ * @param {Object} props - Props para o componente DashboardNavbar.
+ * @param {boolean} [props.absolute=false] - Define se a barra de navegação é absoluta.
+ * @param {boolean} [props.light=false] - Define se a barra de navegação é clara.
+ * @param {boolean} [props.isMini=false] - Define se a barra de navegação está em modo mini.
+ * @returns {JSX.Element} Componente de barra de navegação do painel de controle.
+ */
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
@@ -54,34 +26,41 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const route = useLocation().pathname.split("/").slice(1);
 
   useEffect(() => {
-    // Setting the navbar type
+    /**
+     * Define o tipo de barra de navegação.
+     */
     if (fixedNavbar) {
       setNavbarType("sticky");
     } else {
       setNavbarType("static");
     }
 
-    // A function that sets the transparent state of the navbar.
+    /**
+     * Função que define o estado transparente da barra de navegação.
+     */
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
 
-    /** 
-     The event listener that's calling the handleTransparentNavbar function when 
-     scrolling the window.
-    */
+    /**
+     * O event listener que chama a função handleTransparentNavbar quando rolar a janela.
+     */
     window.addEventListener("scroll", handleTransparentNavbar);
 
-    // Call the handleTransparentNavbar function to set the state with the initial value.
+    // Chama a função handleTransparentNavbar para definir o estado com o valor inicial.
     handleTransparentNavbar();
 
-    // Remove event listener on cleanup
+    // Remove o event listener na limpeza
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
 
-  // Styles for the navbar icons
+  /**
+   * Estilos para os ícones da barra de navegação.
+   * @param {Object} theme - O tema do Material-UI.
+   * @returns {Object} Estilos dos ícones.
+   */
   const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
       let colorValue = light || darkMode ? white.main : dark.main;
@@ -131,14 +110,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
   );
 }
 
-// Setting default values for the props of DashboardNavbar
+// Definindo valores padrão para as props de DashboardNavbar
 DashboardNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
 };
 
-// Typechecking props for the DashboardNavbar
+// Checagem de tipos de props para DashboardNavbar
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,

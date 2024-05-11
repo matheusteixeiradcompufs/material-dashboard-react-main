@@ -16,6 +16,11 @@ import Tarefas from "./components/Tarefas";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar a agenda de um dia específico para uma turma em uma escola.
+ * @module escolas/salas/turmas/agenda/diaagenda
+ * @returns {JSX.Element} Componente de gerenciamento de agenda do dia para uma turma.
+ */
 function EscolaSalaTurmaAgendaDiaAgenda() {
   const { refreshToken } = useContext(AuthContext);
   const { turmaid } = useParams();
@@ -39,10 +44,18 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
   const [tipo, setTipo] = useState("C");
   const [dataEntrega, setDataEntrega] = useState(null);
 
+  /**
+   * Função para lidar com a mudança de data selecionada.
+   * @param {Date} date - Nova data selecionada.
+   */
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
+  /**
+   * Funções para definir valores dos campos de formulário.
+   * @param {Event} e - Evento do formulário.
+   */
   const handleSetTitulo = (e) => {
     setTitulo(e.target.value);
   };
@@ -63,10 +76,17 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setTipo(e.target.value);
   };
 
+  /**
+   * Função para definir a data de entrega da tarefa.
+   * @param {Date} date - Data de entrega da tarefa.
+   */
   const handleSetDataEntrega = (date) => {
     setDataEntrega(date);
   };
 
+  /**
+   * Função para preparar o formulário para edição de aviso.
+   */
   const handleOnEditAviso = () => {
     setViewTarefa(false);
     setAddTarefa(false);
@@ -76,6 +96,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setEditAviso(true);
   };
 
+  /**
+   * Função para visualizar um aviso específico.
+   * @param {string} avisoid - ID do aviso a ser visualizado.
+   */
   const handleOnViewAviso = (avisoid) => {
     const avisoView = diaAgenda.objetos_avisos.find((objeto) => objeto.id === avisoid);
     setTitulo(avisoView.titulo);
@@ -89,6 +113,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setViewAviso(true);
   };
 
+  /**
+   * Função para preparar o formulário para adição de aviso.
+   */
   const handleOnAddAviso = () => {
     setNome("");
     setDescricao("");
@@ -102,6 +129,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setAddAviso(true);
   };
 
+  /**
+   * Função para preparar o formulário para edição de tarefa.
+   */
   const handleOnEditTarefa = () => {
     setViewTarefa(false);
     setAddTarefa(false);
@@ -111,6 +141,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setEditTarefa(true);
   };
 
+  /**
+   * Função para visualizar uma tarefa específica.
+   * @param {string} tarefaid - ID da tarefa a ser visualizada.
+   */
   const handleOnViewTarefa = (tarefaid) => {
     const tarefaView = diaAgenda.objetos_tarefas.find((objeto) => objeto.id === tarefaid);
     setNome(tarefaView.nome);
@@ -126,6 +160,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setViewTarefa(true);
   };
 
+  /**
+   * Função para preparar o formulário para adição de tarefa.
+   */
   const handleOnAddTarefa = () => {
     setTitulo("");
     setTexto("");
@@ -137,6 +174,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setAddTarefa(true);
   };
 
+  /**
+   * Função para limpar o formulário de adição/editação.
+   */
   const handleOffAdd = () => {
     setTitulo("");
     setTexto("");
@@ -152,6 +192,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     setAddTarefa(false);
   };
 
+  /**
+   * Efeito para carregar a turma ao montar o componente.
+   */
   useEffect(() => {
     const fetchTurma = async () => {
       setLoading(true);
@@ -173,6 +216,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para carregar os dados da agenda ao selecionar uma data.
+   */
   const handleCarregar = async () => {
     setLoading(true);
     try {
@@ -200,6 +246,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para adicionar um aviso.
+   */
   const handleAddAviso = async () => {
     setLoading(true);
     try {
@@ -223,6 +272,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para editar um aviso.
+   * @param {string} avisoid - ID do aviso a ser editado.
+   */
   const handleEditarAviso = async (avisoid) => {
     setLoading(true);
     try {
@@ -245,6 +298,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para excluir um aviso.
+   * @param {string} avisoid - ID do aviso a ser excluído.
+   */
   const handleExcluirAviso = async (avisoid) => {
     setLoading(true);
     try {
@@ -259,9 +316,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
         toast.error("Erro ao excluir aviso!");
         console.error("Erro ao excluir aviso:", error);
         if (error.response.status === 403) {
-          toast.error("Você não tem permissão pra excluir avisos! Solicite ao seu Coordenador!");
+          toast.error("Você não tem permissão para excluir avisos! Solicite ao seu Coordenador!");
           console.error(
-            "Você não tem permissão pra excluir avisos! Solicite ao seu Coordenador!",
+            "Você não tem permissão para excluir avisos! Solicite ao seu Coordenador!",
             error
           );
         }
@@ -270,6 +327,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para adicionar uma tarefa.
+   */
   const handleAddTarefa = async () => {
     setLoading(true);
     try {
@@ -295,6 +355,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para editar uma tarefa.
+   * @param {string} tarefaid - ID da tarefa a ser editada.
+   */
   const handleEditarTarefa = async (tarefaid) => {
     setLoading(true);
     try {
@@ -319,6 +383,10 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     }
   };
 
+  /**
+   * Função para excluir uma tarefa.
+   * @param {string} tarefaid - ID da tarefa a ser excluída.
+   */
   const handleExcluirTarefa = async (tarefaid) => {
     setLoading(true);
     try {
@@ -334,9 +402,9 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
         toast.error("Erro ao excluir tarefa!");
         console.error("Erro ao excluir tarefa:", error);
         if (error.response.status === 403) {
-          toast.error("Você não tem permissão pra excluir tarefas! Solicite ao seu Coordenador!");
+          toast.error("Você não tem permissão para excluir tarefas! Solicite ao seu Coordenador!");
           console.error(
-            "Você não tem permissão pra excluir tarefas! Solicite ao seu Coordenador!",
+            "Você não tem permissão para excluir tarefas! Solicite ao seu Coordenador!",
             error
           );
         }
@@ -344,6 +412,8 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
       setLoading(false);
     }
   };
+
+  // Componente de carregamento
   if (loading) {
     return (
       <DashboardLayout>
@@ -369,6 +439,7 @@ function EscolaSalaTurmaAgendaDiaAgenda() {
     );
   }
 
+  // Renderização do componente principal
   return (
     <DashboardLayout>
       <ToastContainer />

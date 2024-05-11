@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar um telefone de um aluno.
+ * @module pessoas/alunos/telefones
+ * @returns {JSX.Element} JSX para a página de edição de telefone do aluno.
+ */
 function EditarAlunoTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -40,10 +45,17 @@ function EditarAlunoTelefone() {
     fetchTelefone();
   }, []);
 
+  /**
+   * Define o número do telefone conforme o usuário digita.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleSetNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Envia uma requisição para editar o telefone do aluno.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -56,13 +68,16 @@ function EditarAlunoTelefone() {
         await refreshToken();
         await handleEditar();
       } else {
-        toast.error("Erro ao modificar teledone do aluno");
-        console.log("Erro ao modificar teledone do aluno", error);
+        toast.error("Erro ao modificar telefone do aluno");
+        console.log("Erro ao modificar telefone do aluno", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Cancela a edição do telefone e redireciona para a página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/view`);

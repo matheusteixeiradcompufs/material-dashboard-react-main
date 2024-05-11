@@ -12,6 +12,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar os alunos associados a um transporte.
+ * @module transportes/alunos/gerenciar
+ * @returns {JSX.Element} Componente de gerenciamento de alunos do transporte.
+ */
 function GerenciarTransporteAlunos() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
@@ -21,6 +26,9 @@ function GerenciarTransporteAlunos() {
   const [left, setLeft] = useState([]);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do transporte e dos alunos.
+     */
     const fetchDados = async () => {
       try {
         const res = await api.get(`/pessoas/transporte/api/v1/${transporteid}/`);
@@ -46,11 +54,17 @@ function GerenciarTransporteAlunos() {
     fetchDados();
   }, []);
 
+  /**
+   * Função para cancelar a operação de gerenciamento de alunos e voltar para a página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/alunos`);
   };
 
+  /**
+   * Função para salvar as alterações feitas no gerenciamento de alunos.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {

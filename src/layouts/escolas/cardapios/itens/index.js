@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os itens de um cardápio de uma escola.
+ * @module escolas/cardapios/itens
+ * @returns {JSX.Element} Componente de visualização dos itens do cardápio.
+ */
 function EscolaCardapioItens() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -33,7 +38,7 @@ function EscolaCardapioItens() {
           await fetchItens();
         } else {
           toast.error("Erro ao carregar cardápio!");
-          console.log("Erro ao carregar cardápio!", error);
+          console.error("Erro ao carregar cardápio!", error);
         }
         setLoading(false);
       }
@@ -41,6 +46,10 @@ function EscolaCardapioItens() {
     fetchItens();
   }, []);
 
+  /**
+   * Navega para a página de visualização de um item específico do cardápio.
+   * @param {string} itemid - O ID do item do cardápio.
+   */
   const handleView = (itemid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/item/${itemid}/view`);

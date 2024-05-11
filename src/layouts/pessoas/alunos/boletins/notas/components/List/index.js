@@ -5,6 +5,17 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para exibir a lista de notas do aluno.
+ * @module pessoas/alunos/boletins/notas/components
+ * @param {object} props - Propriedades do componente.
+ * @param {Array<object>} props.avaliacoes - Lista de avaliações do aluno.
+ * @param {Array<object>} props.situacoes - Lista de situações das matérias do aluno.
+ * @param {Array<object>} props.medias - Lista de médias das avaliações do aluno.
+ * @param {Function} props.handleOnEdit - Função para manipular a edição de notas.
+ * @param {Function} props.handleOnFinal - Função para finalizar as matérias.
+ * @returns {JSX.Element} JSX para exibir a lista de notas do aluno.
+ */
 function List({ avaliacoes, situacoes, medias, handleOnEdit, handleOnFinal }) {
   const columns = [
     { Header: "matéria", accessor: "materia", width: "20%", align: "left" },
@@ -20,6 +31,10 @@ function List({ avaliacoes, situacoes, medias, handleOnEdit, handleOnFinal }) {
     { Header: "situação", accessor: "situacao", align: "center" },
   ];
 
+  /**
+   * Gera as linhas da tabela com as notas e opções de edição/finalização.
+   * @returns {Array<object>} Array contendo as linhas da tabela.
+   */
   const gerarLinhas = () => {
     const linhas = [];
     for (let i = 0; i < situacoes.length; i++) {
@@ -174,6 +189,7 @@ function List({ avaliacoes, situacoes, medias, handleOnEdit, handleOnFinal }) {
     });
     return linhas;
   };
+
   return (
     <Card>
       <MDBox

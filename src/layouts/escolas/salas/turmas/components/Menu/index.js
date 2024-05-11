@@ -5,6 +5,15 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente de menu para exibir opções relacionadas a uma turma.
+ * @module escolas/salas/turmas/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.escolaid - ID da escola.
+ * @param {string} props.salaid - ID da sala.
+ * @param {string} props.turmaid - ID da turma.
+ * @returns {JSX.Element} - Componente de menu.
+ */
 function Menu({ escolaid, salaid, turmaid }) {
   return (
     <Card>

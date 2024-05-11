@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar as disciplinas da agenda escolar de uma turma.
+ * @module escolas/salas/turmas/agenda/gerenciar
+ * @returns {JSX.Element} O componente para gerenciar disciplinas da agenda.
+ */
 function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
   const { escolaid, salaid, turmaid } = useParams();
@@ -31,6 +36,11 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
   const [sexLeft, setSexLeft] = useState([]);
   const [sexRight, setSexRight] = useState([]);
 
+  /**
+   * Função para obter as disciplinas de cada dia da semana.
+   * @param {Array} dias - Array de objetos contendo informações dos dias da semana.
+   * @returns {Object} Objeto contendo arrays de disciplinas para cada dia da semana.
+   */
   function obterDisciplinas(dias) {
     let dom = [],
       seg = [],
@@ -124,6 +134,9 @@ function EscolaSalaTurmaAgendaGerenciarDisciplinas() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para lidar com o salvamento das disciplinas na agenda.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {

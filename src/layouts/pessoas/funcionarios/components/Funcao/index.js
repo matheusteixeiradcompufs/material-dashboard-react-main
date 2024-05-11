@@ -1,6 +1,17 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para exibir opções de função em um grupo de rádio.
+ * @module pessoas/funcionarios/components
+ * @param {object} props - Propriedades do componente.
+ * @param {object} props.user - Objeto representando o usuário.
+ * @param {boolean} props.disabled - Indica se as opções estão desabilitadas.
+ * @param {number} props.value - Valor selecionado.
+ * @param {function} props.onChange - Manipulador de evento de mudança de seleção.
+ * @param {Array<object>} props.groups - Lista de grupos de função disponíveis.
+ * @returns {JSX.Element} Componente de seleção de função.
+ */
 function Funcao({ user, value, onChange, groups, disabled }) {
   const isSuperUser = user.is_superuser;
   const userGroup = user.grupo;
@@ -34,6 +45,7 @@ function Funcao({ user, value, onChange, groups, disabled }) {
   );
 }
 
+// Definição dos tipos das propriedades
 Funcao.propTypes = {
   user: PropTypes.object,
   disabled: PropTypes.bool,

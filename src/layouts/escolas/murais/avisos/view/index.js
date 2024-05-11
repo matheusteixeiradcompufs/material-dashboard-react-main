@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para visualizar detalhes de um aviso no mural de uma escola.
+ * @module escolas/murais/avisos
+ * @returns {JSX.Element} Componente para visualizar detalhes de um aviso no mural de uma escola.
+ */
 function ViewEscolaMuralAviso() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -41,19 +46,33 @@ function ViewEscolaMuralAviso() {
     fetchAviso();
   }, []);
 
+  /**
+   * Função para lidar com a mudança do título do aviso.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança do input.
+   */
   const handleChangeTitulo = (e) => {
     setTitulo(e.target.value);
   };
 
+  /**
+   * Função para lidar com a mudança do texto do aviso.
+   * @param {React.ChangeEvent<HTMLTextAreaElement>} e - Evento de mudança do textarea.
+   */
   const handleChangeTexto = (e) => {
     setTexto(e.target.value);
   };
 
+  /**
+   * Função para redirecionar para a página de edição do aviso.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/editar`);
   };
 
+  /**
+   * Função para redirecionar para a página anterior.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/avisos`);

@@ -1,3 +1,8 @@
+/**
+ * ITENS. Esse é o layout que renderiza a página que lista os ítens de cardápio de merenda.
+ * A partir dela é possível também acessar as outras funções do CRUD dos ítens.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -14,6 +19,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente funcional que representa a página de itens da merenda.
+ * @module itens
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function Itens() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +31,10 @@ function Itens() {
   const [itens, setItens] = useState([]);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os itens da API.
+     * @returns {Promise<void>}
+     */
     const fetchItens = async () => {
       try {
         const response = await api.get("/escolas/cardapio/item/api/v1/");
@@ -40,22 +54,30 @@ function Itens() {
     fetchItens();
   }, []);
 
-  const handleView = (itemid) => {
+  /**
+   * Navega para a página de visualização do item.
+   * @param {string} itemId - O ID do item a ser visualizado.
+   */
+  const handleView = (itemId) => {
     setLoading(true);
-    navigate(`/itemmerenda/${itemid}/view`);
+    navigate(`/itemmerenda/${itemId}/view`);
   };
 
-  const handleExcluir = async (itemid) => {
+  /**
+   * Exclui um item da merenda.
+   * @param {string} itemId - O ID do item a ser excluído.
+   */
+  const handleExcluir = async (itemId) => {
     setLoading(true);
     try {
-      await api.delete(`/escolas/cardapio/item/api/v1/${itemid}/`);
+      await api.delete(`/escolas/cardapio/item/api/v1/${itemId}/`);
       const response = await api.get("/escolas/cardapio/item/api/v1/");
       setItens(response.data);
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {
         await refreshToken();
-        await handleExcluir(itemid);
+        await handleExcluir(itemId);
       } else {
         toast.error("Erro ao excluir item!");
         console.log("Erro ao excluir item!", error);
@@ -115,7 +137,7 @@ function Itens() {
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "ítem", accessor: "item", width: "70%", align: "left" },
+                      { Header: "Ítem", accessor: "item", width: "70%", align: "left" },
                       { Header: "", accessor: "opcoes", align: "center" },
                     ],
                     rows: [

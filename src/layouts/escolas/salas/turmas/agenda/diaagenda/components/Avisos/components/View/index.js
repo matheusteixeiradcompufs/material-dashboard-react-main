@@ -4,6 +4,23 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para visualizar um aviso.
+ * @module escolas/salas/turmas/agenda/diaagenda/components/Avisos/components
+ * @param {ViewProps} props - Propriedades do componente.
+ * @returns {JSX.Element} Componente de visualização de aviso.
+ */
+
+/**
+ * Propriedades esperadas pelo componente de visualização de aviso.
+ * @typedef {Object} ViewProps
+ * @property {string} titulo - O título do aviso.
+ * @property {Function} handleSetTitulo - Função para definir o título do aviso.
+ * @property {string} texto - O texto do aviso.
+ * @property {Function} handleSetTexto - Função para definir o texto do aviso.
+ * @property {Function} handleOnEditAviso - Função para modificar um aviso.
+ * @property {Function} handleOffAdd - Função para cancelar a operação de visualização ou modificação de um aviso.
+ */
 function View({ titulo, handleSetTitulo, texto, handleSetTexto, handleOnEditAviso, handleOffAdd }) {
   return (
     <MDBox pt={3} px={2} mb={2}>

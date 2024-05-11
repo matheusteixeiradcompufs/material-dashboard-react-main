@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente funcional que representa a página de visualização dos detalhes de um item da merenda.
+ * @module itens
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function ViewItem() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,10 @@ function ViewItem() {
   const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do item da API.
+     * @returns {Promise<void>}
+     */
     const fetchItens = async () => {
       try {
         const response = await api.get(`/escolas/cardapio/item/api/v1/${itemid}/`);
@@ -42,11 +51,17 @@ function ViewItem() {
     fetchItens();
   }, []);
 
+  /**
+   * Navega para a página de edição do item.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/itemmerenda/${itemid}/editar`);
   };
 
+  /**
+   * Navega de volta para a lista de itens.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/itensmerenda`);

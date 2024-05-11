@@ -1,3 +1,7 @@
+/**
+ * LEITORQR. Esse é o layout que renderiza a página do leitor de QR Code.
+ * @file
+ */
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Card, Grid } from "@mui/material";
@@ -11,7 +15,13 @@ import confirmar from "assets/images/confirmar.png";
 import cancelar from "assets/images/cancelar.png";
 import BasicLayout from "layouts/leitorqr/components/BasicLayout";
 import bgImage from "assets/images/Escola.png";
+import { BASE_URL } from "services/api";
 
+/**
+ * Componente funcional que representa a página de leitura e validação de carteirinhas com QR code.
+ * @module leitorqr
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 const QRCodeReaderPage = () => {
   const [qrCode, setQRCode] = useState("No Result");
   const [lido, setLido] = useState(false);
@@ -24,9 +34,13 @@ const QRCodeReaderPage = () => {
   const [matricula, setMatricula] = useState("");
 
   useEffect(() => {
+    /**
+     * Função assíncrona para verificar a validade do token decodificado.
+     * @returns {Promise<void>}
+     */
     const verifyToken = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/pessoas/decode-token/?token=${qrCode}`);
+        const response = await fetch(`${BASE_URL}/pessoas/decode-token/?token=${qrCode}`);
         if (!response.ok) {
           throw new Error("Erro ao verificar validade do token!");
         }

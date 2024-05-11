@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para visualização de um email da escola.
+ * @module escolas/emails
+ * @returns {JSX.Element} - Componente de visualização de emails da escola.
+ */
 function ViewEscolaEmail() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,6 +24,9 @@ function ViewEscolaEmail() {
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Efeito para carregar os dados do email da escola.
+   */
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -39,11 +47,17 @@ function ViewEscolaEmail() {
     fetchEscola();
   }, []);
 
+  /**
+   * Manipulador de evento para redirecionar para a página de edição do email.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/editar`);
   };
 
+  /**
+   * Manipulador de evento para voltar à lista de emails da escola.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/emails`);

@@ -15,6 +15,11 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir a agenda escolar de uma turma.
+ * @module escolas/salas/turmas/agenda
+ * @returns {JSX.Element} O componente da agenda escolar da turma.
+ */
 function EscolaSalaTurmaAgenda() {
   const { refreshToken } = useContext(AuthContext);
   const { escolaid, salaid, turmaid } = useParams();
@@ -26,6 +31,11 @@ function EscolaSalaTurmaAgenda() {
   const [quinta, setQuinta] = useState([]);
   const [sexta, setSexta] = useState([]);
 
+  /**
+   * Função para obter as disciplinas de cada dia da semana.
+   * @param {Array} dias - Array de objetos contendo informações dos dias da semana.
+   * @returns {Object} Objeto contendo arrays de disciplinas para cada dia da semana.
+   */
   const obterDisciplinas = (dias) => {
     let dom = [],
       seg = [],
@@ -96,6 +106,9 @@ function EscolaSalaTurmaAgenda() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para lidar com o início da agenda da turma.
+   */
   const handleIniciarAgenda = async () => {
     setLoading(true);
     try {

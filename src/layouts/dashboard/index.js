@@ -1,20 +1,17 @@
+/**
+ * DASHBOARD. Esse é o layout que renderiza a página principal da aplicação.
+ * É a página exibida a todos os usuários logo após o logon.
+ * @file
+ */
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "./components/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
 import GraficoTurmas from "layouts/dashboard/data/graficoTurmas";
-
-// Dashboard components
 import { useContext, useEffect, useState } from "react";
 import { api } from "services/apiClient";
 import { AuthContext } from "context/AuthContext";
@@ -23,7 +20,13 @@ import GraficoEscolas from "./data/graficoEscolas";
 import { Audio } from "react-loader-spinner";
 import { ToastContainer, toast } from "react-toastify";
 
+/**
+ * Componente principal para a página do dashboard.
+ * @module dashboard
+ * @returns {JSX.Element} O componente do dashboard.
+ */
 function Dashboard() {
+  // Hooks de estado e contexto
   const { graficoTurmas } = GraficoTurmas();
   const { graficoAlunos } = GraficoAlunos();
   const { graficoEscolas } = GraficoEscolas();
@@ -35,7 +38,12 @@ function Dashboard() {
   const [turmas, setTurmas] = useState([]);
   const data = new Date();
 
+  // Efeito colateral para carregar dados
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar dados do servidor.
+     * @returns {Promise<void>}
+     */
     const fetchDados = async () => {
       try {
         let response = await api.get("/escolas/api/v1/");
@@ -61,6 +69,7 @@ function Dashboard() {
     fetchDados();
   }, []);
 
+  // Se ainda estiver carregando, exibe um spinner de carregamento
   if (loading) {
     return (
       <DashboardLayout>
@@ -86,12 +95,14 @@ function Dashboard() {
     );
   }
 
+  // Renderiza o dashboard
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <ToastContainer />
       <MDBox py={3}>
         <Grid container spacing={3}>
+          {/* Card de estatísticas para Escolas */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -107,6 +118,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+          {/* Card de estatísticas para Alunos */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -127,6 +139,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+          {/* Card de estatísticas para Funcionários */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -142,6 +155,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
+          {/* Card de estatísticas para Turmas */}
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
@@ -158,8 +172,10 @@ function Dashboard() {
             </MDBox>
           </Grid>
         </Grid>
+        {/* Gráficos */}
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
+            {/* Gráfico de barras de Alunos */}
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
@@ -171,6 +187,7 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
+            {/* Gráfico de linha de Turmas */}
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
@@ -182,6 +199,7 @@ function Dashboard() {
                 />
               </MDBox>
             </Grid>
+            {/* Gráfico de barras de Escolas */}
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart

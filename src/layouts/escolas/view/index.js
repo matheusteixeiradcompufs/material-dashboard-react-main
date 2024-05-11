@@ -13,6 +13,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de uma escola.
+ * @module escolas
+ * @returns {JSX.Element} Componente ViewEscola.
+ */
 function ViewEscola() {
   const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,6 +29,9 @@ function ViewEscola() {
   const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes da escola.
+     */
     const fetchEscola = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
@@ -46,11 +54,17 @@ function ViewEscola() {
     fetchEscola();
   }, []);
 
+  /**
+   * Manipulador para redirecionar para a página de edição da escola.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/editar`);
   };
 
+  /**
+   * Manipulador para voltar para a página anterior.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escolas`);

@@ -1,12 +1,17 @@
 import PropTypes from "prop-types";
-
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/**
+ * Componente para exibir informações de contato, como telefones e emails.
+ * @module perfil/components
+ * @param {Object[]} telefones - Lista de objetos representando os telefones.
+ * @param {string} telefones[].numero - Número de telefone.
+ * @param {Object[]} emails - Lista de objetos representando os emails.
+ * @param {string} emails[].endereco - Endereço de email.
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function Contatos({ telefones, emails }) {
   return (
     <Card sx={{ boxShadow: "none" }}>
@@ -68,14 +73,36 @@ function Contatos({ telefones, emails }) {
   );
 }
 
+/**
+ * Propriedades padrão do componente.
+ * @memberof Contatos
+ * @property {Object[]} telefones - Lista de telefones.
+ * @property {Object[]} emails - Lista de emails.
+ */
 Contatos.defaultProps = {
   telefones: [],
   emails: [],
 };
 
+/**
+ * Tipos esperados das propriedades do componente.
+ * @memberof Contatos
+ * @property {Object[]} telefones - Lista de telefones.
+ * @property {string} telefones[].numero - Número de telefone.
+ * @property {Object[]} emails - Lista de emails.
+ * @property {string} emails[].endereco - Endereço de email.
+ */
 Contatos.propTypes = {
-  telefones: PropTypes.array,
-  emails: PropTypes.array,
+  telefones: PropTypes.arrayOf(
+    PropTypes.shape({
+      numero: PropTypes.string.isRequired,
+    })
+  ),
+  emails: PropTypes.arrayOf(
+    PropTypes.shape({
+      endereco: PropTypes.string.isRequired,
+    })
+  ),
 };
 
 export default Contatos;

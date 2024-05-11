@@ -15,6 +15,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de um funcionário.
+ * @module pessoas/funcionarios
+ * @returns {JSX.Element} Componente de visualização de funcionário.
+ */
 function ViewFuncionario() {
   const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -34,6 +39,9 @@ function ViewFuncionario() {
   const [formacao, setFormacao] = useState("");
   const [retrato, setRetrato] = useState(null);
 
+  /**
+   * Efeito para carregar os detalhes do funcionário.
+   */
   useEffect(() => {
     const fetchFuncionario = async () => {
       try {
@@ -68,11 +76,17 @@ function ViewFuncionario() {
     fetchFuncionario();
   }, []);
 
+  /**
+   * Manipulador de evento para redirecionar para a página de edição do funcionário.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/editar`);
   };
 
+  /**
+   * Manipulador de evento para voltar à lista de funcionários.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionarios`);

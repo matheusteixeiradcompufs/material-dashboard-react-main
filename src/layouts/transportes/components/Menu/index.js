@@ -3,18 +3,35 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
+/**
+ * Componente para exibir o menu de opções relacionadas a um transporte.
+ * @module transportes/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.transporteid - O ID do transporte.
+ * @param {Function} props.setLoading - Função para definir o estado de carregamento.
+ * @returns {JSX.Element} Componente de menu de transporte.
+ */
 function Menu({ transporteid, setLoading }) {
   const navigate = useNavigate();
+
+  /**
+   * Navega para a página de telefones do transporte.
+   */
   const handleOnTelefones = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefones`);
   };
+
+  /**
+   * Navega para a página de alunos do transporte.
+   */
   const handleOnAlunos = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/alunos`);
   };
+
   return (
     <Card>
       <MDBox
@@ -51,6 +68,7 @@ function Menu({ transporteid, setLoading }) {
   );
 }
 
+// Tipagem das propriedades do componente
 Menu.propTypes = {
   transporteid: PropTypes.string.isRequired,
   setLoading: PropTypes.func.isRequired,

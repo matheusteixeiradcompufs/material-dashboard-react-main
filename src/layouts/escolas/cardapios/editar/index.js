@@ -13,6 +13,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar o cardápio de uma escola.
+ * @module escolas/cardapios
+ * @returns {JSX.Element} Componente para edição de cardápio de escola.
+ */
 function EditarEscolaCardapio() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function EditarEscolaCardapio() {
   const [turno, setTurno] = useState("M");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Efeito para carregar os dados do cardápio ao montar o componente.
+   */
   useEffect(() => {
     const fetchCardapio = async () => {
       try {
@@ -34,7 +42,7 @@ function EditarEscolaCardapio() {
           await fetchCardapio();
         } else {
           toast.error("Erro ao carregar dados do cardápio");
-          console.log("Erro ao carregar dados do cardápio", error);
+          console.error("Erro ao carregar dados do cardápio", error);
         }
         setLoading(false);
       }
@@ -42,14 +50,25 @@ function EditarEscolaCardapio() {
     fetchCardapio();
   }, []);
 
+  /**
+   * Manipula a mudança de valor do campo de data.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeData = (e) => {
     setData(e.target.value);
   };
 
+  /**
+   * Manipula a mudança de valor do campo de turno.
+   * @param {React.ChangeEvent<{ value: unknown }>} e - O evento de mudança.
+   */
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
 
+  /**
+   * Manipula a edição do cardápio.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -64,12 +83,15 @@ function EditarEscolaCardapio() {
         await handleEditar(cardapioid);
       } else {
         toast.error("Erro ao cadastrar escola");
-        console.log("Erro ao cadastrar escola", error);
+        console.error("Erro ao cadastrar escola", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Manipula o cancelamento da edição do cardápio.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);

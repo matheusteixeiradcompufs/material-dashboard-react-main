@@ -2,11 +2,19 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Hook customizado para obter dados do gráfico de turmas.
+ * @module dashboard/data
+ * @returns {Object} Dados do gráfico de turmas.
+ */
 const GraficoTurmas = () => {
-  const [turmas, setTurmas] = useState([]);
+  const [turmas, setTurmas] = useState([]); // Estado para armazenar os dados das turmas
   const currentYear = new Date().getFullYear(); // Obtém o ano atual
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar dados das turmas do servidor.
+     */
     const fetchTurmas = async () => {
       try {
         const response = await api.get(`/escolas/sala/turma/api/v1/`);
@@ -19,7 +27,7 @@ const GraficoTurmas = () => {
 
     fetchTurmas();
 
-    // Função de limpeza
+    // Função de limpeza (opcional)
     return () => {
       // Se necessário, faça a limpeza aqui
     };

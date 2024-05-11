@@ -1,3 +1,8 @@
+/**
+ * TRANSPORTES. Esse é o layout que renderiza a página que lista os transportes cadastrados.
+ * A partir dela é possível também acessar as outras funções do CRUD dos transportes.
+ * @file
+ */
 import AddIcon from "@mui/icons-material/Add";
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
@@ -13,6 +18,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para exibir a lista de transportes.
+ * @module transportes
+ * @returns {JSX.Element} Componente para exibir a lista de transportes.
+ */
 function Transportes() {
   const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -39,22 +49,30 @@ function Transportes() {
     fetchTransportes();
   }, []);
 
-  const handleView = async (transporteid) => {
+  /**
+   * Navega para a página de visualização de um transporte específico.
+   * @param {string} transporteId - O ID do transporte.
+   */
+  const handleView = async (transporteId) => {
     setLoading(true);
-    navigate(`/transportes/${transporteid}/view`);
+    navigate(`/transportes/${transporteId}/view`);
   };
 
-  const handleExcluir = async (transporteid) => {
+  /**
+   * Exclui um transporte específico.
+   * @param {string} transporteId - O ID do transporte.
+   */
+  const handleExcluir = async (transporteId) => {
     setLoading(true);
     try {
-      await api.delete(`/pessoas/transporte/api/v1/${transporteid}/`);
+      await api.delete(`/pessoas/transporte/api/v1/${transporteId}/`);
       const response = await api.get("/pessoas/transporte/api/v1/");
       setTransportes(response.data);
       setLoading(false);
     } catch (error) {
       if (error.response.status === 401) {
         await refreshToken();
-        await handleExcluir(transporteid);
+        await handleExcluir(transporteId);
       } else {
         toast.error("Erro ao excluir o transporte!");
         console.log("Erro ao excluir o transporte!", error);
@@ -119,8 +137,8 @@ function Transportes() {
                       { Header: "tipo", accessor: "tipo", align: "center" },
                       { Header: "opções", accessor: "opcoes", align: "center" },
                     ],
-                    rows: [
-                      ...transportes?.map((transporte) => ({
+                    rows:
+                      transportes?.map((transporte) => ({
                         placa: transporte.placa,
                         ano: transporte.ano,
                         tipo: transporte.tipo,
@@ -148,8 +166,7 @@ function Transportes() {
                             </MDBox>
                           </MDBox>
                         ),
-                      })),
-                    ],
+                      })) || [],
                   }}
                   isSorted={false}
                   entriesPerPage={false}

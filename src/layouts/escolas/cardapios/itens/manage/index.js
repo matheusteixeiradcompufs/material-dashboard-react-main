@@ -13,6 +13,12 @@ import Transfer from "../components/Transfer";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar os itens do cardápio de uma escola.
+ * Permite selecionar e salvar os itens do cardápio.
+ * @module escolas/cardapios/itens
+ * @returns {JSX.Element} Componente de gerenciamento de itens do cardápio.
+ */
 function ManageEscolaCardapioItens() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -39,7 +45,7 @@ function ManageEscolaCardapioItens() {
           await fetchItens();
         } else {
           toast.error("Erro ao carregar cardápio!");
-          console.log("Erro ao carregar cardápio!", error);
+          console.error("Erro ao carregar cardápio!", error);
         }
         setLoading(false);
       }
@@ -47,6 +53,9 @@ function ManageEscolaCardapioItens() {
     fetchItens();
   }, []);
 
+  /**
+   * Salva os itens selecionados no cardápio da escola.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -60,12 +69,15 @@ function ManageEscolaCardapioItens() {
         await handleSalvar();
       } else {
         toast.error("Erro ao salvar itens no cardápio!");
-        console.log("Erro ao salvar itens no cardápio!", error);
+        console.error("Erro ao salvar itens no cardápio!", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Cancela a operação de gerenciamento de itens e retorna à página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/itens`);

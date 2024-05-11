@@ -5,6 +5,13 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente Menu para exibir opções de navegação para uma escola.
+ * @module escolas/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.escolaid - O ID da escola para o qual o menu está sendo exibido.
+ * @returns {JSX.Element} Componente do menu.
+ */
 function Menu({ escolaid }) {
   return (
     <Card>
@@ -67,7 +74,11 @@ function Menu({ escolaid }) {
   );
 }
 
+// PropTypes
 Menu.propTypes = {
+  /**
+   * O ID da escola para o qual o menu está sendo exibido.
+   */
   escolaid: PropTypes.string.isRequired,
 };
 

@@ -7,12 +7,16 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React example components
-import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import QRLayout from "examples/LayoutContainers/QRLayout";
 
-// Authentication pages components
-import Footer from "layouts/authentication/components/Footer";
-
+/**
+ * Componente de layout básico para páginas usando Material Dashboard 2 React.
+ * @module leitorqr/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.image - URL da imagem de fundo.
+ * @param {React.ReactNode} props.children - Componentes filhos a serem renderizados dentro do layout.
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function BasicLayout({ image, children }) {
   return (
     <QRLayout>
@@ -43,7 +47,17 @@ function BasicLayout({ image, children }) {
   );
 }
 
-// Typechecking props for the BasicLayout
+/**
+ * Propriedades do componente BasicLayout.
+ * @typedef {Object} BasicLayoutProps
+ * @property {string} image - URL da imagem de fundo.
+ * @property {React.ReactNode} children - Componentes filhos a serem renderizados dentro do layout.
+ */
+
+/**
+ * Tipos esperados para as propriedades do BasicLayout.
+ * @type {BasicLayoutProps}
+ */
 BasicLayout.propTypes = {
   image: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,

@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar o telefone de um aluno.
+ * @module pessoas/alunos/telefones
+ * @returns {JSX.Element} JSX para a página de visualização do telefone do aluno.
+ */
 function ViewAlunoTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function ViewAlunoTelefone() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar o telefone do aluno.
+     */
     const fetchTelefone = async () => {
       try {
         const response = await api.get(`/pessoas/telefone/api/v1/${telefoneid}/`);
@@ -40,11 +48,17 @@ function ViewAlunoTelefone() {
     fetchTelefone();
   }, []);
 
+  /**
+   * Redireciona para a página de edição do telefone do aluno.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/editar`);
   };
 
+  /**
+   * Volta para a página de telefones do aluno.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefones`);

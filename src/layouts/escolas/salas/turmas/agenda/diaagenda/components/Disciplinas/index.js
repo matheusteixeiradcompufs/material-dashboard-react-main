@@ -3,6 +3,14 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para exibir as disciplinas do dia.
+ * @module escolas/salas/turmas/agenda/diaagenda/components
+ * @param {Object} props - As props do componente.
+ * @param {Object} props.diaAgenda - O objeto representando o dia na agenda.
+ * @param {Array} props.disciplinas - Array de objetos representando as disciplinas do dia.
+ * @returns {JSX.Element} Retorna o JSX para renderização.
+ */
 function Disciplinas({ diaAgenda, disciplinas }) {
   return (
     <MDBox pt={3} px={2} mb={2}>

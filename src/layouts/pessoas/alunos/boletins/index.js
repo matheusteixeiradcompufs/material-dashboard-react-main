@@ -1,3 +1,8 @@
+/**
+ * BOLETINS. Esse é o layout que renderiza a página que lista as matriculas(boletins) de um aluno.
+ * A partir dela é possível também acessar as outras funções do CRUD das matrículas(boletins).
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -14,6 +19,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir as matrículas de um aluno.
+ * @module pessoas/alunos/boletins
+ * @returns {JSX.Element} JSX para a página de matrículas do aluno.
+ */
 function AlunoBoletins() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +32,9 @@ function AlunoBoletins() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados das matrículas do aluno.
+     */
     const fetchDados = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
@@ -41,6 +54,11 @@ function AlunoBoletins() {
     fetchDados();
   }, []);
 
+  /**
+   * Obtém o nome do turno com base no código do turno.
+   * @param {string} turno - Código do turno ('M', 'T', 'N').
+   * @returns {string} Nome do turno ('Manhã', 'Tarde', 'Noite').
+   */
   const getTurno = (turno) => {
     let response;
     switch (turno) {
@@ -60,11 +78,19 @@ function AlunoBoletins() {
     return response;
   };
 
+  /**
+   * Navega para a página de visualização de um boletim.
+   * @param {string} boletimid - ID do boletim.
+   */
   const handleView = (boletimid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);
   };
 
+  /**
+   * Exclui um boletim.
+   * @param {string} boletimid - ID do boletim.
+   */
   const handleExcluir = async (boletimid) => {
     setLoading(true);
     try {

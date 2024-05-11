@@ -4,6 +4,11 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente que exibe um menu para funcionários.
+ * @module professor/components
+ * @returns {JSX.Element} Componente de menu do funcionário.
+ */
 function Menu() {
   return (
     <Card>
@@ -18,13 +23,14 @@ function Menu() {
         coloredShadow="info"
       >
         <MDTypography variant="h6" color="white">
-          Menu do Funcionario
+          Menu do Funcionário
         </MDTypography>
       </MDBox>
       <Grid container spacing={3} mb={2}>
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
+              {/* Utilize o componente Link para navegação interna */}
               <Link to={`/professor/turmas`}>
                 <MDButton variant="gradient" color="secondary">
                   Turmas

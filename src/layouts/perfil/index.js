@@ -1,31 +1,36 @@
+/**
+ * PERFIL. Esse é o layout que renderiza a página de perfil dos usuários do sistema.
+ * @file
+ */
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
-
-// Overview page components
 import Header from "layouts/perfil/components/Header";
 import DadosPessoais from "layouts/perfil/components/DadosPessoais";
 import DadosInstitucionais from "layouts/perfil/components/DadosInstitucionais";
 import Contatos from "layouts/perfil/components/Contatos";
-
 import { useContext, useEffect, useState } from "react";
 import { api } from "services/apiClient";
 import { AuthContext } from "context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import { Audio } from "react-loader-spinner";
-import { format } from "date-fns";
 
+/**
+ * Página de perfil do usuário.
+ * @module perfil
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function Perfil() {
   const { user, refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [pessoa, setPessoa] = useState(null);
 
+  /**
+   * Função assíncrona para buscar os dados da pessoa associada ao usuário.
+   * @returns {Promise<void>} Uma promessa vazia.
+   */
   useEffect(() => {
     const fetchPessoa = async () => {
       try {
@@ -72,6 +77,7 @@ function Perfil() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

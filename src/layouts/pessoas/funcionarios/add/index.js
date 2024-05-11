@@ -14,6 +14,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar um novo funcionário.
+ * @module pessoas/funcionarios
+ * @returns {JSX.Element} Componente de adição de funcionários.
+ */
 function AddFuncionarios() {
   const { user, refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -32,50 +37,98 @@ function AddFuncionarios() {
   const [formacao, setFormacao] = useState("");
   const [novoRetrato, setNovoRetrato] = useState(null);
 
+  /**
+   * Manipulador de evento para definir o grupo do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetGrupo = (e) => {
     setGrupo(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o nome do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o sobrenome do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o email do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o nome de usuário do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir a senha do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetSenha = (e) => {
     setSenha(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir a matrícula do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o CPF do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir a data de nascimento do funcionário.
+   * @param {Object} date - Data de nascimento.
+   */
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir o endereço do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para definir a formação do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleSetFormacao = (e) => {
     setFormacao(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para lidar com a seleção de arquivo de imagem do funcionário.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleFile = (e) => {
     if (!e.target.files) {
       return;
@@ -89,6 +142,9 @@ function AddFuncionarios() {
     }
   };
 
+  /**
+   * Efeito para carregar os grupos de usuários.
+   */
   useEffect(() => {
     const fetchGrupos = async () => {
       try {
@@ -109,6 +165,9 @@ function AddFuncionarios() {
     fetchGrupos();
   }, []);
 
+  /**
+   * Manipulador de evento para salvar um novo funcionário.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -149,6 +208,9 @@ function AddFuncionarios() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a adição de um novo funcionário.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate("/pessoas/funcionarios");

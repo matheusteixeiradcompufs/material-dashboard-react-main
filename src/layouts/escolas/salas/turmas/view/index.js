@@ -15,6 +15,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de uma turma de uma sala.
+ * @module escolas/salas/turmas
+ * @returns {JSX.Element} Componente de visualização da turma.
+ */
 function ViewEscolaSalaTurma() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -38,7 +43,7 @@ function ViewEscolaSalaTurma() {
           await fetchTurma();
         } else {
           toast.error("Erro ao carregar os dados da turma!");
-          console.log("Erro ao carregar os dados da turma!", error);
+          console.error("Erro ao carregar os dados da turma!", error);
         }
         setLoading(false);
       }
@@ -46,11 +51,17 @@ function ViewEscolaSalaTurma() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para lidar com a navegação para a página de edição da turma.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/editar`);
   };
 
+  /**
+   * Função para lidar com o retorno para a lista de turmas.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turmas`);

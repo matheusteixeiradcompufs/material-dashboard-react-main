@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de um responsável de aluno.
+ * @module pessoas/alunos/responsaveis
+ * @returns {JSX.Element} JSX para a página de visualização de responsável de aluno.
+ */
 function ViewAlunoResponsavel() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function ViewAlunoResponsavel() {
   const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Função para buscar os detalhes do responsável do aluno na API.
+   */
   useEffect(() => {
     const fetchResponsavel = async () => {
       try {
@@ -44,11 +52,17 @@ function ViewAlunoResponsavel() {
     fetchResponsavel();
   }, []);
 
+  /**
+   * Redireciona para a página de edição do responsável de aluno.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsavel/${responsavelid}/editar`);
   };
 
+  /**
+   * Redireciona para a página de listagem de responsáveis de aluno.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsaveis`);
@@ -98,7 +112,7 @@ function ViewAlunoResponsavel() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Visualizar Email
+                  Visualizar Responsável do Aluno
                 </MDTypography>
               </MDBox>
               <Grid container spacing={3} mb={2}>

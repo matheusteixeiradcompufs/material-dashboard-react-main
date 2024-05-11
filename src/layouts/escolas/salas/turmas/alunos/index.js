@@ -11,6 +11,11 @@ import Alunos from "./components/Alunos";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os alunos de uma turma.
+ * @module escolas/salas/turmas/alunos
+ * @returns {JSX.Element} Componente para exibir os alunos de uma turma.
+ */
 function TurmaAlunos() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,6 +24,9 @@ function TurmaAlunos() {
   const [turma, setTurma] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados da turma.
+     */
     const fetchTurma = async () => {
       try {
         let response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
@@ -38,6 +46,10 @@ function TurmaAlunos() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para navegar para a visualização de um aluno específico.
+   * @param {string} alunoid - ID do aluno.
+   */
   const handleView = (alunoid) => {
     setLoading(true);
     navigate(

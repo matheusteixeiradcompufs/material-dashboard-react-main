@@ -14,6 +14,11 @@ import ManageIcon from "@mui/icons-material/Settings";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os alunos associados a um transporte.
+ * @module transportes/alunos
+ * @returns {JSX.Element} Componente de alunos do transporte.
+ */
 function TransporteAlunos() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
@@ -21,6 +26,9 @@ function TransporteAlunos() {
   const [transporte, setTransporte] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do transporte e definir o estado de carregamento.
+     */
     const fetchTransporte = async () => {
       try {
         const response = await api.get(`/pessoas/transporte/api/v1/${transporteid}/`);

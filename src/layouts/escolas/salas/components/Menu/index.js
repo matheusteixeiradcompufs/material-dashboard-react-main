@@ -5,6 +5,14 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente para exibir o menu de acesso às turmas de uma sala.
+ * @module escolas/salas/components
+ * @param {object} props As props do componente.
+ * @param {string} props.escolaid O ID da escola.
+ * @param {string} props.salaid O ID da sala.
+ * @returns {JSX.Element} Componente do menu de acesso às turmas de uma sala.
+ */
 function Menu({ escolaid, salaid }) {
   return (
     <Card>

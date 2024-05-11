@@ -1,56 +1,85 @@
-import { Card, Grid, MenuItem } from "@mui/material";
+import { Card, Fab, Grid } from "@mui/material";
+import ManageIcon from "@mui/icons-material/Settings";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
-import Select from "examples/Select";
-import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
-function ViewFuncionarioTurma() {
+/**
+ * Componente FuncionarioTurmas para exibir as turmas de um funcionário.
+ * @module pessoas/funcionarios/turmas
+ * @returns {JSX.Element} Componente FuncionarioTurmas.
+ */
+function FuncionarioTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { funcionarioid, turmaid } = useParams();
+  const { funcionarioid } = useParams();
+  const [turmas, setTurmas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [turma, setTurma] = useState(null);
-  const [nome, setNome] = useState("");
-  const [turno, setTurno] = useState("M");
-  const [ano, setAno] = useState("");
 
   useEffect(() => {
-    const fetchTurma = async () => {
+    /**
+     * Função assíncrona para buscar os dados das turmas do funcionário.
+     */
+    const fetchDados = async () => {
       try {
-        const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
-        setTurma(response.data);
-        setNome(response.data.nome);
-        setAno(response.data.ano);
-        setTurno(response.data.turno);
+        const response = await api.get(`/pessoas/funcionario/api/v1/${funcionarioid}/`);
+        setTurmas(response.data.objetos_turmas);
         setLoading(false);
       } catch (error) {
         if (error.response.status === 401) {
           await refreshToken();
-          await fetchTurma();
+          await fetchDados();
         } else {
-          toast.error("Erro ao carregar os dados da turma!");
-          console.log("Erro ao carregar os dados da turma!", error);
+          toast.error("Erro ao carregar dados");
+          console.error("Erro ao carregar dados:", error);
         }
         setLoading(false);
       }
     };
-    fetchTurma();
+    fetchDados();
   }, []);
 
-  const handleVoltar = () => {
+  /**
+   * Função para obter o nome do turno com base na sigla.
+   * @param {string} turno - Sigla do turno.
+   * @returns {string} Nome do turno.
+   */
+  const getTurno = (turno) => {
+    let response;
+    switch (turno) {
+      case "M":
+        response = "Manhã";
+        break;
+      case "T":
+        response = "Tarde";
+        break;
+      case "N":
+        response = "Noite";
+        break;
+      default:
+        response = "";
+        break;
+    }
+    return response;
+  };
+
+  /**
+   * Função para lidar com a navegação para a visualização de uma turma específica.
+   * @param {string} turmaid - ID da turma.
+   */
+  const handleView = (turmaid) => {
     setLoading(true);
-    navigate(`/pessoas/funcionario/${funcionarioid}/turmas`);
+    navigate(`/pessoas/funcionario/${funcionarioid}/turma/${turmaid}/view`);
   };
 
   if (loading) {
@@ -97,69 +126,68 @@ function ViewFuncionarioTurma() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Visualizar Turma
+                  Turmas
                 </MDTypography>
               </MDBox>
-              <Grid container spacing={1} mb={2}>
-                <Grid item xs={12}>
-                  <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                    <MDInput
-                      type="text"
-                      variant="outlined"
-                      label="Nome da Turma"
-                      value={nome}
-                      fullWidth
-                      disabled
-                    />
-                  </MDBox>
-                </Grid>
-              </Grid>
-              <Grid container spacing={3} mb={2}>
-                <Grid item xs={6}>
-                  <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                    <Select label="Selecione o Turno" value={turno} disabled>
-                      <MenuItem value="M">Manhã</MenuItem>
-                      <MenuItem value="T">Tarde</MenuItem>
-                      <MenuItem value="N">Noite</MenuItem>
-                    </Select>
-                  </MDBox>
-                </Grid>
-                <Grid item xs={6}>
-                  <MDBox display="flex" justifyContent="center" pt={2} px={2}>
-                    <MDInput
-                      type="number"
-                      variant="outlined"
-                      label="Digite o Ano da Turma"
-                      value={ano}
-                      fullWidth
-                      disabled
-                      inputProps={{
-                        min: 2010,
-                        max: 2050,
-                        step: 1,
-                      }}
-                    />
-                  </MDBox>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <MDBox display="flex" flexDirection="row" justifyContent="center">
-                    <MDBox justifyContent="center">
-                      <MDButton variant="contained" color="error" onClick={handleVoltar}>
-                        Voltar
-                      </MDButton>
-                    </MDBox>
-                  </MDBox>
-                </Grid>
-              </Grid>
+              <MDBox pt={3} px={2}>
+                <DataTable
+                  table={{
+                    columns: [
+                      { Header: "nome", accessor: "nome", align: "left" },
+                      { Header: "ano", accessor: "ano", align: "center" },
+                      { Header: "turno", accessor: "turno", align: "center" },
+                      { Header: "", accessor: "opcoes", align: "right" },
+                    ],
+                    rows: turmas
+                      ? turmas.map((turma) => ({
+                          nome: turma.nome,
+                          ano: turma.ano,
+                          turno: getTurno(turma.turno),
+                          opcoes: (
+                            <Grid
+                              container
+                              spacing={2}
+                              alignItems="center"
+                              justifyContent="space-between"
+                            >
+                              <Grid item xs={12}>
+                                <MDButton
+                                  variant="gradient"
+                                  color="info"
+                                  size="small"
+                                  onClick={() => handleView(turma.id)}
+                                >
+                                  Visualizar
+                                </MDButton>
+                              </Grid>
+                            </Grid>
+                          ),
+                        }))
+                      : [],
+                  }}
+                  isSorted={false}
+                  entriesPerPage={false}
+                  showTotalEntries={false}
+                  noEndBorder
+                />
+              </MDBox>
             </Card>
           </Grid>
+          <Grid item xs={12} mt={6}>
+            <Link to={`/pessoas/funcionario/${funcionarioid}/turmas/manage`}>
+              <Fab
+                color="info"
+                aria-label="add"
+                style={{ position: "fixed", bottom: "2rem", right: "2rem" }}
+              >
+                <ManageIcon color="white" />
+              </Fab>
+            </Link>
+          </Grid>
         </Grid>
-      </MDBox>
-      <MDBox pt={2} mb={3}>
-        <Menu turma={turma} />
       </MDBox>
     </DashboardLayout>
   );
 }
 
-export default ViewFuncionarioTurma;
+export default FuncionarioTurmas;

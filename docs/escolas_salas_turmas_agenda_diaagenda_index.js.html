@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: escolas/salas/turmas/agenda/diaagenda/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: escolas/salas/turmas/agenda/diaagenda/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Card, Grid, Icon, MenuItem, Select, Tooltip } from "@mui/material";
+import MDBox from "components/MDBox";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useContext, useEffect, useState } from "react";
+import { api } from "services/apiClient";
+import { Audio } from "react-loader-spinner";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
+import MDTypography from "components/MDTypography";
+import Dia from "./components/Dia";
+import Disciplinas from "./components/Disciplinas";
+import Avisos from "./components/Avisos";
+import Tarefas from "./components/Tarefas";
+import { AuthContext } from "context/AuthContext";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
+
+/**
+ * Componente para gerenciar a agenda de um dia específico para uma turma em uma escola.
+ * @module escolas/salas/turmas/agenda/diaagenda
+ * @returns {JSX.Element} Componente de gerenciamento de agenda do dia para uma turma.
+ */
+function EscolaSalaTurmaAgendaDiaAgenda() {
+  const { refreshToken } = useContext(AuthContext);
+  const { turmaid } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [turma, setTurma] = useState(null);
+  const [diaAgenda, setDiaAgenda] = useState(null);
+  const [disciplinas, setDisciplinas] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [addAviso, setAddAviso] = useState(false);
+  const [viewAviso, setViewAviso] = useState(false);
+  const [editAviso, setEditAviso] = useState(false);
+  const [aviso, setAviso] = useState(null);
+  const [addTarefa, setAddTarefa] = useState(false);
+  const [viewTarefa, setViewTarefa] = useState(false);
+  const [editTarefa, setEditTarefa] = useState(false);
+  const [tarefa, setTarefa] = useState(null);
+  const [titulo, setTitulo] = useState("");
+  const [texto, setTexto] = useState("");
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [tipo, setTipo] = useState("C");
+  const [dataEntrega, setDataEntrega] = useState(null);
+
+  /**
+   * Função para lidar com a mudança de data selecionada.
+   * @param {Date} date - Nova data selecionada.
+   */
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  /**
+   * Funções para definir valores dos campos de formulário.
+   * @param {Event} e - Evento do formulário.
+   */
+  const handleSetTitulo = (e) => {
+    setTitulo(e.target.value);
+  };
+
+  const handleSetTexto = (e) => {
+    setTexto(e.target.value);
+  };
+
+  const handleSetNome = (e) => {
+    setNome(e.target.value);
+  };
+
+  const handleSetDescricao = (e) => {
+    setDescricao(e.target.value);
+  };
+
+  const handleSetTipo = (e) => {
+    setTipo(e.target.value);
+  };
+
+  /**
+   * Função para definir a data de entrega da tarefa.
+   * @param {Date} date - Data de entrega da tarefa.
+   */
+  const handleSetDataEntrega = (date) => {
+    setDataEntrega(date);
+  };
+
+  /**
+   * Função para preparar o formulário para edição de aviso.
+   */
+  const handleOnEditAviso = () => {
+    setViewTarefa(false);
+    setAddTarefa(false);
+    setAddAviso(false);
+    setViewAviso(false);
+    setEditTarefa(false);
+    setEditAviso(true);
+  };
+
+  /**
+   * Função para visualizar um aviso específico.
+   * @param {string} avisoid - ID do aviso a ser visualizado.
+   */
+  const handleOnViewAviso = (avisoid) => {
+    const avisoView = diaAgenda.objetos_avisos.find((objeto) => objeto.id === avisoid);
+    setTitulo(avisoView.titulo);
+    setTexto(avisoView.texto);
+    setAviso(avisoView);
+    setEditTarefa(false);
+    setEditAviso(false);
+    setViewTarefa(false);
+    setAddTarefa(false);
+    setAddAviso(false);
+    setViewAviso(true);
+  };
+
+  /**
+   * Função para preparar o formulário para adição de aviso.
+   */
+  const handleOnAddAviso = () => {
+    setNome("");
+    setDescricao("");
+    setTipo("C");
+    setDataEntrega(null);
+    setEditTarefa(false);
+    setEditAviso(false);
+    setViewTarefa(false);
+    setAddTarefa(false);
+    setViewAviso(false);
+    setAddAviso(true);
+  };
+
+  /**
+   * Função para preparar o formulário para edição de tarefa.
+   */
+  const handleOnEditTarefa = () => {
+    setViewTarefa(false);
+    setAddTarefa(false);
+    setAddAviso(false);
+    setViewAviso(false);
+    setEditAviso(false);
+    setEditTarefa(true);
+  };
+
+  /**
+   * Função para visualizar uma tarefa específica.
+   * @param {string} tarefaid - ID da tarefa a ser visualizada.
+   */
+  const handleOnViewTarefa = (tarefaid) => {
+    const tarefaView = diaAgenda.objetos_tarefas.find((objeto) => objeto.id === tarefaid);
+    setNome(tarefaView.nome);
+    setDescricao(tarefaView.descricao);
+    setTipo(tarefaView.tipo);
+    setDataEntrega(new Date(tarefaView.entrega));
+    setTarefa(tarefaView);
+    setEditTarefa(false);
+    setEditAviso(false);
+    setViewAviso(false);
+    setAddTarefa(false);
+    setAddAviso(false);
+    setViewTarefa(true);
+  };
+
+  /**
+   * Função para preparar o formulário para adição de tarefa.
+   */
+  const handleOnAddTarefa = () => {
+    setTitulo("");
+    setTexto("");
+    setEditTarefa(false);
+    setEditAviso(false);
+    setViewAviso(false);
+    setAddAviso(false);
+    setViewTarefa(false);
+    setAddTarefa(true);
+  };
+
+  /**
+   * Função para limpar o formulário de adição/editação.
+   */
+  const handleOffAdd = () => {
+    setTitulo("");
+    setTexto("");
+    setNome("");
+    setDescricao("");
+    setTipo("C");
+    setDataEntrega(null);
+    setEditTarefa(false);
+    setEditAviso(false);
+    setViewAviso(false);
+    setAddAviso(false);
+    setViewTarefa(false);
+    setAddTarefa(false);
+  };
+
+  /**
+   * Efeito para carregar a turma ao montar o componente.
+   */
+  useEffect(() => {
+    const fetchTurma = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
+        setTurma(response.data);
+        setLoading(false);
+      } catch (error) {
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchTurma();
+        } else {
+          toast.error("Erro ao carregar a turma!");
+          console.log("Erro ao carregar a turma!", error);
+        }
+        setLoading(false);
+      }
+    };
+    fetchTurma();
+  }, []);
+
+  /**
+   * Função para carregar os dados da agenda ao selecionar uma data.
+   */
+  const handleCarregar = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(
+        `/escolas/sala/turma/agenda/api/v1/${turma?.objeto_agenda.id}/`
+      );
+      const { objetos_dias } = await response.data;
+      setDiaAgenda(
+        objetos_dias.filter((objeto) => objeto.data === format(selectedDate, "yyyy-MM-dd"))[0]
+      );
+      setDisciplinas(
+        objetos_dias.filter((objeto) => objeto.data === format(selectedDate, "yyyy-MM-dd"))[0]
+          .objetos_disciplinas
+      );
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleCarregar();
+      } else {
+        toast.error("Erro ao carregar a agenda!");
+        console.log("Erro ao carregar a agenda!", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para adicionar um aviso.
+   */
+  const handleAddAviso = async () => {
+    setLoading(true);
+    try {
+      await api.post("/escolas/sala/turma/agenda/dia/aviso/api/v1/", {
+        titulo: titulo,
+        texto: texto,
+        diaAgenda: diaAgenda.id,
+      });
+      await handleCarregar();
+      handleOffAdd();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAddAviso();
+      } else {
+        toast.error("Erro ao inserir aviso!");
+        console.error("Erro ao inserir aviso:", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para editar um aviso.
+   * @param {string} avisoid - ID do aviso a ser editado.
+   */
+  const handleEditarAviso = async (avisoid) => {
+    setLoading(true);
+    try {
+      await api.patch(`/escolas/sala/turma/agenda/dia/aviso/api/v1/${avisoid}/`, {
+        titulo: titulo,
+        texto: texto,
+      });
+      await handleCarregar();
+      handleOffAdd();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditarAviso(avisoid);
+      } else {
+        toast.error("Erro ao editar aviso!");
+        console.error("Erro ao editar aviso:", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para excluir um aviso.
+   * @param {string} avisoid - ID do aviso a ser excluído.
+   */
+  const handleExcluirAviso = async (avisoid) => {
+    setLoading(true);
+    try {
+      await api.delete(`/escolas/sala/turma/agenda/dia/aviso/api/v1/${avisoid}/`);
+      await handleCarregar();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluirAviso(avisoid);
+      } else {
+        toast.error("Erro ao excluir aviso!");
+        console.error("Erro ao excluir aviso:", error);
+        if (error.response.status === 403) {
+          toast.error("Você não tem permissão para excluir avisos! Solicite ao seu Coordenador!");
+          console.error(
+            "Você não tem permissão para excluir avisos! Solicite ao seu Coordenador!",
+            error
+          );
+        }
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para adicionar uma tarefa.
+   */
+  const handleAddTarefa = async () => {
+    setLoading(true);
+    try {
+      await api.post("/escolas/sala/turma/agenda/dia/tarefa/api/v1/", {
+        nome: nome,
+        descricao: descricao,
+        tipo: tipo,
+        entrega: format(dataEntrega, "yyyy-MM-dd"),
+        diaAgenda: diaAgenda.id,
+      });
+      await handleCarregar();
+      handleOffAdd();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAddTarefa();
+      } else {
+        toast.error("Erro ao inserir tarefa!");
+        console.error("Erro ao inserir tarefa:", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para editar uma tarefa.
+   * @param {string} tarefaid - ID da tarefa a ser editada.
+   */
+  const handleEditarTarefa = async (tarefaid) => {
+    setLoading(true);
+    try {
+      await api.patch(`/escolas/sala/turma/agenda/dia/tarefa/api/v1/${tarefaid}/`, {
+        nome: nome,
+        descricao: descricao,
+        tipo: tipo,
+        entrega: format(dataEntrega, "yyyy-MM-dd"),
+      });
+      await handleCarregar();
+      handleOffAdd();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleEditarTarefa(tarefaid);
+      } else {
+        toast.error("Erro ao editar tarefa!");
+        console.error("Erro ao editar tarefa:", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Função para excluir uma tarefa.
+   * @param {string} tarefaid - ID da tarefa a ser excluída.
+   */
+  const handleExcluirTarefa = async (tarefaid) => {
+    setLoading(true);
+    try {
+      await api.delete(`/escolas/sala/turma/agenda/dia/tarefa/api/v1/${tarefaid}/`);
+      await handleCarregar();
+      handleOffAdd();
+      setLoading(false);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleExcluirTarefa(tarefaid);
+      } else {
+        toast.error("Erro ao excluir tarefa!");
+        console.error("Erro ao excluir tarefa:", error);
+        if (error.response.status === 403) {
+          toast.error("Você não tem permissão para excluir tarefas! Solicite ao seu Coordenador!");
+          console.error(
+            "Você não tem permissão para excluir tarefas! Solicite ao seu Coordenador!",
+            error
+          );
+        }
+      }
+      setLoading(false);
+    }
+  };
+
+  // Componente de carregamento
+  if (loading) {
+    return (
+      &lt;DashboardLayout>
+        &lt;div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          &lt;Audio
+            height="80"
+            width="80"
+            radius="9"
+            color="#3089ec"
+            ariaLabel="three-dots-loading"
+            wrapperStyle
+            wrapperClass
+          />
+        &lt;/div>
+      &lt;/DashboardLayout>
+    );
+  }
+
+  // Renderização do componente principal
+  return (
+    &lt;DashboardLayout>
+      &lt;ToastContainer />
+      &lt;DashboardNavbar />
+      &lt;MDBox pt={6} mb={3}>
+        &lt;Grid container spacing={3}>
+          &lt;Grid item xs={12}>
+            &lt;Card>
+              &lt;MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                &lt;MDTypography variant="h6" color="white">
+                  Turma {turma?.nome} em {turma?.ano}
+                &lt;/MDTypography>
+              &lt;/MDBox>
+              &lt;Dia
+                selectedDate={selectedDate}
+                handleDateChange={handleDateChange}
+                handleCarregar={handleCarregar}
+              />
+              &lt;Disciplinas diaAgenda={diaAgenda} disciplinas={disciplinas} />
+              &lt;Avisos
+                diaAgenda={diaAgenda}
+                handleOnViewAviso={handleOnViewAviso}
+                handleExcluirAviso={handleExcluirAviso}
+                addAviso={addAviso}
+                handleOnAddAviso={handleOnAddAviso}
+                titulo={titulo}
+                handleSetTitulo={handleSetTitulo}
+                texto={texto}
+                handleSetTexto={handleSetTexto}
+                handleAddAviso={handleAddAviso}
+                handleOffAdd={handleOffAdd}
+                viewAviso={viewAviso}
+                handleOnEditAviso={handleOnEditAviso}
+                editAviso={editAviso}
+                aviso={aviso}
+                handleEditarAviso={handleEditarAviso}
+              />
+              &lt;Tarefas
+                diaAgenda={diaAgenda}
+                handleOnViewTarefa={handleOnViewTarefa}
+                handleExcluirTarefa={handleExcluirTarefa}
+                addTarefa={addTarefa}
+                handleOnAddTarefa={handleOnAddTarefa}
+                nome={nome}
+                handleSetNome={handleSetNome}
+                descricao={descricao}
+                handleSetDescricao={handleSetDescricao}
+                tipo={tipo}
+                handleSetTipo={handleSetTipo}
+                dataEntrega={dataEntrega}
+                handleSetDataEntrega={handleSetDataEntrega}
+                handleAddTarefa={handleAddTarefa}
+                handleOffAdd={handleOffAdd}
+                viewTarefa={viewTarefa}
+                handleOnEditTarefa={handleOnEditTarefa}
+                editTarefa={editTarefa}
+                tarefa={tarefa}
+                handleEditarTarefa={handleEditarTarefa}
+              />
+            &lt;/Card>
+          &lt;/Grid>
+        &lt;/Grid>
+      &lt;/MDBox>
+    &lt;/DashboardLayout>
+  );
+}
+
+export default EscolaSalaTurmaAgendaDiaAgenda;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-authentication_components.html">authentication/components</a></li><li><a href="module-authentication_login.html">authentication/login</a></li><li><a href="module-authentication_logout.html">authentication/logout</a></li><li><a href="module-authentication_reset-password-confirm_cover.html">authentication/reset-password-confirm/cover</a></li><li><a href="module-authentication_reset-password_cover.html">authentication/reset-password/cover</a></li><li><a href="module-dashboard.html">dashboard</a></li><li><a href="module-dashboard_components.html">dashboard/components</a></li><li><a href="module-dashboard_data.html">dashboard/data</a></li><li><a href="module-disciplina.html">disciplina</a></li><li><a href="module-escolas.html">escolas</a></li><li><a href="module-escolas_cardapios.html">escolas/cardapios</a></li><li><a href="module-escolas_cardapios_components.html">escolas/cardapios/components</a></li><li><a href="module-escolas_cardapios_itens.html">escolas/cardapios/itens</a></li><li><a href="module-escolas_cardapios_itens_components.html">escolas/cardapios/itens/components</a></li><li><a href="module-escolas_components.html">escolas/components</a></li><li><a href="module-escolas_emails.html">escolas/emails</a></li><li><a href="module-escolas_murais.html">escolas/murais</a></li><li><a href="module-escolas_murais_avisos.html">escolas/murais/avisos</a></li><li><a href="module-escolas_murais_components.html">escolas/murais/components</a></li><li><a href="module-escolas_salas.html">escolas/salas</a></li><li><a href="module-escolas_salas_components.html">escolas/salas/components</a></li><li><a href="module-escolas_salas_turmas.html">escolas/salas/turmas</a></li><li><a href="module-escolas_salas_turmas_agenda.html">escolas/salas/turmas/agenda</a></li><li><a href="module-escolas_salas_turmas_agenda_components.html">escolas/salas/turmas/agenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda.html">escolas/salas/turmas/agenda/diaagenda</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda_components.html">escolas/salas/turmas/agenda/diaagenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar.html">escolas/salas/turmas/agenda/gerenciar</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar_components.html">escolas/salas/turmas/agenda/gerenciar/components</a></li><li><a href="module-escolas_salas_turmas_alunos.html">escolas/salas/turmas/alunos</a></li><li><a href="module-escolas_salas_turmas_alunos_components.html">escolas/salas/turmas/alunos/components</a></li><li><a href="module-escolas_salas_turmas_components.html">escolas/salas/turmas/components</a></li><li><a href="module-escolas_salas_turmas_disciplinas.html">escolas/salas/turmas/disciplinas</a></li><li><a href="module-escolas_salas_turmas_disciplinas_components.html">escolas/salas/turmas/disciplinas/components</a></li><li><a href="module-escolas_telefones.html">escolas/telefones</a></li><li><a href="module-itens.html">itens</a></li><li><a href="module-leitorqr.html">leitorqr</a></li><li><a href="module-leitorqr_components.html">leitorqr/components</a></li><li><a href="module-perfil.html">perfil</a></li><li><a href="module-perfil_components.html">perfil/components</a></li><li><a href="module-pessoas_alunos.html">pessoas/alunos</a></li><li><a href="module-pessoas_alunos_boletins.html">pessoas/alunos/boletins</a></li><li><a href="module-pessoas_alunos_boletins_components.html">pessoas/alunos/boletins/components</a></li><li><a href="module-pessoas_alunos_boletins_frequencia.html">pessoas/alunos/boletins/frequencia</a></li><li><a href="module-pessoas_alunos_boletins_notas.html">pessoas/alunos/boletins/notas</a></li><li><a href="module-pessoas_alunos_boletins_notas_components.html">pessoas/alunos/boletins/notas/components</a></li><li><a href="module-pessoas_alunos_boletins_recados.html">pessoas/alunos/boletins/recados</a></li><li><a href="module-pessoas_alunos_components.html">pessoas/alunos/components</a></li><li><a href="module-pessoas_alunos_emails.html">pessoas/alunos/emails</a></li><li><a href="module-pessoas_alunos_responsaveis.html">pessoas/alunos/responsaveis</a></li><li><a href="module-pessoas_alunos_telefones.html">pessoas/alunos/telefones</a></li><li><a href="module-pessoas_funcionarios.html">pessoas/funcionarios</a></li><li><a href="module-pessoas_funcionarios_components.html">pessoas/funcionarios/components</a></li><li><a href="module-pessoas_funcionarios_turmas.html">pessoas/funcionarios/turmas</a></li><li><a href="module-pessoas_funcionarios_turmas_components.html">pessoas/funcionarios/turmas/components</a></li><li><a href="module-professor.html">professor</a></li><li><a href="module-professor_components.html">professor/components</a></li><li><a href="module-professor_turmas.html">professor/turmas</a></li><li><a href="module-professor_turmas_view_components.html">professor/turmas/view/components</a></li><li><a href="module-transportes.html">transportes</a></li><li><a href="module-transportes_alunos.html">transportes/alunos</a></li><li><a href="module-transportes_alunos_components.html">transportes/alunos/components</a></li><li><a href="module-transportes_alunos_gerenciar.html">transportes/alunos/gerenciar</a></li><li><a href="module-transportes_alunos_gerenciar_components.html">transportes/alunos/gerenciar/components</a></li><li><a href="module-transportes_components.html">transportes/components</a></li><li><a href="module-transportes_telefones.html">transportes/telefones</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed May 08 2024 18:24:08 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

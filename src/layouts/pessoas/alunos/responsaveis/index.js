@@ -14,6 +14,11 @@ import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualização dos responsáveis de um aluno.
+ * @module pessoas/alunos/responsaveis
+ * @returns {JSX.Element} JSX para a página de visualização dos responsáveis de um aluno.
+ */
 function AlunoResponsaveis() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function AlunoResponsaveis() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os responsáveis do aluno.
+     */
     const fetchAluno = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
@@ -41,11 +49,19 @@ function AlunoResponsaveis() {
     fetchAluno();
   }, []);
 
+  /**
+   * Manipula a visualização de um responsável.
+   * @param {string} responsavelid - ID do responsável.
+   */
   const handleView = (responsavelid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsavel/${responsavelid}/view`);
   };
 
+  /**
+   * Manipula a exclusão de um responsável.
+   * @param {string} responsavelid - ID do responsável.
+   */
   const handleExcluir = async (responsavelid) => {
     setLoading(true);
     try {

@@ -14,6 +14,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar os detalhes de um aluno.
+ * @module pessoas/alunos
+ * @returns {JSX.Element} JSX para a página de visualização do aluno.
+ */
 function ViewAluno() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -30,6 +35,10 @@ function ViewAluno() {
   const [endereco, setEndereco] = useState("");
   const [retrato, setRetrato] = useState(null);
 
+  /**
+   * Função para carregar os detalhes do aluno a ser visualizado.
+   * @returns {Promise<void>}
+   */
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -59,6 +68,11 @@ function ViewAluno() {
     fetchAlunos();
   }, []);
 
+  /**
+   * Funções para atualizar os estados das informações do aluno.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   * @returns {void}
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
@@ -91,11 +105,19 @@ function ViewAluno() {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Função para navegar para a página de edição do aluno.
+   * @returns {void}
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/editar`);
   };
 
+  /**
+   * Função para voltar à página de listagem de alunos.
+   * @returns {void}
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/alunos`);

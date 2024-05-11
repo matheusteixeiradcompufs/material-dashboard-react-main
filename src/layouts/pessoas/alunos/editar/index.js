@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar as informações de um aluno.
+ * @module pessoas/alunos
+ * @returns {JSX.Element} JSX para a página de edição do aluno.
+ */
 function EditarAluno() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -30,6 +35,10 @@ function EditarAluno() {
   const [retrato, setRetrato] = useState(null);
   const [novoRetrato, setNovoRetrato] = useState(null);
 
+  /**
+   * Função para carregar os detalhes do aluno a ser editado.
+   * @returns {Promise<void>}
+   */
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -59,6 +68,11 @@ function EditarAluno() {
     fetchAlunos();
   }, []);
 
+  /**
+   * Funções para atualizar os estados das informações do aluno.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   * @returns {void}
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
@@ -104,6 +118,10 @@ function EditarAluno() {
     }
   };
 
+  /**
+   * Função para enviar as alterações feitas nos detalhes do aluno para a API.
+   * @returns {Promise<void>}
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -141,6 +159,10 @@ function EditarAluno() {
     }
   };
 
+  /**
+   * Função para cancelar a edição do aluno e retornar à página de visualização do aluno.
+   * @returns {void}
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/view`);

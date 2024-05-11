@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar o número de telefone de uma escola.
+ * @module escolas/telefones
+ * @returns {JSX.Element} Componente para editar o número de telefone de uma escola.
+ */
 function EditarEscolaTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const { escolaid, telefoneid } = useParams();
@@ -20,6 +25,9 @@ function EditarEscolaTelefone() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do telefone da escola.
+     */
     const fetchTelefone = async () => {
       try {
         const response = await api.get(`/escolas/telefone/api/v1/${telefoneid}/`);
@@ -39,10 +47,17 @@ function EditarEscolaTelefone() {
     fetchTelefone();
   }, []);
 
+  /**
+   * Função para lidar com a alteração do número do telefone.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Função para lidar com a edição do número de telefone.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -62,6 +77,9 @@ function EditarEscolaTelefone() {
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da edição do número de telefone.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefone/${telefoneid}/view`);

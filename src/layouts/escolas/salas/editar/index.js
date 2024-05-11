@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar informações de uma sala de uma escola.
+ * @module escolas/salas
+ * @returns {JSX.Element} Componente para editar informações de uma sala.
+ */
 function EditarEscolaSala() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -42,14 +47,26 @@ function EditarEscolaSala() {
     fetchSala();
   }, []);
 
+  /**
+   * Atualiza o estado do número da sala com o valor do input.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Atualiza o estado da quantidade de alunos da sala com o valor do input.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeQuantidade = (e) => {
     setQuantidade(e.target.value);
   };
 
+  /**
+   * Manipula a edição das informações da sala.
+   * Envia uma requisição para a API para modificar as informações da sala.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -70,6 +87,10 @@ function EditarEscolaSala() {
     }
   };
 
+  /**
+   * Manipula o cancelamento da edição das informações da sala.
+   * Navega de volta para a página de visualização da sala.
+   */
   const handleCancelar = async () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/view`);

@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente que exibe a lista de emails de um aluno.
+ * @module pessoas/alunos/emails
+ * @returns {JSX.Element} JSX para a página de emails do aluno.
+ */
 function AlunoEmails() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function AlunoEmails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os emails do aluno.
+     */
     const fetchAluno = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
@@ -41,11 +49,19 @@ function AlunoEmails() {
     fetchAluno();
   }, []);
 
+  /**
+   * Navega para a página de visualização de um email específico.
+   * @param {string} emailid - O ID do email a ser visualizado.
+   */
   const handleOnView = (emailid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/view`);
   };
 
+  /**
+   * Exclui um email específico do aluno.
+   * @param {string} emailid - O ID do email a ser excluído.
+   */
   const handleExcluir = async (emailid) => {
     setLoading(true);
     try {

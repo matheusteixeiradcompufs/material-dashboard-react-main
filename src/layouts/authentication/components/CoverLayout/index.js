@@ -1,16 +1,21 @@
 import PropTypes from "prop-types";
-
-// @mui material components
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-
 import PageLayout from "examples/LayoutContainers/PageLayout";
 
+/**
+ * Componente para um layout de capa com uma imagem de fundo.
+ * @module authentication/components
+ * @param {object} props - As props para o componente CoverLayout.
+ * @param {string} [props.coverHeight="35vh"] - A altura da capa.
+ * @param {string} props.image - O URL da imagem de fundo.
+ * @param {ReactNode} props.children - Os elementos filhos a serem renderizados dentro do layout.
+ * @returns {JSX.Element} Componente de layout de capa.
+ */
 function CoverLayout({ coverHeight, image, children }) {
   return (
     <PageLayout>
+      {/* Elemento de caixa para a imagem de fundo */}
       <MDBox
         width="calc(100% - 2rem)"
         minHeight={coverHeight}
@@ -31,6 +36,7 @@ function CoverLayout({ coverHeight, image, children }) {
           backgroundRepeat: "no-repeat",
         }}
       />
+      {/* Contêiner principal */}
       <MDBox mt={{ xs: -20, lg: -18 }} px={1} width="calc(100% - 2rem)" mx="auto">
         <Grid container spacing={1} justifyContent="center">
           <Grid item xs={11} sm={9} md={5} lg={4} xl={3}>
@@ -42,12 +48,12 @@ function CoverLayout({ coverHeight, image, children }) {
   );
 }
 
-// Setting default props for the CoverLayout
+// Configurando valores padrão para as props do CoverLayout
 CoverLayout.defaultProps = {
   coverHeight: "35vh",
 };
 
-// Typechecking props for the CoverLayout
+// Verificação de tipo para as props do CoverLayout
 CoverLayout.propTypes = {
   coverHeight: PropTypes.string,
   image: PropTypes.string.isRequired,

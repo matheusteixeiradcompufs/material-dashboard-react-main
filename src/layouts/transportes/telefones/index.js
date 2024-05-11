@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar e gerenciar os telefones associados a um transporte.
+ * @module transportes/telefones
+ * @returns {JSX.Element} Componente de telefones do transporte.
+ */
 function TransporteTelefones() {
   const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -41,11 +46,19 @@ function TransporteTelefones() {
     fetchTransporte();
   }, []);
 
+  /**
+   * Navega para a página de visualização de um telefone específico.
+   * @param {string} telefoneid - O ID do telefone.
+   */
   const handleView = async (telefoneid) => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefone/${telefoneid}/view`);
   };
 
+  /**
+   * Exclui um telefone específico do transporte.
+   * @param {string} telefoneid - O ID do telefone.
+   */
   const handleExcluir = async (telefoneid) => {
     setLoading(true);
     try {

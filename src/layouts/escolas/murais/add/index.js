@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar murais de uma escola.
+ * @module escolas/murais
+ * @returns {JSX.Element} - Componente de adição de murais.
+ */
 function AddEscolaMurais() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,10 +24,17 @@ function AddEscolaMurais() {
   const [ano, setAno] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Manipulador de mudança para o ano do mural.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para adicionar um novo mural.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -43,6 +55,9 @@ function AddEscolaMurais() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a adição de mural.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/murais`);

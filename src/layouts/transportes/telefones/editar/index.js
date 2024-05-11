@@ -12,6 +12,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar o telefone associado a um transporte.
+ * @module transportes/telefones
+ * @returns {JSX.Element} Componente de edição de telefone do transporte.
+ */
 function EditarTransporteTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid, telefoneid } = useParams();
@@ -39,10 +44,17 @@ function EditarTransporteTelefone() {
     fetchTelefone();
   }, []);
 
+  /**
+   * Manipulador de evento para alterar o valor do número do telefone.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para salvar as modificações no telefone.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -62,6 +74,9 @@ function EditarTransporteTelefone() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a edição do telefone.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefone/${telefoneid}/view`);

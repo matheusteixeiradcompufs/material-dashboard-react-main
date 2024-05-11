@@ -13,6 +13,11 @@ import Transfer from "../components/Transfer";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar as disciplinas de uma turma.
+ * @module escolas/salas/turmas/disciplinas
+ * @returns {JSX.Element} Componente para gerenciar as disciplinas da turma.
+ */
 function ManageEscolaSalaTurmaDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function ManageEscolaSalaTurmaDisciplinas() {
   const [right, setRight] = useState([]);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar as disciplinas da turma.
+     */
     const fetchTurma = async () => {
       try {
         const res = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
@@ -39,7 +47,7 @@ function ManageEscolaSalaTurmaDisciplinas() {
           await fetchTurma();
         } else {
           toast.error("Erro ao carregar turma!");
-          console.log("Erro ao carregar turma!", error);
+          console.error("Erro ao carregar turma!", error);
         }
         setLoading(false);
       }
@@ -47,6 +55,9 @@ function ManageEscolaSalaTurmaDisciplinas() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para salvar as disciplinas atualizadas da turma.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -60,12 +71,15 @@ function ManageEscolaSalaTurmaDisciplinas() {
         await handleSalvar();
       } else {
         toast.error("Erro ao salvar atualizar a turma");
-        console.log("Erro ao salvar atualizar a turma");
+        console.error("Erro ao salvar atualizar a turma");
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Função para cancelar o gerenciamento de disciplinas e voltar para a página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas`);

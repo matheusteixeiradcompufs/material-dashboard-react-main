@@ -4,6 +4,24 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para editar um aviso existente.
+ * @module escolas/salas/turmas/agenda/diaagenda/components/Avisos/components
+ * @param {EditProps} props - Propriedades do componente.
+ * @returns {JSX.Element} Componente de edição de aviso.
+ */
+
+/**
+ * Propriedades esperadas pelo componente de edição de aviso.
+ * @typedef {Object} EditProps
+ * @property {string} titulo - O título do aviso.
+ * @property {Function} handleSetTitulo - Função para definir o título do aviso.
+ * @property {string} texto - O texto do aviso.
+ * @property {Function} handleSetTexto - Função para definir o texto do aviso.
+ * @property {Object} aviso - O aviso a ser editado.
+ * @property {Function} handleEditarAviso - Função para editar um aviso.
+ * @property {Function} handleOnViewAviso - Função para visualizar um aviso.
+ */
 function Edit({
   titulo,
   handleSetTitulo,

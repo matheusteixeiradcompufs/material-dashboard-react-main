@@ -1,7 +1,6 @@
-import { Grid, Icon, Tooltip } from "@mui/material";
+import { Icon, Tooltip } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
@@ -9,6 +8,28 @@ import Add from "./components/Add";
 import View from "./components/View";
 import Edit from "./components/Edit";
 
+/**
+ * Componente para exibição e interação com os avisos do dia.
+ * @module escolas/salas/turmas/agenda/diaagenda/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {Object} props.diaAgenda - Objeto representando o dia da agenda.
+ * @param {Function} props.handleOnViewAviso - Função para visualizar um aviso específico.
+ * @param {Function} props.handleExcluirAviso - Função para excluir um aviso específico.
+ * @param {boolean} props.addAviso - Indica se está no modo de adição de aviso.
+ * @param {Function} props.handleOnAddAviso - Função para iniciar a adição de um aviso.
+ * @param {string} props.titulo - Título do aviso.
+ * @param {Function} props.handleSetTitulo - Função para definir o título do aviso.
+ * @param {string} props.texto - Texto do aviso.
+ * @param {Function} props.handleSetTexto - Função para definir o texto do aviso.
+ * @param {Function} props.handleAddAviso - Função para adicionar um aviso.
+ * @param {Function} props.handleOffAdd - Função para cancelar a adição de aviso.
+ * @param {boolean} props.viewAviso - Indica se está no modo de visualização de aviso.
+ * @param {Function} props.handleOnEditAviso - Função para editar um aviso.
+ * @param {boolean} props.editAviso - Indica se está no modo de edição de aviso.
+ * @param {Object} props.aviso - Objeto representando o aviso.
+ * @param {Function} props.handleEditarAviso - Função para confirmar a edição de um aviso.
+ * @returns {JSX.Element} Componente de avisos do dia.
+ */
 function Avisos({
   diaAgenda,
   handleOnViewAviso,

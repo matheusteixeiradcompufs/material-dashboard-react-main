@@ -9,9 +9,14 @@ import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
 import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar um novo email à escola.
+ * @module escolas/emails
+ * @returns {JSX.Element} - Componente de adição de emails da escola.
+ */
 function AddEscolaEmails() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,10 +24,17 @@ function AddEscolaEmails() {
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Manipulador de eventos para alterações no campo de endereço do email.
+   * @param {Object} e - O evento de alteração.
+   */
   const handleChangeEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Função para lidar com a adição de um novo email.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -43,6 +55,9 @@ function AddEscolaEmails() {
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da adição de um email.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/emails`);

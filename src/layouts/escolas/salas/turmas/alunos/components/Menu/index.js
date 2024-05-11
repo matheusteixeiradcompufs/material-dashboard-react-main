@@ -5,6 +5,14 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente que representa o menu do aluno.
+ * @module escolas/salas/turmas/alunos/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.boletimid - ID do boletim do aluno.
+ * @param {string} props.alunoid - ID do aluno.
+ * @returns {JSX.Element} O componente do menu do aluno.
+ */
 function Menu({ boletimid, alunoid }) {
   return (
     <Card>
@@ -28,7 +36,7 @@ function Menu({ boletimid, alunoid }) {
             <MDBox mr={1} ml={1}>
               <Link to={`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`}>
                 <MDButton variant="gradient" color="secondary">
-                  Frequencia
+                  Frequência
                 </MDButton>
               </Link>
             </MDBox>
@@ -46,9 +54,10 @@ function Menu({ boletimid, alunoid }) {
   );
 }
 
+// Definição das propriedades necessárias e seus tipos
 Menu.propTypes = {
-  boletimid: PropTypes.string.isRequired,
-  alunoid: PropTypes.string.isRequired,
+  boletimid: PropTypes.string.isRequired, // ID do boletim do aluno
+  alunoid: PropTypes.string.isRequired, // ID do aluno
 };
 
 export default Menu;

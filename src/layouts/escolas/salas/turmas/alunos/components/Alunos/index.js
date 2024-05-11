@@ -6,6 +6,14 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para exibir a lista de alunos de uma turma.
+ * @module escolas/salas/turmas/alunos/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {Object} props.turma - Objeto representando a turma.
+ * @param {Function} props.handleView - Função para lidar com a visualização de um aluno.
+ * @returns {JSX.Element} O componente para exibir a lista de alunos.
+ */
 function Alunos({ turma, handleView }) {
   const columns = [
     { Header: "aluno", accessor: "aluno", width: "45%", align: "left" },
@@ -13,6 +21,7 @@ function Alunos({ turma, handleView }) {
     { Header: "situação", accessor: "situacao", align: "center" },
     { Header: "opções", accessor: "opcoes", align: "center" },
   ];
+
   return (
     <Card>
       <MDBox
@@ -74,9 +83,10 @@ function Alunos({ turma, handleView }) {
   );
 }
 
+// Definição das propriedades necessárias e seus tipos
 Alunos.propTypes = {
-  turma: PropTypes.object.isRequired,
-  handleView: PropTypes.func.isRequired,
+  turma: PropTypes.object.isRequired, // Objeto representando a turma
+  handleView: PropTypes.func.isRequired, // Função para lidar com a visualização de um aluno
 };
 
 export default Alunos;

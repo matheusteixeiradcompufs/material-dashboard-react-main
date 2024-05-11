@@ -1,3 +1,8 @@
+/**
+ * AVISOS. Esse é o layout que renderiza a página que lista os avisos de escola de um mural.
+ * A partir dela é possível também acessar as outras funções do CRUD dos avisos.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -15,6 +20,11 @@ import { format } from "date-fns";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os avisos de um mural de uma escola.
+ * @module escolas/murais/avisos
+ * @returns {JSX.Element} Componente para exibir os avisos de um mural de uma escola.
+ */
 function EscolaMuralAvisos() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -23,6 +33,10 @@ function EscolaMuralAvisos() {
   const [avisos, setAvisos] = useState([]);
 
   useEffect(() => {
+    /**
+     * Função para buscar os avisos do mural.
+     * @returns {Promise<void>}
+     */
     const fetchAvisos = async () => {
       try {
         let response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
@@ -42,11 +56,19 @@ function EscolaMuralAvisos() {
     fetchAvisos();
   }, []);
 
+  /**
+   * Função para navegar para a visualização de um aviso específico.
+   * @param {string} avisoid - O ID do aviso.
+   */
   const handleView = (avisoid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/aviso/${avisoid}/view`);
   };
 
+  /**
+   * Função para excluir um aviso.
+   * @param {string} avisoid - O ID do aviso a ser excluído.
+   */
   const handleExcluir = async (avisoid) => {
     setLoading(true);
     try {
@@ -117,8 +139,8 @@ function EscolaMuralAvisos() {
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "data", accessor: "data", width: "30%", align: "left" },
-                      { Header: "titulo", accessor: "titulo", width: "40%", align: "left" },
+                      { Header: "Data", accessor: "data", width: "30%", align: "left" },
+                      { Header: "Título", accessor: "titulo", width: "40%", align: "left" },
                       { Header: "", accessor: "opcoes", align: "center" },
                     ],
                     rows: [

@@ -1,3 +1,8 @@
+/**
+ * PROFESSOR. Esse é o layout que renderiza a página que exibe os dados do professor logado.
+ * A partir dela é possível também acessar as turmas que o professor leciona.
+ * @file
+ */
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -14,6 +19,11 @@ import Menu from "./components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir informações do professor logado e suas opções de acesso.
+ * @module professor
+ * @returns {JSX.Element} JSX para exibir os detalhes do professor.
+ */
 function Professor() {
   const { user, refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
@@ -32,6 +42,9 @@ function Professor() {
   const [retrato, setRetrato] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para carregar os detalhes do professor.
+     */
     const fetchFuncionario = async () => {
       try {
         let response = await api.post(`/pessoas/me/`, {
@@ -111,7 +124,7 @@ function Professor() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Detalhes do Funcionario
+                  Detalhes do Funcionário
                 </MDTypography>
               </MDBox>
               <MDBox pt={3} px={2} mb={2}>
@@ -158,7 +171,7 @@ function Professor() {
                   </Grid>
                   <Grid item xs={12}>
                     <MDInput
-                      label="Formacção"
+                      label="Formação"
                       type="text"
                       multiline
                       rows={3}

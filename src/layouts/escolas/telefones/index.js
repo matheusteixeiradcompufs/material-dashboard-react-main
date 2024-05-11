@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os telefones associados a uma escola.
+ * @module escolas/telefones
+ * @returns {JSX.Element} Componente para exibir os telefones associados a uma escola.
+ */
 function EscolaTelefones() {
   const { refreshToken } = useContext(AuthContext);
   const [escola, setEscola] = useState(true);
@@ -41,11 +46,19 @@ function EscolaTelefones() {
     fetchEscola();
   }, []);
 
+  /**
+   * Função para lidar com a visualização de um telefone específico.
+   * @param {string} telefoneid - O ID do telefone a ser visualizado.
+   */
   const handleView = (telefoneid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefone/${telefoneid}/view`);
   };
 
+  /**
+   * Função para lidar com a exclusão de um telefone.
+   * @param {string} telefoneid - O ID do telefone a ser excluído.
+   */
   const handleExcluir = async (telefoneid) => {
     setLoading(true);
     try {

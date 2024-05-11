@@ -15,6 +15,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar dias letivos no boletim de frequência de um aluno.
+ * @module pessoas/alunos/boletins/frequencia
+ * @returns {JSX.Element} JSX para a página de adição de dias letivos no boletim de frequência.
+ */
 function AddDiasLetivosBoletimFrequencia() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -44,14 +49,24 @@ function AddDiasLetivosBoletimFrequencia() {
     fetchBoletim();
   }, []);
 
+  /**
+   * Manipulador de evento para alterar a data selecionada.
+   * @param {Date} date - Nova data selecionada.
+   */
   const handleChangeDate = (date) => {
     setSelectedDate(date);
   };
 
+  /**
+   * Manipulador de evento para alternar o estado do switch de presença.
+   */
   const handleChangeChecked = () => {
     setChecked(!checked);
   };
 
+  /**
+   * Manipulador de evento para adicionar um novo dia letivo.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -73,6 +88,9 @@ function AddDiasLetivosBoletimFrequencia() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a operação de adição de dias letivos.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`);

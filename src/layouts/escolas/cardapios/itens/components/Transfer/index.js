@@ -11,14 +11,36 @@ import MDButton from "components/MDButton";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/**
+ * Função auxiliar para encontrar itens que não estão em um segundo array.
+ * @module escolas/cardapios/itens/components
+ * @param {Array} a - O primeiro array.
+ * @param {Array} b - O segundo array.
+ * @returns {Array} - Um array contendo os itens de 'a' que não estão em 'b'.
+ */
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+/**
+ * Função auxiliar para encontrar itens comuns entre dois arrays.
+ * @param {Array} a - O primeiro array.
+ * @param {Array} b - O segundo array.
+ * @returns {Array} - Um array contendo os itens comuns entre 'a' e 'b'.
+ */
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
+/**
+ * Componente de transferência de itens entre duas listas.
+ * @param {object} props - Props do componente.
+ * @param {Array} props.left - Itens disponíveis para seleção.
+ * @param {Array} props.right - Itens selecionados.
+ * @param {Function} props.setLeft - Função para definir os itens disponíveis.
+ * @param {Function} props.setRight - Função para definir os itens selecionados.
+ * @returns {JSX.Element} - Componente de transferência de itens.
+ */
 export default function Transfer({ left, setLeft, right, setRight }) {
   const [checked, setChecked] = useState([]);
 

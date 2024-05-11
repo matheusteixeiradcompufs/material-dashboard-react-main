@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente funcional que representa a página de adição de itens à merenda.
+ * @module itens
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function AddItens() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,14 +25,25 @@ function AddItens() {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
 
+  /**
+   * Atualiza o estado do nome do item com o valor fornecido.
+   * @param {Object} e - O evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Atualiza o estado da descrição do item com o valor fornecido.
+   * @param {Object} e - O evento de mudança.
+   */
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
 
+  /**
+   * Adiciona um novo item à merenda.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -48,6 +64,9 @@ function AddItens() {
     }
   };
 
+  /**
+   * Cancela a adição de um novo item e retorna à página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/itensmerenda`);

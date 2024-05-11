@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir os telefones associados a um aluno.
+ * @module pessoas/alunos/telefones
+ * @returns {JSX.Element} JSX para a página de telefones do aluno.
+ */
 function AlunoTelefones() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function AlunoTelefones() {
   const [telefones, setTelefones] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Função para buscar os telefones do aluno na API.
+   */
   useEffect(() => {
     const fetchAluno = async () => {
       try {
@@ -41,11 +49,19 @@ function AlunoTelefones() {
     fetchAluno();
   }, []);
 
+  /**
+   * Redireciona para a página de visualização de um telefone do aluno.
+   * @param {string} telefoneid - ID do telefone a ser visualizado.
+   */
   const handleView = (telefoneid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefone/${telefoneid}/view`);
   };
 
+  /**
+   * Exclui um telefone do aluno.
+   * @param {string} telefoneid - ID do telefone a ser excluído.
+   */
   const handleExcluir = async (telefoneid) => {
     setLoading(true);
     try {

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pessoas/alunos/boletins/frequencia/add/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pessoas/alunos/boletins/frequencia/add/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Card, Grid, Switch } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
+import MDInput from "components/MDInput";
+import MDTypography from "components/MDTypography";
+import { AuthContext } from "context/AuthContext";
+import { format } from "date-fns";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
+import { useContext, useEffect, useState } from "react";
+import { Audio } from "react-loader-spinner";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { api } from "services/apiClient";
+
+/**
+ * Componente para adicionar dias letivos no boletim de frequência de um aluno.
+ * @module pessoas/alunos/boletins/frequencia
+ * @returns {JSX.Element} JSX para a página de adição de dias letivos no boletim de frequência.
+ */
+function AddDiasLetivosBoletimFrequencia() {
+  const { refreshToken } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { alunoid, boletimid } = useParams();
+  const [boletim, setBoletim] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBoletim = async () => {
+      try {
+        const response = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
+        setBoletim(response.data);
+        setLoading(false);
+      } catch (error) {
+        if (error.response.status === 401) {
+          await refreshToken();
+          await fetchBoletim();
+        } else {
+          toast.error("Erro ao carregar boletim!");
+          console.log("Erro ao carregar boletim", error);
+        }
+        setLoading(false);
+      }
+    };
+    fetchBoletim();
+  }, []);
+
+  /**
+   * Manipulador de evento para alterar a data selecionada.
+   * @param {Date} date - Nova data selecionada.
+   */
+  const handleChangeDate = (date) => {
+    setSelectedDate(date);
+  };
+
+  /**
+   * Manipulador de evento para alternar o estado do switch de presença.
+   */
+  const handleChangeChecked = () => {
+    setChecked(!checked);
+  };
+
+  /**
+   * Manipulador de evento para adicionar um novo dia letivo.
+   */
+  const handleAdd = async () => {
+    setLoading(true);
+    try {
+      await api.post("/pessoas/aluno/frequencia/dialetivo/api/v1/", {
+        data: format(selectedDate, "yyyy-MM-dd"),
+        presenca: checked,
+        frequencia: boletim?.objeto_frequencia.id,
+      });
+      navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`);
+    } catch (error) {
+      if (error.response.status === 401) {
+        await refreshToken();
+        await handleAdd();
+      } else {
+        toast.error("Erro ao adicionar presença!");
+        console.log("Erro ao adicionar presença!", error);
+      }
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Manipulador de evento para cancelar a operação de adição de dias letivos.
+   */
+  const handleCancelar = () => {
+    setLoading(true);
+    navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/frequencia`);
+  };
+
+  if (loading) {
+    return (
+      &lt;DashboardLayout>
+        &lt;div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          &lt;Audio
+            height="80"
+            width="80"
+            radius="9"
+            color="#3089ec"
+            ariaLabel="three-dots-loading"
+            wrapperStyle
+            wrapperClass
+          />
+        &lt;/div>
+      &lt;/DashboardLayout>
+    );
+  }
+
+  return (
+    &lt;DashboardLayout>
+      &lt;ToastContainer />
+      &lt;DashboardNavbar />
+      &lt;MDBox pt={6} mb={3}>
+        &lt;Card>
+          &lt;MDBox
+            mx={2}
+            mt={-3}
+            py={3}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            &lt;MDTypography variant="h6" color="white">
+              Frequência do Aluno
+            &lt;/MDTypography>
+          &lt;/MDBox>
+          &lt;MDBox pt={3} px={2} mb={2} display="flex" justifyContent="center">
+            &lt;Grid container spacing={3}>
+              &lt;Grid item xs={12}>
+                &lt;MDBox display="flex" justifyContent="center">
+                  &lt;MDInput
+                    label="Percentual"
+                    type="text"
+                    value={`${boletim?.objeto_frequencia.percentual.toFixed(1)}%`}
+                    disabled
+                  />
+                &lt;/MDBox>
+              &lt;/Grid>
+              &lt;Grid item xs={12}>
+                &lt;MDBox
+                  mx={2}
+                  mt={2}
+                  py={1}
+                  px={2}
+                  mb={2}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                >
+                  &lt;MDTypography variant="h6" color="white">
+                    Add Presença
+                  &lt;/MDTypography>
+                &lt;/MDBox>
+                &lt;MDBox display="flex" flexDirection="row">
+                  &lt;Grid container spacing={3}>
+                    &lt;Grid item xs={6}>
+                      &lt;MDBox display="flex" justifyContent="center">
+                        &lt;DatePicker
+                          label="Data"
+                          value={selectedDate}
+                          onChange={handleChangeDate}
+                          align="left"
+                          renderInput={(params) => &lt;MDInput {...params} />}
+                        />
+                      &lt;/MDBox>
+                    &lt;/Grid>
+                    &lt;Grid item xs={6}>
+                      &lt;MDBox display="flex" justifyContent="center">
+                        &lt;Switch checked={checked} onChange={handleChangeChecked} />
+                      &lt;/MDBox>
+                    &lt;/Grid>
+                    &lt;Grid item xs={12}>
+                      &lt;MDBox display="flex" justifyContent="center">
+                        &lt;MDBox mr={1}>
+                          &lt;MDButton
+                            variant="gradient"
+                            color="success"
+                            size="small"
+                            onClick={handleAdd}
+                          >
+                            Salvar
+                          &lt;/MDButton>
+                        &lt;/MDBox>
+                        &lt;MDBox ml={1}>
+                          &lt;MDButton
+                            variant="gradient"
+                            color="error"
+                            size="small"
+                            onClick={handleCancelar}
+                          >
+                            Cancelar
+                          &lt;/MDButton>
+                        &lt;/MDBox>
+                      &lt;/MDBox>
+                    &lt;/Grid>
+                  &lt;/Grid>
+                &lt;/MDBox>
+              &lt;/Grid>
+            &lt;/Grid>
+          &lt;/MDBox>
+        &lt;/Card>
+      &lt;/MDBox>
+    &lt;/DashboardLayout>
+  );
+}
+
+export default AddDiasLetivosBoletimFrequencia;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-authentication_components.html">authentication/components</a></li><li><a href="module-authentication_login.html">authentication/login</a></li><li><a href="module-authentication_logout.html">authentication/logout</a></li><li><a href="module-authentication_reset-password-confirm_cover.html">authentication/reset-password-confirm/cover</a></li><li><a href="module-authentication_reset-password_cover.html">authentication/reset-password/cover</a></li><li><a href="module-dashboard.html">dashboard</a></li><li><a href="module-dashboard_components.html">dashboard/components</a></li><li><a href="module-dashboard_data.html">dashboard/data</a></li><li><a href="module-disciplina.html">disciplina</a></li><li><a href="module-escolas.html">escolas</a></li><li><a href="module-escolas_cardapios.html">escolas/cardapios</a></li><li><a href="module-escolas_cardapios_components.html">escolas/cardapios/components</a></li><li><a href="module-escolas_cardapios_itens.html">escolas/cardapios/itens</a></li><li><a href="module-escolas_cardapios_itens_components.html">escolas/cardapios/itens/components</a></li><li><a href="module-escolas_components.html">escolas/components</a></li><li><a href="module-escolas_emails.html">escolas/emails</a></li><li><a href="module-escolas_murais.html">escolas/murais</a></li><li><a href="module-escolas_murais_avisos.html">escolas/murais/avisos</a></li><li><a href="module-escolas_murais_components.html">escolas/murais/components</a></li><li><a href="module-escolas_salas.html">escolas/salas</a></li><li><a href="module-escolas_salas_components.html">escolas/salas/components</a></li><li><a href="module-escolas_salas_turmas.html">escolas/salas/turmas</a></li><li><a href="module-escolas_salas_turmas_agenda.html">escolas/salas/turmas/agenda</a></li><li><a href="module-escolas_salas_turmas_agenda_components.html">escolas/salas/turmas/agenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda.html">escolas/salas/turmas/agenda/diaagenda</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda_components.html">escolas/salas/turmas/agenda/diaagenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar.html">escolas/salas/turmas/agenda/gerenciar</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar_components.html">escolas/salas/turmas/agenda/gerenciar/components</a></li><li><a href="module-escolas_salas_turmas_alunos.html">escolas/salas/turmas/alunos</a></li><li><a href="module-escolas_salas_turmas_alunos_components.html">escolas/salas/turmas/alunos/components</a></li><li><a href="module-escolas_salas_turmas_components.html">escolas/salas/turmas/components</a></li><li><a href="module-escolas_salas_turmas_disciplinas.html">escolas/salas/turmas/disciplinas</a></li><li><a href="module-escolas_salas_turmas_disciplinas_components.html">escolas/salas/turmas/disciplinas/components</a></li><li><a href="module-escolas_telefones.html">escolas/telefones</a></li><li><a href="module-itens.html">itens</a></li><li><a href="module-leitorqr.html">leitorqr</a></li><li><a href="module-leitorqr_components.html">leitorqr/components</a></li><li><a href="module-perfil.html">perfil</a></li><li><a href="module-perfil_components.html">perfil/components</a></li><li><a href="module-pessoas_alunos.html">pessoas/alunos</a></li><li><a href="module-pessoas_alunos_boletins.html">pessoas/alunos/boletins</a></li><li><a href="module-pessoas_alunos_boletins_components.html">pessoas/alunos/boletins/components</a></li><li><a href="module-pessoas_alunos_boletins_frequencia.html">pessoas/alunos/boletins/frequencia</a></li><li><a href="module-pessoas_alunos_boletins_notas.html">pessoas/alunos/boletins/notas</a></li><li><a href="module-pessoas_alunos_boletins_notas_components.html">pessoas/alunos/boletins/notas/components</a></li><li><a href="module-pessoas_alunos_boletins_recados.html">pessoas/alunos/boletins/recados</a></li><li><a href="module-pessoas_alunos_components.html">pessoas/alunos/components</a></li><li><a href="module-pessoas_alunos_emails.html">pessoas/alunos/emails</a></li><li><a href="module-pessoas_alunos_responsaveis.html">pessoas/alunos/responsaveis</a></li><li><a href="module-pessoas_alunos_telefones.html">pessoas/alunos/telefones</a></li><li><a href="module-pessoas_funcionarios.html">pessoas/funcionarios</a></li><li><a href="module-pessoas_funcionarios_components.html">pessoas/funcionarios/components</a></li><li><a href="module-pessoas_funcionarios_turmas.html">pessoas/funcionarios/turmas</a></li><li><a href="module-pessoas_funcionarios_turmas_components.html">pessoas/funcionarios/turmas/components</a></li><li><a href="module-professor.html">professor</a></li><li><a href="module-professor_components.html">professor/components</a></li><li><a href="module-professor_turmas.html">professor/turmas</a></li><li><a href="module-professor_turmas_view_components.html">professor/turmas/view/components</a></li><li><a href="module-transportes.html">transportes</a></li><li><a href="module-transportes_alunos.html">transportes/alunos</a></li><li><a href="module-transportes_alunos_components.html">transportes/alunos/components</a></li><li><a href="module-transportes_alunos_gerenciar.html">transportes/alunos/gerenciar</a></li><li><a href="module-transportes_alunos_gerenciar_components.html">transportes/alunos/gerenciar/components</a></li><li><a href="module-transportes_components.html">transportes/components</a></li><li><a href="module-transportes_telefones.html">transportes/telefones</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed May 08 2024 18:24:08 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

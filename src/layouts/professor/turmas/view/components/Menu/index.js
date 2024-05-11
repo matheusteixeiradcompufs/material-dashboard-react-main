@@ -5,6 +5,13 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente para exibir as opções da turma.
+ * @module professor/turmas/view/components
+ * @param {object} props - Propriedades do componente.
+ * @param {object} props.turma - Objeto contendo informações da turma.
+ * @returns {JSX.Element} Componente para exibir as opções da turma.
+ */
 function Menu({ turma }) {
   return (
     <Card>
@@ -42,6 +49,9 @@ function Menu({ turma }) {
 }
 
 Menu.propTypes = {
+  /**
+   * Objeto contendo informações da turma.
+   */
   turma: PropTypes.object,
 };
 

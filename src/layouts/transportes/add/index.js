@@ -13,6 +13,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar novos transportes.
+ * @module transportes
+ * @returns {JSX.Element} Componente para adicionar novos transportes.
+ */
 function AddTransportes() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,30 +29,57 @@ function AddTransportes() {
   const [nomeAuxiliar, setNomeAuxiliar] = useState("");
   const [itinerario, setItinerario] = useState("");
 
+  /**
+   * Atualiza o estado da placa do veículo.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangePlaca = (e) => {
     setPlaca(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do ano do contrato.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do tipo do veículo.
+   * @param {React.ChangeEvent<{ value: unknown }>} e - O evento de mudança.
+   */
   const handleChangeTipo = (e) => {
     setTipo(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do nome do motorista.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNomeMotorista = (e) => {
     setNomeMotorista(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do nome do auxiliar.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNomeAuxiliar = (e) => {
     setNomeAuxiliar(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do itinerário do transporte.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeItinerario = (e) => {
     setItinerario(e.target.value);
   };
 
+  /**
+   * Manipula a adição de um novo transporte.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {

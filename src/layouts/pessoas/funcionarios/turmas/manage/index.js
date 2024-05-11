@@ -14,6 +14,11 @@ import Transfer from "../components/Transfer";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar as turmas de um funcionário.
+ * @module pessoas/funcionarios/turmas
+ * @returns {JSX.Element} Componente ManageFuncionarioTurmas.
+ */
 function ManageFuncionarioTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -26,6 +31,9 @@ function ManageFuncionarioTurmas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados necessários.
+     */
     const fetchDados = async () => {
       try {
         const resEscolas = await api.get(`/escolas/api/v1/`);
@@ -49,6 +57,10 @@ function ManageFuncionarioTurmas() {
     fetchDados();
   }, []);
 
+  /**
+   * Manipula a alteração da escola selecionada.
+   * @param {Object} e - Evento de mudança.
+   */
   const handleChangeEscola = (e) => {
     const newValue = e.target.value;
     setEscola(newValue);
@@ -56,6 +68,9 @@ function ManageFuncionarioTurmas() {
     setLeft(turmasFiltradas.filter((item) => !right.some((element) => element.id === item.id)));
   };
 
+  /**
+   * Salva as turmas atribuídas ao funcionário.
+   */
   const handleSalvar = async () => {
     console.log(right.map((objeto) => objeto.id));
     setLoading(true);
@@ -76,6 +91,9 @@ function ManageFuncionarioTurmas() {
     }
   };
 
+  /**
+   * Cancela a operação e retorna à página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/turmas`);

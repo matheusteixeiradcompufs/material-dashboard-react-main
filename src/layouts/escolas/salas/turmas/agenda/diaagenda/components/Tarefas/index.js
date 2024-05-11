@@ -1,8 +1,6 @@
-import { Grid, Icon, MenuItem, Select, Tooltip } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Icon, Tooltip } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import { format } from "date-fns";
 import DataTable from "examples/Tables/DataTable";
@@ -11,6 +9,32 @@ import Add from "./components/Add";
 import View from "./components/View";
 import Edit from "./components/Edit";
 
+/**
+ * Componente para exibir e gerenciar as tarefas do dia.
+ * @module escolas/salas/turmas/agenda/diaagenda/components
+ * @param {Object} props - As props do componente.
+ * @param {Object} props.diaAgenda - O objeto de agenda para o dia.
+ * @param {Function} props.handleOnViewTarefa - Função para lidar com a visualização de uma tarefa.
+ * @param {Function} props.handleExcluirTarefa - Função para lidar com a exclusão de uma tarefa.
+ * @param {boolean} props.addTarefa - Indica se está sendo adicionada uma nova tarefa.
+ * @param {Function} props.handleOnAddTarefa - Função para lidar com a adição de uma nova tarefa.
+ * @param {string} props.nome - O nome da tarefa.
+ * @param {Function} props.handleSetNome - Função para definir o nome da tarefa.
+ * @param {string} props.descricao - A descrição da tarefa.
+ * @param {Function} props.handleSetDescricao - Função para definir a descrição da tarefa.
+ * @param {string} props.tipo - O tipo da tarefa (Casa ou Escola).
+ * @param {Function} props.handleSetTipo - Função para definir o tipo da tarefa.
+ * @param {Object} props.dataEntrega - A data de entrega da tarefa.
+ * @param {Function} props.handleSetDataEntrega - Função para definir a data de entrega da tarefa.
+ * @param {Function} props.handleAddTarefa - Função para lidar com a adição de uma tarefa.
+ * @param {Function} props.handleOffAdd - Função para desativar a adição de uma nova tarefa.
+ * @param {boolean} props.viewTarefa - Indica se uma tarefa está sendo visualizada.
+ * @param {Function} props.handleOnEditTarefa - Função para lidar com a edição de uma tarefa.
+ * @param {boolean} props.editTarefa - Indica se uma tarefa está sendo editada.
+ * @param {Object} props.tarefa - O objeto da tarefa.
+ * @param {Function} props.handleEditarTarefa - Função para lidar com a edição de uma tarefa.
+ * @returns {JSX.Element} Retorna o JSX para renderização.
+ */
 function Tarefas({
   diaAgenda,
   handleOnViewTarefa,

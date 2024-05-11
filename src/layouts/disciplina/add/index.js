@@ -12,16 +12,28 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar uma nova disciplina.
+ * @module disciplina
+ * @returns {JSX.Element} Componente AddDisciplinas.
+ */
 function AddDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [nome, setNome] = useState("");
 
+  /**
+   * Manipulador para alterar o nome da disciplina.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Manipulador para adicionar uma nova disciplina.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -41,6 +53,9 @@ function AddDisciplinas() {
     }
   };
 
+  /**
+   * Manipulador para cancelar a adição de uma nova disciplina.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/disciplinas`);

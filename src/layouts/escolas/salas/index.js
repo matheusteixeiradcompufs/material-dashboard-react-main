@@ -1,3 +1,8 @@
+/**
+ * SALAS. Esse é o layout que renderiza a página que lista as salas de uma escola.
+ * A partir dela é possível também acessar as outras funções do CRUD das salas.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -14,6 +19,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir as salas de uma escola.
+ * @module escolas/salas
+ * @returns {JSX.Element} Componente para exibir as salas de uma escola.
+ */
 function EscolaSalas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +32,9 @@ function EscolaSalas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar as salas da escola.
+     */
     const fetchSalas = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
@@ -41,11 +54,19 @@ function EscolaSalas() {
     fetchSalas();
   }, []);
 
+  /**
+   * Função para lidar com a visualização de uma sala.
+   * @param {string} salaid O ID da sala a ser visualizada.
+   */
   const handleView = (salaid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/view`);
   };
 
+  /**
+   * Função para lidar com a exclusão de uma sala.
+   * @param {string} salaid O ID da sala a ser excluída.
+   */
   const handleExcluir = async (salaid) => {
     setLoading(true);
     try {

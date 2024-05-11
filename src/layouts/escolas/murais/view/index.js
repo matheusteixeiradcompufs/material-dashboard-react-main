@@ -13,6 +13,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar um mural de uma escola.
+ * @module escolas/murais
+ * @returns {JSX.Element} - Componente de visualização de mural.
+ */
 function ViewEscolaMural() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function ViewEscolaMural() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes do mural.
+     */
     const fetchMural = async () => {
       try {
         const response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
@@ -40,11 +48,17 @@ function ViewEscolaMural() {
     fetchMural();
   }, []);
 
+  /**
+   * Manipulador de evento para editar o mural.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/editar`);
   };
 
+  /**
+   * Manipulador de evento para voltar à lista de murais da escola.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/murais`);

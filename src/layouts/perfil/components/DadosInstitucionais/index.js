@@ -1,12 +1,16 @@
 import PropTypes from "prop-types";
-
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/**
+ * Componente para exibir dados institucionais, como matrícula, nome de usuário e email.
+ * @module perfil/components
+ * @param {string} matricula - Matrícula do usuário.
+ * @param {string} username - Nome de usuário.
+ * @param {string} email - Endereço de email.
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function DadosInstitucionais({ matricula, username, email }) {
   return (
     <Card sx={{ boxShadow: "none" }}>
@@ -65,12 +69,26 @@ function DadosInstitucionais({ matricula, username, email }) {
   );
 }
 
+/**
+ * Propriedades padrão do componente.
+ * @memberof DadosInstitucionais
+ * @property {string} matricula - Matrícula do usuário.
+ * @property {string} username - Nome de usuário.
+ * @property {string} email - Endereço de email.
+ */
 DadosInstitucionais.defaultProps = {
   matricula: "",
   username: "",
   email: "",
 };
 
+/**
+ * Tipos esperados das propriedades do componente.
+ * @memberof DadosInstitucionais
+ * @property {string} matricula - Matrícula do usuário.
+ * @property {string} username - Nome de usuário.
+ * @property {string} email - Endereço de email.
+ */
 DadosInstitucionais.propTypes = {
   matricula: PropTypes.string,
   username: PropTypes.string,

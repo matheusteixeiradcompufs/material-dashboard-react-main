@@ -13,6 +13,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar novos cardápios de escolas.
+ * @module escolas/cardapios
+ * @returns {JSX.Element} Componente de adição de cardápios de escolas.
+ */
 function AddEscolaCardapios() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,14 +26,25 @@ function AddEscolaCardapios() {
   const [turno, setTurno] = useState("M");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Manipula a mudança de valor do campo de data.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeData = (e) => {
     setData(e.target.value);
   };
 
+  /**
+   * Manipula a mudança de valor do campo de turno.
+   * @param {React.ChangeEvent<{ value: unknown }>} e - O evento de mudança.
+   */
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
 
+  /**
+   * Manipula a adição de um novo cardápio.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -44,12 +60,15 @@ function AddEscolaCardapios() {
         await handleAdd();
       } else {
         toast.error("Erro ao cadastrar cardapio");
-        console.log("Erro ao cadastrar cardapio", error);
+        console.error("Erro ao cadastrar cardapio", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Manipula o cancelamento da adição de um novo cardápio.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapios`);

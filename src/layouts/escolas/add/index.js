@@ -12,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar uma nova escola.
+ * @module escolas
+ * @returns {JSX.Element} Componente AddEscolas.
+ */
 function AddEscolas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,22 +26,41 @@ function AddEscolas() {
   const [endereco, setEndereco] = useState("");
   const [descricao, setDescricao] = useState("");
 
+  /**
+   * Manipulador para alterar o valor do CNPJ.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeCnpj = (e) => {
     setCnpj(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor do nome.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor do endereço.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor da descrição.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
 
+  /**
+   * Manipulador para adicionar uma nova escola.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -59,6 +83,9 @@ function AddEscolas() {
     }
   };
 
+  /**
+   * Manipulador para cancelar a adição de uma nova escola.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate("/escolas");

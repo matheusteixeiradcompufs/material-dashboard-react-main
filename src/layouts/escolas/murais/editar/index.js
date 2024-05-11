@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar um mural de uma escola.
+ * @module escolas/murais
+ * @returns {JSX.Element} - Componente de edição de mural.
+ */
 function EditarEscolaMural() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,6 +25,9 @@ function EditarEscolaMural() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes do mural.
+     */
     const fetchMural = async () => {
       try {
         const response = await api.get(`/escolas/mural/api/v1/${muralid}/`);
@@ -39,10 +47,17 @@ function EditarEscolaMural() {
     fetchMural();
   }, []);
 
+  /**
+   * Manipulador de mudança para o ano do mural.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para editar o mural.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -62,6 +77,9 @@ function EditarEscolaMural() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a edição do mural.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/view`);

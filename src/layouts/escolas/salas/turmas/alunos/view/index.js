@@ -13,6 +13,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar detalhes de um aluno em uma turma.
+ * @module escolas/salas/turmas/alunos
+ * @returns {JSX.Element} O componente para visualizar detalhes de um aluno.
+ */
 function ViewTurmaAluno() {
   const { refreshToken } = useContext(AuthContext);
   const { turmaid, alunoid } = useParams();
@@ -30,6 +35,9 @@ function ViewTurmaAluno() {
   const [retrato, setRetrato] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função para buscar os detalhes do aluno.
+     */
     const fetchAlunos = async () => {
       try {
         const response = await api.get(`/pessoas/aluno/api/v1/${alunoid}/`);
@@ -61,34 +69,66 @@ function ViewTurmaAluno() {
     fetchAlunos();
   }, []);
 
+  /**
+   * Função para atualizar o nome do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Função para atualizar o sobrenome do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetSobrenome = (e) => {
     setSobrenome(e.target.value);
   };
 
+  /**
+   * Função para atualizar o email do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
   };
 
+  /**
+   * Função para atualizar o usuário do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetUsuario = (e) => {
     setUsuario(e.target.value);
   };
 
+  /**
+   * Função para atualizar a matrícula do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetMatricula = (e) => {
     setMatricula(e.target.value);
   };
 
+  /**
+   * Função para atualizar o CPF do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
 
+  /**
+   * Função para atualizar a data de nascimento do aluno.
+   * @param {Event} date - O evento de mudança de data.
+   */
   const handleSetDataNascimento = (date) => {
     setDataNascimento(date.target.value);
   };
 
+  /**
+   * Função para atualizar o endereço do aluno.
+   * @param {Event} e - O evento de mudança.
+   */
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };

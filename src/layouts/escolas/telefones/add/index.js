@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para adicionar telefones a uma escola.
+ * @module escolas/telefones
+ * @returns {JSX.Element} Componente para adicionar telefones a uma escola.
+ */
 function AddEscolaTelefones() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,10 +24,17 @@ function AddEscolaTelefones() {
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Função para lidar com a alteração do número do telefone.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Função para lidar com a adição de um novo telefone.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -43,6 +55,9 @@ function AddEscolaTelefones() {
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da adição de telefone.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefones`);

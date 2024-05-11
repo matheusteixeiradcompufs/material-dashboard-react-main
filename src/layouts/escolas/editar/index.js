@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar uma escola existente.
+ * @module escolas
+ * @returns {JSX.Element} Componente EditarEscola.
+ */
 function EditarEscola() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -23,6 +28,9 @@ function EditarEscola() {
   const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes da escola a ser editada.
+     */
     const fetchEscola = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
@@ -45,22 +53,41 @@ function EditarEscola() {
     fetchEscola();
   }, []);
 
+  /**
+   * Manipulador para alterar o valor do CNPJ.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeCnpj = (e) => {
     setCnpj(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor do nome.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor do endereço.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Manipulador para alterar o valor da descrição.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
 
+  /**
+   * Manipulador para salvar as alterações feitas na escola.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -83,6 +110,9 @@ function EditarEscola() {
     }
   };
 
+  /**
+   * Manipulador para cancelar a edição da escola.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/view`);

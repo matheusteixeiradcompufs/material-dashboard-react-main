@@ -5,6 +5,13 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente que representa o menu de opções para um aluno.
+ * @module pessoas/alunos/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.alunoid - ID do aluno para o qual o menu está sendo exibido.
+ * @returns {JSX.Element} JSX para o menu do aluno.
+ */
 function Menu({ alunoid }) {
   return (
     <Card>
@@ -60,7 +67,9 @@ function Menu({ alunoid }) {
   );
 }
 
+// Definição das propriedades requeridas pelo componente
 Menu.propTypes = {
+  /** ID do aluno para o qual o menu está sendo exibido */
   alunoid: PropTypes.string.isRequired,
 };
 

@@ -1,3 +1,8 @@
+/**
+ * ALUNOS. Esse é o layout que renderiza a página que lista os alunos cadastrados.
+ * A partir dela é possível também acessar as outras funções do CRUD dos alunos.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -15,12 +20,21 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir uma lista de alunos.
+ * @module pessoas/alunos
+ * @returns {JSX.Element} JSX para a página de alunos.
+ */
 function Alunos() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [alunos, setAlunos] = useState([]);
 
+  /**
+   * Função para carregar a lista de alunos.
+   * @returns {Promise<void>}
+   */
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
@@ -41,11 +55,21 @@ function Alunos() {
     fetchAlunos();
   }, []);
 
+  /**
+   * Função para lidar com o clique no botão de visualizar aluno.
+   * @param {number} alunoid - O ID do aluno.
+   * @returns {void}
+   */
   const handleOnViewAluno = (alunoid) => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/view`);
   };
 
+  /**
+   * Função para lidar com a exclusão de um aluno.
+   * @param {number} alunoid - O ID do aluno.
+   * @returns {Promise<void>}
+   */
   const handleExcluir = async (alunoid) => {
     setLoading(true);
     try {

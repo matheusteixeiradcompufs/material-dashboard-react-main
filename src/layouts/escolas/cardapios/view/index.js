@@ -14,6 +14,11 @@ import Menu from "../components/Menu";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar o cardápio de uma escola.
+ * @module escolas/cardapios
+ * @returns {JSX.Element} Componente para visualização de cardápio de escola.
+ */
 function ViewEscolaCardapio() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function ViewEscolaCardapio() {
   const [turno, setTurno] = useState("M");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Efeito para carregar os dados do cardápio ao montar o componente.
+   */
   useEffect(() => {
     const fetchCardapio = async () => {
       try {
@@ -35,7 +43,7 @@ function ViewEscolaCardapio() {
           await fetchCardapio();
         } else {
           toast.error("Erro ao carregar dados do cardápio");
-          console.log("Erro ao carregar dados do cardápio", error);
+          console.error("Erro ao carregar dados do cardápio", error);
         }
         setLoading(false);
       }
@@ -43,11 +51,17 @@ function ViewEscolaCardapio() {
     fetchCardapio();
   }, []);
 
+  /**
+   * Manipula a ação de edição do cardápio.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/editar`);
   };
 
+  /**
+   * Manipula a ação de voltar.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapios`);

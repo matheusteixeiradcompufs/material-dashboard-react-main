@@ -5,21 +5,33 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
-import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import PropTypes from "prop-types";
 import MDButton from "components/MDButton";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/* Função auxiliar que retorna os elementos que estão em "a" mas não estão em "b". */
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+/* Função auxiliar que retorna a interseção de dois arrays. */
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
+/**
+ * Componente para transferir itens entre duas listas.
+ * @module escolas/salas/turmas/agenda/gerenciar/components
+ * @param {Object} props - Props do componente.
+ * @param {string} props.day - O dia da semana.
+ * @param {Array} props.left - Itens na lista esquerda.
+ * @param {Function} props.setLeft - Função para atualizar a lista esquerda.
+ * @param {Array} props.right - Itens na lista direita.
+ * @param {Function} props.setRight - Função para atualizar a lista direita.
+ * @returns {JSX.Element} - Componente de transferência de itens.
+ */
 export default function Transfer({ day, left, setLeft, right, setRight }) {
   const [checked, setChecked] = useState([]);
 

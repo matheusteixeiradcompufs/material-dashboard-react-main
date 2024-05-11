@@ -5,6 +5,17 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para finalizar matérias.
+ * @module pessoas/alunos/boletins/notas/components
+ * @param {object} props - Propriedades do componente.
+ * @param {Array<object>} props.situacoes - Lista de situações das matérias.
+ * @param {Array<boolean>} props.finals - Lista de estados de finalização das matérias.
+ * @param {Function} props.handleFinalsChange - Função para manipular a mudança nos estados de finalização.
+ * @param {Function} props.handleFinalizar - Função para finalizar as matérias.
+ * @param {Function} props.handleOnList - Função para voltar à lista de matérias.
+ * @returns {JSX.Element} JSX para finalizar matérias.
+ */
 function Final({ situacoes, finals, handleFinalsChange, handleFinalizar, handleOnList }) {
   return (
     <Card>

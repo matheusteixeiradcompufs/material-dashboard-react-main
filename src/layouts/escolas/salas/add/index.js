@@ -13,6 +13,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar uma nova sala a uma escola.
+ * @module escolas/salas
+ * @returns {JSX.Element} Componente para adicionar uma nova sala.
+ */
 function AddEscolaSalas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,14 +26,26 @@ function AddEscolaSalas() {
   const [quantidade, setQuantidade] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Atualiza o estado do número da sala com o valor do input.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Atualiza o estado da quantidade de alunos da sala com o valor do input.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de mudança do input.
+   */
   const handleChangeQuantidade = (e) => {
     setQuantidade(e.target.value);
   };
 
+  /**
+   * Manipula a adição de uma nova sala.
+   * Envia uma requisição para a API para adicionar a sala à escola.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -50,6 +67,10 @@ function AddEscolaSalas() {
     }
   };
 
+  /**
+   * Manipula o cancelamento da adição de uma nova sala.
+   * Navega de volta para a página de listagem de salas da escola.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/salas`);

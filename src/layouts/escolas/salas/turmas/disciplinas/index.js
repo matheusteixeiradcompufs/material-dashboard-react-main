@@ -13,6 +13,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para exibir as disciplinas de uma turma de uma sala em uma escola.
+ * @module escolas/salas/turmas/disciplinas
+ * @returns {JSX.Element} Componente para visualizar as disciplinas da turma.
+ */
 function EscolaSalaTurmaDisciplinas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function EscolaSalaTurmaDisciplinas() {
   const [turma, setTurma] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes da turma.
+     */
     const fetchTurma = async () => {
       try {
         const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
@@ -32,7 +40,7 @@ function EscolaSalaTurmaDisciplinas() {
           await fetchTurma();
         } else {
           toast.error("Erro ao carregar turma!");
-          console.log("Erro ao carregar turma!", error);
+          console.error("Erro ao carregar turma!", error);
         }
         setLoading(false);
       }
@@ -40,6 +48,9 @@ function EscolaSalaTurmaDisciplinas() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para lidar com a navegação para a página de gerenciamento das disciplinas da turma.
+   */
   const handleGerenciar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/disciplinas/manage`);

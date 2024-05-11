@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar um novo aluno.
+ * @module pessoas/alunos
+ * @returns {JSX.Element} JSX para a página de adicionar alunos.
+ */
 function AddAlunos() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -28,6 +33,11 @@ function AddAlunos() {
   const [endereco, setEndereco] = useState("");
   const [novoRetrato, setNovoRetrato] = useState(null);
 
+  /**
+   * Funções para atualizar os estados das informações do aluno.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   * @returns {void}
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
@@ -77,6 +87,10 @@ function AddAlunos() {
     }
   };
 
+  /**
+   * Função para lidar com o envio do formulário para adicionar um novo aluno.
+   * @returns {Promise<void>}
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -115,6 +129,10 @@ function AddAlunos() {
     }
   };
 
+  /**
+   * Função para cancelar a adição de um novo aluno e retornar à página de alunos.
+   * @returns {void}
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/alunos`);

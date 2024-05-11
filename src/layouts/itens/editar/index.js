@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente funcional que representa a página de edição de um item da merenda.
+ * @module itens
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function EditarItem() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,10 @@ function EditarItem() {
   const [descricao, setDescricao] = useState("");
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do item da API.
+     * @returns {Promise<void>}
+     */
     const fetchItens = async () => {
       try {
         const response = await api.get(`/escolas/cardapio/item/api/v1/${itemid}/`);
@@ -42,14 +51,25 @@ function EditarItem() {
     fetchItens();
   }, []);
 
+  /**
+   * Atualiza o estado do nome do item com o valor fornecido.
+   * @param {Object} e - O evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Atualiza o estado da descrição do item com o valor fornecido.
+   * @param {Object} e - O evento de mudança.
+   */
   const handleChangeDescricao = (e) => {
     setDescricao(e.target.value);
   };
 
+  /**
+   * Edita o item da merenda.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -70,6 +90,9 @@ function EditarItem() {
     }
   };
 
+  /**
+   * Cancela a edição do item e retorna à página de visualização.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/itemmerenda/${itemid}/view`);

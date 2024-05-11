@@ -14,6 +14,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para editar matrículas de um aluno em turmas.
+ * @module pessoas/alunos/boletins
+ * @returns {JSX.Element} JSX para a página de edição de matrículas do aluno.
+ */
 function EditarAlunoBoletim() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -29,6 +34,9 @@ function EditarAlunoBoletim() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados necessários para a edição da matrícula.
+     */
     const fetchDados = async () => {
       try {
         const resBoletim = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
@@ -58,6 +66,10 @@ function EditarAlunoBoletim() {
     fetchDados();
   }, []);
 
+  /**
+   * Atualiza a escola selecionada e as salas disponíveis quando uma escola é selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeEscola = (e) => {
     setSelectedEscola(e.target.value);
     const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
@@ -67,6 +79,10 @@ function EditarAlunoBoletim() {
     setSelectedTurma("");
   };
 
+  /**
+   * Atualiza a sala selecionada e as turmas disponíveis quando uma sala é selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeSala = (e) => {
     setSelectedSala(e.target.value);
     const salaView = salas.find((objeto) => objeto.id === e.target.value);
@@ -74,14 +90,24 @@ function EditarAlunoBoletim() {
     setSelectedTurma("");
   };
 
+  /**
+   * Atualiza a turma selecionada.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeTurma = (e) => {
     setSelectedTurma(e.target.value);
   };
 
+  /**
+   * Altera o estado do switch para encerrar ou não o boletim.
+   */
   const handleChangeEncerrar = () => {
     setEncerrar(!encerrar);
   };
 
+  /**
+   * Envia uma requisição para editar a matrícula do aluno.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -102,6 +128,9 @@ function EditarAlunoBoletim() {
     }
   };
 
+  /**
+   * Cancela a edição da matrícula e retorna à página de visualização do boletim.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/view`);

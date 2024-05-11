@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente FuncionarioTurmas para exibir as turmas associadas a um funcionário.
+ * @module pessoas/funcionarios/turmas
+ * @returns {JSX.Element} Componente FuncionarioTurmas.
+ */
 function FuncionarioTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function FuncionarioTurmas() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função para buscar os dados das turmas associadas ao funcionário.
+     */
     const fetchDados = async () => {
       try {
         const response = await api.get(`/pessoas/funcionario/api/v1/${funcionarioid}/`);
@@ -41,6 +49,11 @@ function FuncionarioTurmas() {
     fetchDados();
   }, []);
 
+  /**
+   * Função para obter o nome do turno com base na sigla.
+   * @param {string} turno - A sigla do turno.
+   * @returns {string} O nome do turno.
+   */
   const getTurno = (turno) => {
     let response;
     switch (turno) {
@@ -60,6 +73,10 @@ function FuncionarioTurmas() {
     return response;
   };
 
+  /**
+   * Função para lidar com o evento de visualização de uma turma.
+   * @param {string} turmaid - O ID da turma.
+   */
   const handleView = (turmaid) => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/turma/${turmaid}/view`);

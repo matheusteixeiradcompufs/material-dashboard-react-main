@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para visualizar os detalhes de um item de cardápio de uma escola.
+ * @module escolas/cardapios/itens
+ * @returns {JSX.Element} Componente de visualização de detalhes do item de cardápio.
+ */
 function ViewEscolaCardapioItem() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -33,7 +38,7 @@ function ViewEscolaCardapioItem() {
           await fetchItens();
         } else {
           toast.error("Erro ao carregar dados do ítem");
-          console.log("Erro ao carregar dados do ítem", error);
+          console.error("Erro ao carregar dados do ítem", error);
         }
         setLoading(false);
       }
@@ -41,6 +46,9 @@ function ViewEscolaCardapioItem() {
     fetchItens();
   }, []);
 
+  /**
+   * Navega de volta para a lista de itens do cardápio.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/itens`);

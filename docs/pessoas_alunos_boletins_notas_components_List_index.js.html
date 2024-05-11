@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pessoas/alunos/boletins/notas/components/List/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pessoas/alunos/boletins/notas/components/List/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Card, Icon } from "@mui/material";
+import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
+import MDTypography from "components/MDTypography";
+import DataTable from "examples/Tables/DataTable";
+import PropTypes from "prop-types";
+
+/**
+ * Componente para exibir a lista de notas do aluno.
+ * @module pessoas/alunos/boletins/notas/components
+ * @param {object} props - Propriedades do componente.
+ * @param {Array&lt;object>} props.avaliacoes - Lista de avaliações do aluno.
+ * @param {Array&lt;object>} props.situacoes - Lista de situações das matérias do aluno.
+ * @param {Array&lt;object>} props.medias - Lista de médias das avaliações do aluno.
+ * @param {Function} props.handleOnEdit - Função para manipular a edição de notas.
+ * @param {Function} props.handleOnFinal - Função para finalizar as matérias.
+ * @returns {JSX.Element} JSX para exibir a lista de notas do aluno.
+ */
+function List({ avaliacoes, situacoes, medias, handleOnEdit, handleOnFinal }) {
+  const columns = [
+    { Header: "matéria", accessor: "materia", width: "20%", align: "left" },
+    { Header: "a1", accessor: "a1", align: "center" },
+    { Header: "a2", accessor: "a2", align: "center" },
+    { Header: "r1", accessor: "r1", align: "center" },
+    { Header: "m1", accessor: "m1", align: "center" },
+    { Header: "a3", accessor: "a3", align: "center" },
+    { Header: "a4", accessor: "a4", align: "center" },
+    { Header: "r2", accessor: "r2", align: "center" },
+    { Header: "m2", accessor: "m2", align: "center" },
+    { Header: "mg", accessor: "mg", align: "center" },
+    { Header: "situação", accessor: "situacao", align: "center" },
+  ];
+
+  /**
+   * Gera as linhas da tabela com as notas e opções de edição/finalização.
+   * @returns {Array&lt;object>} Array contendo as linhas da tabela.
+   */
+  const gerarLinhas = () => {
+    const linhas = [];
+    for (let i = 0; i &lt; situacoes.length; i++) {
+      const linha = {
+        materia: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6].objeto_disciplina.nome}
+          &lt;/MDTypography>
+        ),
+        a1: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        a2: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6 + 1].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        r1: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6 + 2].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        m1: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {medias[(i * 6) / 2].valor.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        a3: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6 + 3].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        a4: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6 + 4].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        r2: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {avaliacoes[i * 6 + 5].nota.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        m2: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {medias[(i * 6) / 2 + 1].valor.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        mg: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {medias[(i * 6) / 2 + 2].valor.toFixed(1)}
+          &lt;/MDTypography>
+        ),
+        situacao: (
+          &lt;MDTypography variant="caption" color="text" fontWeight="medium">
+            {situacoes[i].situacao}
+          &lt;/MDTypography>
+        ),
+      };
+      linhas.push(linha);
+    }
+    linhas.push({
+      materia: "",
+      a1: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 1ª Avaliação"
+          size="small"
+          onClick={() => handleOnEdit("A1")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      a2: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 2ª Avaliação"
+          size="small"
+          onClick={() => handleOnEdit("A2")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      r1: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 1ª Recuperação"
+          size="small"
+          onClick={() => handleOnEdit("R1")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      m1: "",
+      a3: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 3ª Avaliação"
+          size="small"
+          onClick={() => handleOnEdit("A3")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      a4: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 4ª Avaliação"
+          size="small"
+          onClick={() => handleOnEdit("A4")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      r2: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Editar 2ª Recuperação"
+          size="small"
+          onClick={() => handleOnEdit("R2")}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+      m2: "",
+      mg: "",
+      situacao: (
+        &lt;MDButton
+          variant="gradient"
+          color="info"
+          title="Finalizar Matérias"
+          size="small"
+          onClick={handleOnFinal}
+          iconOnly
+        >
+          &lt;Icon>edit&lt;/Icon>
+        &lt;/MDButton>
+      ),
+    });
+    return linhas;
+  };
+
+  return (
+    &lt;Card>
+      &lt;MDBox
+        mx={2}
+        mt={-3}
+        py={3}
+        px={2}
+        variant="gradient"
+        bgColor="info"
+        borderRadius="lg"
+        coloredShadow="info"
+      >
+        &lt;MDTypography variant="h6" color="white">
+          Notas do Aluno
+        &lt;/MDTypography>
+      &lt;/MDBox>
+      &lt;MDBox pt={3}>
+        &lt;DataTable
+          table={{ columns, rows: gerarLinhas() }}
+          isSorted={false}
+          entriesPerPage={false}
+          showTotalEntries={false}
+          noEndBorder
+        />
+      &lt;/MDBox>
+    &lt;/Card>
+  );
+}
+
+List.propTypes = {
+  avaliacoes: PropTypes.array.isRequired,
+  medias: PropTypes.array.isRequired,
+  situacoes: PropTypes.array.isRequired,
+  handleOnEdit: PropTypes.func.isRequired,
+  handleOnFinal: PropTypes.func.isRequired,
+};
+
+export default List;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-authentication_components.html">authentication/components</a></li><li><a href="module-authentication_login.html">authentication/login</a></li><li><a href="module-authentication_logout.html">authentication/logout</a></li><li><a href="module-authentication_reset-password-confirm_cover.html">authentication/reset-password-confirm/cover</a></li><li><a href="module-authentication_reset-password_cover.html">authentication/reset-password/cover</a></li><li><a href="module-dashboard.html">dashboard</a></li><li><a href="module-dashboard_components.html">dashboard/components</a></li><li><a href="module-dashboard_data.html">dashboard/data</a></li><li><a href="module-disciplina.html">disciplina</a></li><li><a href="module-escolas.html">escolas</a></li><li><a href="module-escolas_cardapios.html">escolas/cardapios</a></li><li><a href="module-escolas_cardapios_components.html">escolas/cardapios/components</a></li><li><a href="module-escolas_cardapios_itens.html">escolas/cardapios/itens</a></li><li><a href="module-escolas_cardapios_itens_components.html">escolas/cardapios/itens/components</a></li><li><a href="module-escolas_components.html">escolas/components</a></li><li><a href="module-escolas_emails.html">escolas/emails</a></li><li><a href="module-escolas_murais.html">escolas/murais</a></li><li><a href="module-escolas_murais_avisos.html">escolas/murais/avisos</a></li><li><a href="module-escolas_murais_components.html">escolas/murais/components</a></li><li><a href="module-escolas_salas.html">escolas/salas</a></li><li><a href="module-escolas_salas_components.html">escolas/salas/components</a></li><li><a href="module-escolas_salas_turmas.html">escolas/salas/turmas</a></li><li><a href="module-escolas_salas_turmas_agenda.html">escolas/salas/turmas/agenda</a></li><li><a href="module-escolas_salas_turmas_agenda_components.html">escolas/salas/turmas/agenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda.html">escolas/salas/turmas/agenda/diaagenda</a></li><li><a href="module-escolas_salas_turmas_agenda_diaagenda_components.html">escolas/salas/turmas/agenda/diaagenda/components</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar.html">escolas/salas/turmas/agenda/gerenciar</a></li><li><a href="module-escolas_salas_turmas_agenda_gerenciar_components.html">escolas/salas/turmas/agenda/gerenciar/components</a></li><li><a href="module-escolas_salas_turmas_alunos.html">escolas/salas/turmas/alunos</a></li><li><a href="module-escolas_salas_turmas_alunos_components.html">escolas/salas/turmas/alunos/components</a></li><li><a href="module-escolas_salas_turmas_components.html">escolas/salas/turmas/components</a></li><li><a href="module-escolas_salas_turmas_disciplinas.html">escolas/salas/turmas/disciplinas</a></li><li><a href="module-escolas_salas_turmas_disciplinas_components.html">escolas/salas/turmas/disciplinas/components</a></li><li><a href="module-escolas_telefones.html">escolas/telefones</a></li><li><a href="module-itens.html">itens</a></li><li><a href="module-leitorqr.html">leitorqr</a></li><li><a href="module-leitorqr_components.html">leitorqr/components</a></li><li><a href="module-perfil.html">perfil</a></li><li><a href="module-perfil_components.html">perfil/components</a></li><li><a href="module-pessoas_alunos.html">pessoas/alunos</a></li><li><a href="module-pessoas_alunos_boletins.html">pessoas/alunos/boletins</a></li><li><a href="module-pessoas_alunos_boletins_components.html">pessoas/alunos/boletins/components</a></li><li><a href="module-pessoas_alunos_boletins_frequencia.html">pessoas/alunos/boletins/frequencia</a></li><li><a href="module-pessoas_alunos_boletins_notas.html">pessoas/alunos/boletins/notas</a></li><li><a href="module-pessoas_alunos_boletins_notas_components.html">pessoas/alunos/boletins/notas/components</a></li><li><a href="module-pessoas_alunos_boletins_recados.html">pessoas/alunos/boletins/recados</a></li><li><a href="module-pessoas_alunos_components.html">pessoas/alunos/components</a></li><li><a href="module-pessoas_alunos_emails.html">pessoas/alunos/emails</a></li><li><a href="module-pessoas_alunos_responsaveis.html">pessoas/alunos/responsaveis</a></li><li><a href="module-pessoas_alunos_telefones.html">pessoas/alunos/telefones</a></li><li><a href="module-pessoas_funcionarios.html">pessoas/funcionarios</a></li><li><a href="module-pessoas_funcionarios_components.html">pessoas/funcionarios/components</a></li><li><a href="module-pessoas_funcionarios_turmas.html">pessoas/funcionarios/turmas</a></li><li><a href="module-pessoas_funcionarios_turmas_components.html">pessoas/funcionarios/turmas/components</a></li><li><a href="module-professor.html">professor</a></li><li><a href="module-professor_components.html">professor/components</a></li><li><a href="module-professor_turmas.html">professor/turmas</a></li><li><a href="module-professor_turmas_view_components.html">professor/turmas/view/components</a></li><li><a href="module-transportes.html">transportes</a></li><li><a href="module-transportes_alunos.html">transportes/alunos</a></li><li><a href="module-transportes_alunos_components.html">transportes/alunos/components</a></li><li><a href="module-transportes_alunos_gerenciar.html">transportes/alunos/gerenciar</a></li><li><a href="module-transportes_alunos_gerenciar_components.html">transportes/alunos/gerenciar/components</a></li><li><a href="module-transportes_components.html">transportes/components</a></li><li><a href="module-transportes_telefones.html">transportes/telefones</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed May 08 2024 18:24:08 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

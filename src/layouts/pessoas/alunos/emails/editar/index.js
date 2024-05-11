@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para edição de email de aluno.
+ * @module pessoas/alunos/emails
+ * @returns {JSX.Element} JSX para a página de edição de email de aluno.
+ */
 function EditarAlunoEmail() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function EditarAlunoEmail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes do email do aluno.
+     */
     const fetchEmail = async () => {
       try {
         const response = await api.get(`/pessoas/email/api/v1/${emailid}/`);
@@ -40,10 +48,18 @@ function EditarAlunoEmail() {
     fetchEmail();
   }, []);
 
+  /**
+   * Manipula a mudança de endereço do email.
+   * @param {Object} e - Evento de mudança de entrada.
+   */
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Manipula o evento de edição do email.
+   * @async
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -63,6 +79,9 @@ function EditarAlunoEmail() {
     }
   };
 
+  /**
+   * Manipula o evento de cancelamento da edição do email.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/email/${emailid}/view`);

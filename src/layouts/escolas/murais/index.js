@@ -1,3 +1,8 @@
+/**
+ * MURAIS. Esse é o layout que renderiza a página que lista os murais de avisos de uma escola.
+ * A partir dela é possível também acessar as outras funções do CRUD dos murais.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -14,6 +19,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualização dos murais da escola.
+ * @module escolas/murais
+ * @returns {JSX.Element} - Componente de visualização dos murais da escola.
+ */
 function EscolaMurais() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +31,9 @@ function EscolaMurais() {
   const [escola, setEscola] = useState(true);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Efeito para carregar os dados da escola e seus murais.
+   */
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -41,11 +54,19 @@ function EscolaMurais() {
     fetchEscola();
   }, []);
 
+  /**
+   * Manipulador de evento para visualizar um mural específico.
+   * @param {number} muralid - O ID do mural a ser visualizado.
+   */
   const handleView = (muralid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/mural/${muralid}/view`);
   };
 
+  /**
+   * Manipulador de evento para excluir um mural específico.
+   * @param {number} muralid - O ID do mural a ser excluído.
+   */
   const handleExcluir = async (muralid) => {
     setLoading(true);
     try {

@@ -16,6 +16,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para visualizar e gerenciar a frequência de um aluno em seu boletim.
+ * @module pessoas/alunos/boletins/frequencia
+ * @returns {JSX.Element} JSX para a página de frequência do boletim.
+ */
 function BoletimFrequencia() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -43,6 +48,11 @@ function BoletimFrequencia() {
     fetchBoletim();
   }, []);
 
+  /**
+   * Formata a data para o formato 'dd/MM/yyyy'.
+   * @param {Date} date - Data a ser formatada.
+   * @returns {string} Data formatada.
+   */
   const formatarData = (date) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + 1);
@@ -50,6 +60,10 @@ function BoletimFrequencia() {
     return format(newDate, "dd/MM/yyyy");
   };
 
+  /**
+   * Manipulador de evento para editar a presença de um dia letivo.
+   * @param {string} dialetivoid - ID do dia letivo a ser editado.
+   */
   const handleEdit = (dialetivoid) => {
     setLoading(true);
     navigate(
@@ -57,6 +71,10 @@ function BoletimFrequencia() {
     );
   };
 
+  /**
+   * Manipulador de evento para excluir a presença de um dia letivo.
+   * @param {string} dialetivoid - ID do dia letivo a ser excluído.
+   */
   const handleExcluir = async (dialetivoid) => {
     setLoading(true);
     try {

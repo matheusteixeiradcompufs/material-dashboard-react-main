@@ -1,3 +1,8 @@
+/**
+ * DISCIPLINA. Esse é o layout que renderiza a página que lista as disciplinas cadastradas.
+ * A partir dela é possível também acessar as outras funções do CRUD de disciplinas.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -14,6 +19,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Página para gerenciar disciplinas.
+ * @module disciplina
+ * @returns {JSX.Element} Componente Disciplinas.
+ */
 function Disciplinas() {
   const navigate = useNavigate();
   const { refreshToken } = useContext(AuthContext);
@@ -21,6 +31,9 @@ function Disciplinas() {
   const [disciplinas, setDisciplinas] = useState([]);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar dados das disciplinas do servidor.
+     */
     const fetchDisciplinas = async () => {
       setLoading(true);
       try {
@@ -41,11 +54,19 @@ function Disciplinas() {
     fetchDisciplinas();
   }, []);
 
+  /**
+   * Manipulador para editar uma disciplina.
+   * @param {string} disciplinaid - ID da disciplina a ser editada.
+   */
   const handleOnEditar = (disciplinaid) => {
     setLoading(true);
     navigate(`/disciplinas/${disciplinaid}/editar`);
   };
 
+  /**
+   * Manipulador para excluir uma disciplina.
+   * @param {string} disciplinaid - ID da disciplina a ser excluída.
+   */
   const handleExcluir = async (disciplinaid) => {
     setLoading(true);
     try {

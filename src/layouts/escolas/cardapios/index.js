@@ -1,3 +1,8 @@
+/**
+ * CARDÁPIOS. Esse é o layout que renderiza a página que lista os cardápios de merenda de uma escola.
+ * A partir dela é possível também acessar as outras funções do CRUD dos cardápios.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -12,9 +17,13 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
-import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 import { format } from "date-fns";
 
+/**
+ * Componente para exibir os cardápios de uma escola e fornecer opções de visualização e exclusão.
+ * @module escolas/cardapios
+ * @returns {JSX.Element} Componente do cardápio da escola.
+ */
 function EscolaCardapios() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -42,6 +51,11 @@ function EscolaCardapios() {
     fetchCardapios();
   }, []);
 
+  /**
+   * Formata a data no formato "dd/MM/yyyy".
+   * @param {string} date - A data a ser formatada.
+   * @returns {string} A data formatada.
+   */
   const formatarData = (date) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + 1);
@@ -49,11 +63,19 @@ function EscolaCardapios() {
     return format(newDate, "dd/MM/yyyy");
   };
 
+  /**
+   * Navega para a página de visualização do cardápio.
+   * @param {string} cardapioid - O ID do cardápio a ser visualizado.
+   */
   const handleView = (cardapioid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/cardapio/${cardapioid}/view`);
   };
 
+  /**
+   * Manipula a exclusão de um cardápio.
+   * @param {string} cardapioid - O ID do cardápio a ser excluído.
+   */
   const handleExcluir = async (cardapioid) => {
     setLoading(true);
     try {
@@ -67,7 +89,7 @@ function EscolaCardapios() {
         await handleExcluir(cardapioid);
       } else {
         toast.error("Erro ao excluir cardapio");
-        console.log("Erro ao excluir cardapio", error);
+        console.error("Erro ao excluir cardapio", error);
       }
       setLoading(false);
     }
@@ -101,7 +123,6 @@ function EscolaCardapios() {
   return (
     <DashboardLayout>
       <ToastContainer />
-      <DashboardNavbar />
       <MDBox pt={6} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12}>

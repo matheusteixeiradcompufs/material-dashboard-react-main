@@ -14,6 +14,11 @@ import Select from "examples/Select";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar uma nova turma a uma sala.
+ * @module escolas/salas/turmas
+ * @returns {JSX.Element} Componente de adição de nova turma.
+ */
 function AddEscolaSalaTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -23,18 +28,33 @@ function AddEscolaSalaTurmas() {
   const [turno, setTurno] = useState("M");
   const [ano, setAno] = useState("");
 
+  /**
+   * Função para lidar com a alteração do nome da turma.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de alteração.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Função para lidar com a alteração do turno da turma.
+   * @param {React.ChangeEvent<{ value: unknown }>} e O evento de alteração.
+   */
   const handleChangeTurno = (e) => {
     setTurno(e.target.value);
   };
 
+  /**
+   * Função para lidar com a alteração do ano da turma.
+   * @param {React.ChangeEvent<HTMLInputElement>} e O evento de alteração.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Função para lidar com a adição de uma nova turma.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -51,12 +71,15 @@ function AddEscolaSalaTurmas() {
         await handleAdd();
       } else {
         toast.error("Erro ao cadastrar nova turma!");
-        console.log("Erro ao cadastrar nova turma!", error);
+        console.error("Erro ao cadastrar nova turma!", error);
       }
       setLoading(false);
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da adição de uma nova turma.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turmas`);

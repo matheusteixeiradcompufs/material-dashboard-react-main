@@ -11,14 +11,26 @@ import MDButton from "components/MDButton";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/* Função auxiliar para encontrar os elementos que estão em 'a' mas não em 'b'. */
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+/* Função auxiliar para encontrar a interseção entre dois arrays. */
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
+/**
+ * Componente de transferência de itens entre duas listas.
+ * @module transportes/alunos/gerenciar/components
+ * @param {Object} props - As props do componente.
+ * @param {Array} props.left - Os itens da lista esquerda.
+ * @param {Array} props.right - Os itens da lista direita.
+ * @param {Function} props.setLeft - Função para atualizar os itens da lista esquerda.
+ * @param {Function} props.setRight - Função para atualizar os itens da lista direita.
+ * @returns {JSX.Element} - Retorna o componente de transferência de itens.
+ */
 export default function Transfer({ left, setLeft, right, setRight }) {
   const [checked, setChecked] = useState([]);
 

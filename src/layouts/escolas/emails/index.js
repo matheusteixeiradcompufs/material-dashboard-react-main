@@ -14,6 +14,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir e gerenciar os emails de uma escola.
+ * @module escolas/emails
+ * @returns {JSX.Element} - Componente de emails da escola.
+ */
 function EscolaEmails() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +27,9 @@ function EscolaEmails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes da escola.
+     */
     const fetchEscola = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/${escolaid}/`);
@@ -41,11 +49,19 @@ function EscolaEmails() {
     fetchEscola();
   }, []);
 
+  /**
+   * Função para lidar com a visualização de um email específico.
+   * @param {string} emailid - O ID do email a ser visualizado.
+   */
   const handleView = (emailid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/view`);
   };
 
+  /**
+   * Função para lidar com a exclusão de um email.
+   * @param {string} emailid - O ID do email a ser excluído.
+   */
   const handleExcluir = async (emailid) => {
     setLoading(true);
     try {

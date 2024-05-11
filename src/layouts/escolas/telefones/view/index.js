@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para visualizar o número de telefone de uma escola.
+ * @module escolas/telefones
+ * @returns {JSX.Element} Componente para visualizar o número de telefone de uma escola.
+ */
 function ViewEscolaTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const { escolaid, telefoneid } = useParams();
@@ -20,6 +25,9 @@ function ViewEscolaTelefone() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados do telefone da escola.
+     */
     const fetchTelefone = async () => {
       try {
         const response = await api.get(`/escolas/telefone/api/v1/${telefoneid}/`);
@@ -38,14 +46,23 @@ function ViewEscolaTelefone() {
     };
     fetchTelefone();
   }, []);
+
+  /**
+   * Função para lidar com a navegação para a página de edição do telefone.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefone/${telefoneid}/editar`);
   };
+
+  /**
+   * Função para lidar com o retorno à página de telefones da escola.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/telefones`);
   };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -70,6 +87,7 @@ function ViewEscolaTelefone() {
       </DashboardLayout>
     );
   }
+
   return (
     <DashboardLayout>
       <ToastContainer />

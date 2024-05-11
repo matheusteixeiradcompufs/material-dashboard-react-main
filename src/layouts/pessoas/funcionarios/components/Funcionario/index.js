@@ -3,6 +3,14 @@ import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/**
+ * Componente Funcionario para exibir informações de um funcionário.
+ * @module pessoas/funcionarios/components
+ * @param {object} props - Propriedades do componente.
+ * @param {string} props.image - URL da imagem do funcionário.
+ * @param {string} props.name - Nome do funcionário.
+ * @returns {JSX.Element} Componente Funcionario.
+ */
 function Funcionario({ image, name }) {
   return (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -16,6 +24,7 @@ function Funcionario({ image, name }) {
   );
 }
 
+// Definição dos tipos das propriedades
 Funcionario.propTypes = {
   image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

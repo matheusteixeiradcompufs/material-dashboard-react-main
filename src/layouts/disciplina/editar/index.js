@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar uma disciplina existente.
+ * @module disciplina
+ * @returns {JSX.Element} Componente EditarDisciplina.
+ */
 function EditarDisciplina() {
   const { refreshToken } = useContext(AuthContext);
   const { disciplinaid } = useParams();
@@ -20,6 +25,9 @@ function EditarDisciplina() {
   const [nome, setNome] = useState("");
 
   useEffect(() => {
+    /**
+     * Função para buscar os dados da disciplina do servidor.
+     */
     const fetchDisciplina = async () => {
       try {
         const response = await api.get(`/escolas/disciplina/api/v1/${disciplinaid}/`);
@@ -39,10 +47,17 @@ function EditarDisciplina() {
     fetchDisciplina();
   }, []);
 
+  /**
+   * Manipulador para alterar o nome da disciplina.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleChangeNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Manipulador para editar a disciplina.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -62,6 +77,9 @@ function EditarDisciplina() {
     }
   };
 
+  /**
+   * Manipulador para cancelar a edição da disciplina.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate("/disciplinas");

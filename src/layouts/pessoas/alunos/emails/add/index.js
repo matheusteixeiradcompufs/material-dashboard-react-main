@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar novos emails de alunos.
+ * @module pessoas/alunos/emails
+ * @returns {JSX.Element} JSX para a página de adição de emails de aluno.
+ */
 function AddAlunoEmails() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,10 +25,18 @@ function AddAlunoEmails() {
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Atualiza o estado do endereço de email.
+   * @param {Object} e - Evento de mudança de entrada.
+   */
   const handleSetEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Manipula o evento de adição de um novo email.
+   * @async
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -44,6 +57,9 @@ function AddAlunoEmails() {
     }
   };
 
+  /**
+   * Manipula o evento de cancelamento da adição de um novo email.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/emails`);

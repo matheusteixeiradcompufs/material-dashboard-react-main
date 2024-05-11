@@ -1,3 +1,8 @@
+/**
+ * FUNCIONÁRIOS. Esse é o layout que renderiza a página que lista os funcionários cadastrados.
+ * A partir dela é possível também acessar as outras funções do CRUD dos funcionários.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -15,12 +20,20 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para exibir a lista de funcionários.
+ * @module pessoas/funcionarios
+ * @returns {JSX.Element} Componente Funcionários.
+ */
 function Funcionarios() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [funcionarios, setFuncionarios] = useState([]);
 
+  /**
+   * Efeito para carregar a lista de funcionários.
+   */
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
@@ -41,11 +54,19 @@ function Funcionarios() {
     fetchFuncionarios();
   }, []);
 
+  /**
+   * Manipulador de evento para visualizar um funcionário.
+   * @param {number} funcionarioid - O ID do funcionário.
+   */
   const handleView = (funcionarioid) => {
     setLoading(true);
     navigate(`/pessoas/funcionario/${funcionarioid}/view`);
   };
 
+  /**
+   * Manipulador de evento para excluir um funcionário.
+   * @param {number} funcionarioid - O ID do funcionário.
+   */
   const handleExcluir = async (funcionarioid) => {
     setLoading(true);
     try {

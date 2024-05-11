@@ -2,11 +2,19 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Hook customizado para obter dados do gráfico de escolas.
+ * @module dashboard/data
+ * @returns {Object} Dados do gráfico de escolas.
+ */
 const GraficoEscolas = () => {
-  const [escolas, setEscolas] = useState([]);
+  const [escolas, setEscolas] = useState([]); // Estado para armazenar os dados das escolas
   const currentYear = new Date().getFullYear(); // Obtém o ano atual
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar dados das escolas do servidor.
+     */
     const fetchEscolas = async () => {
       try {
         const response = await api.get(`/escolas/api/v1/`);
@@ -19,7 +27,7 @@ const GraficoEscolas = () => {
 
     fetchEscolas();
 
-    // Função de limpeza
+    // Função de limpeza (opcional)
     return () => {
       // Se necessário, faça a limpeza aqui
     };

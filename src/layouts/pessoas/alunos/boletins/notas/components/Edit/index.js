@@ -5,6 +5,20 @@ import MDInput from "components/MDInput";
 import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para edição de uma avaliação.
+ * @module pessoas/alunos/boletins/notas/components
+ * @param {object} props - Propriedades do componente.
+ * @param {string} props.nome - Nome da avaliação.
+ * @param {Array<object>} props.avaliacoes - Lista de avaliações.
+ * @param {Array<number>} props.valores - Lista de valores das avaliações.
+ * @param {Function} props.handleInputChange - Função para manipular a mudança nos valores das avaliações.
+ * @param {Array<boolean>} props.confs - Lista de estados de confirmação das avaliações.
+ * @param {Function} props.handleSwitchChange - Função para manipular a mudança nos estados de confirmação.
+ * @param {Function} props.handleSalvar - Função para salvar as alterações.
+ * @param {Function} props.handleOnList - Função para voltar à lista de avaliações.
+ * @returns {JSX.Element} JSX para a edição de uma avaliação.
+ */
 function Edit({
   nome,
   avaliacoes,

@@ -5,6 +5,13 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente Menu para exibir o menu de opções de um funcionário.
+ * @module pessoas/funcionarios/components
+ * @param {object} props - Propriedades do componente.
+ * @param {string} props.funcionarioid - O ID do funcionário para o qual o menu está sendo exibido.
+ * @returns {JSX.Element} Componente Menu.
+ */
 function Menu({ funcionarioid }) {
   return (
     <Card>
@@ -26,6 +33,7 @@ function Menu({ funcionarioid }) {
         <Grid item xs={12} sm={12}>
           <MDBox display="flex" justifyContent="center" pt={2} px={2}>
             <MDBox mr={1} ml={1}>
+              {/* Link para a página de turmas do funcionário */}
               <Link to={`/pessoas/funcionario/${funcionarioid}/turmas`}>
                 <MDButton variant="gradient" color="secondary">
                   Turmas
@@ -39,6 +47,7 @@ function Menu({ funcionarioid }) {
   );
 }
 
+// Definição dos tipos das propriedades
 Menu.propTypes = {
   funcionarioid: PropTypes.string.isRequired,
 };

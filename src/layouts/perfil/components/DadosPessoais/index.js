@@ -1,19 +1,30 @@
 import PropTypes from "prop-types";
-
-// @mui material components
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import { format } from "date-fns";
 
+/**
+ * Componente para exibir dados pessoais, como CPF, data de nascimento, endereço e formação.
+ * @module perfil/components
+ * @param {Object} props - As propriedades do componente.
+ * @param {string} props.cpf - O CPF do usuário.
+ * @param {string} props.dataNascimento - A data de nascimento do usuário.
+ * @param {string} props.endereco - O endereço do usuário.
+ * @param {string} props.formacao - A formação do usuário.
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function DadosPessoais({ cpf, dataNascimento, endereco, formacao }) {
+  /**
+   * Formata a data para o formato "dd/MM/yyyy".
+   * @param {string} date - A data a ser formatada.
+   * @returns {string} A data formatada.
+   */
   const formatarData = (date) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + 1);
     newDate.setHours(0);
-    return format(newDate, "dd/MM/yyy");
+    return format(newDate, "dd/MM/yyyy");
   };
 
   return (
@@ -85,6 +96,14 @@ function DadosPessoais({ cpf, dataNascimento, endereco, formacao }) {
   );
 }
 
+/**
+ * Propriedades padrão do componente.
+ * @memberof DadosPessoais
+ * @property {string} cpf - O CPF do usuário.
+ * @property {string} dataNascimento - A data de nascimento do usuário.
+ * @property {string} endereco - O endereço do usuário.
+ * @property {string} formacao - A formação do usuário.
+ */
 DadosPessoais.defaultProps = {
   cpf: "",
   dataNascimento: "",
@@ -92,6 +111,14 @@ DadosPessoais.defaultProps = {
   formacao: "",
 };
 
+/**
+ * Tipos esperados das propriedades do componente.
+ * @memberof DadosPessoais
+ * @property {string} cpf - O CPF do usuário.
+ * @property {string} dataNascimento - A data de nascimento do usuário.
+ * @property {string} endereco - O endereço do usuário.
+ * @property {string} formacao - A formação do usuário.
+ */
 DadosPessoais.propTypes = {
   cpf: PropTypes.string,
   dataNascimento: PropTypes.string,

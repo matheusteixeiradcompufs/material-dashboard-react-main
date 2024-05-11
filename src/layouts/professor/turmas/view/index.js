@@ -15,6 +15,11 @@ import MDAvatar from "components/MDAvatar";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar detalhes de uma turma específica do professor.
+ * @module professor/turmas
+ * @returns {JSX.Element} Componente para visualização de detalhes da turma.
+ */
 function ViewProfessorTurma() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -23,6 +28,9 @@ function ViewProfessorTurma() {
   const [turma, setTurma] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os detalhes da turma.
+     */
     const fetchTurma = async () => {
       try {
         const response = await api.get(`/escolas/sala/turma/api/v1/${turmaid}/`);
@@ -42,6 +50,10 @@ function ViewProfessorTurma() {
     fetchTurma();
   }, []);
 
+  /**
+   * Função para navegar para a página de visualização do aluno.
+   * @param {string} alunoid - ID do aluno.
+   */
   const handleView = (alunoid) => {
     setLoading(true);
     navigate(

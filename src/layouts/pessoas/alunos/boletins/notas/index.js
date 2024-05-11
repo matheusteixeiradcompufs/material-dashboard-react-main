@@ -13,6 +13,11 @@ import Final from "./components/Final";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para gerenciar o boletim de notas do aluno.
+ * @module pessoas/alunos/boletins/notas
+ * @returns {JSX.Element} JSX para a página do boletim de notas.
+ */
 function BoletimNotas() {
   const { refreshToken } = useContext(AuthContext);
   const { boletimid } = useParams();
@@ -51,6 +56,9 @@ function BoletimNotas() {
     fetchBoletim();
   }, []);
 
+  /**
+   * Função para finalizar a edição do boletim de notas.
+   */
   const handleOnFinal = () => {
     setFinals(situacoes.map((objeto) => objeto.finalizar));
     setList(false);
@@ -58,12 +66,19 @@ function BoletimNotas() {
     setFinal(true);
   };
 
+  /**
+   * Função para voltar à lista de disciplinas.
+   */
   const handleOnList = () => {
     setEdit(false);
     setFinal(false);
     setList(true);
   };
 
+  /**
+   * Função para editar uma avaliação.
+   * @param {string} nomeAv - Nome da avaliação.
+   */
   const handleOnEdit = (nomeAv) => {
     setValores(avaliacoes.map((objeto) => objeto.nota));
     setConfs(avaliacoes.map((objeto) => objeto.confirmar));
@@ -73,24 +88,40 @@ function BoletimNotas() {
     setEdit(true);
   };
 
+  /**
+   * Função para alterar o estado de confirmação de uma avaliação.
+   * @param {number} index - Índice da avaliação.
+   */
   const handleSwitchChange = (index) => {
     const novosConfs = [...confs];
     novosConfs[index] = !novosConfs[index];
     setConfs(novosConfs);
   };
 
+  /**
+   * Função para alterar o estado de finalização de uma disciplina.
+   * @param {number} index - Índice da disciplina.
+   */
   const handleFinalsChange = (index) => {
     const novosFinals = [...finals];
     novosFinals[index] = !novosFinals[index];
     setFinals(novosFinals);
   };
 
+  /**
+   * Função para alterar o valor de uma avaliação.
+   * @param {number} index - Índice da avaliação.
+   * @param {string} valor - Novo valor da avaliação.
+   */
   const handleInputChange = (index, valor) => {
     const novosValores = [...valores];
     novosValores[index] = valor;
     setValores(novosValores);
   };
 
+  /**
+   * Função para salvar as alterações nas avaliações.
+   */
   const handleSalvar = async () => {
     setLoading(true);
     try {
@@ -129,6 +160,9 @@ function BoletimNotas() {
     }
   };
 
+  /**
+   * Função para finalizar as disciplinas.
+   */
   const handleFinalizar = async () => {
     setLoading(true);
     try {

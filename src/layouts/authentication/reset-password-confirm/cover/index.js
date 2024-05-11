@@ -1,22 +1,21 @@
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import { ToastContainer, toast } from "react-toastify";
-
-// Images
 import bgImage from "assets/images/Escola.png";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
 import { BASE_URL } from "services/api";
 
+/**
+ * Componente para redefinir a senha do usuário.
+ * @module authentication/reset-password-confirm/cover
+ * @returns {JSX.Element} Componente de redefinição de senha.
+ */
 function Cover() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -26,6 +25,9 @@ function Cover() {
   const [confirm, setConfirm] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
+  /**
+   * Efeito para verificar a confirmação de usuário.
+   */
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
@@ -53,18 +55,31 @@ function Cover() {
     fetchUsuario();
   }, []);
 
+  /**
+   * Manipulador de evento para alterar a senha.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de alteração.
+   */
   const handleChangePassword = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     validatePassword(newPassword, password2);
   };
 
+  /**
+   * Manipulador de evento para alterar a segunda senha.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de alteração.
+   */
   const handleChangePassword2 = (e) => {
     const newPassword2 = e.target.value;
     setPassword2(newPassword2);
     validatePassword(password, newPassword2);
   };
 
+  /**
+   * Função para validar a senha.
+   * @param {string} password - A senha.
+   * @param {string} password2 - A segunda senha.
+   */
   const validatePassword = (password, password2) => {
     if (password !== password2) {
       setPasswordError("As senhas não coincidem");
@@ -81,6 +96,9 @@ function Cover() {
     }
   };
 
+  /**
+   * Função para redefinir a senha.
+   */
   const handleRedefinir = async () => {
     setLoading(true);
     try {
@@ -180,7 +198,7 @@ function Cover() {
               ) : (
                 <MDBox mt={6} mb={1}>
                   <MDButton variant="gradient" color="info" onClick={handleRedefinir} fullWidth>
-                    redefinir
+                    Redefinir
                   </MDButton>
                 </MDBox>
               )}

@@ -13,6 +13,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente que exibe as turmas do professor.
+ * @module professor/turmas
+ * @returns {JSX.Element} Componente com as turmas do professor.
+ */
 function ProfessorTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -21,6 +26,9 @@ function ProfessorTurmas() {
   const [turmas, setTurmas] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar as turmas do professor.
+     */
     const fetchSala = async () => {
       try {
         let response = await api.post(`/pessoas/me/`, {
@@ -42,6 +50,10 @@ function ProfessorTurmas() {
     fetchSala();
   }, []);
 
+  /**
+   * Navega para a página de visualização da turma.
+   * @param {Object} turma - Informações da turma.
+   */
   const handleView = (turma) => {
     setLoading(true);
     navigate(`/professor/turma/${turma.id}/view`);

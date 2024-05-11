@@ -5,6 +5,14 @@ import MDTypography from "components/MDTypography";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+/**
+ * Componente para exibir um menu de acesso ao mural de avisos de uma escola.
+ * @module escolas/murais/components
+ * @param {Object} props - As propriedades do componente.
+ * @param {string} props.escolaid - O ID da escola.
+ * @param {string} props.muralid - O ID do mural.
+ * @returns {JSX.Element} - Componente de menu de acesso ao mural de avisos.
+ */
 function Menu({ escolaid, muralid }) {
   return (
     <Card>
@@ -39,6 +47,17 @@ function Menu({ escolaid, muralid }) {
   );
 }
 
+/**
+ * Propriedades necessárias para o componente Menu.
+ * @typedef {Object} MenuProps
+ * @property {string} escolaid - O ID da escola.
+ * @property {string} muralid - O ID do mural.
+ */
+
+/**
+ * Propriedades do componente Menu.
+ * @type {MenuProps}
+ */
 Menu.propTypes = {
   escolaid: PropTypes.string.isRequired,
   muralid: PropTypes.string.isRequired,

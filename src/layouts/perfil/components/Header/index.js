@@ -1,44 +1,45 @@
 import { useState, useEffect } from "react";
-
-// prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
-
-// @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-
-// Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
-
-// Images
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import { BASE_URL } from "services/api";
 
+/**
+ * Componente para o cabeçalho da página, exibindo uma imagem de perfil, nome e cargo.
+ * @module perfil/components
+ * @param {Object} props - As propriedades do componente.
+ * @param {string} props.portrait - A URL da imagem do perfil.
+ * @param {string} props.name - O nome do usuário.
+ * @param {string} props.cargo - O cargo do usuário.
+ * @param {React.ReactNode} props.children - Componentes filhos a serem renderizados dentro do cabeçalho.
+ * @returns {JSX.Element} O componente React para renderizar.
+ */
 function Header({ portrait, name, cargo, children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
-  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
-    // A function that sets the orientation state of the tabs.
+    /**
+     * Uma função que define a orientação das abas.
+     * @returns {void}
+     */
     function handleTabsOrientation() {
       return window.innerWidth < breakpoints.values.sm
         ? setTabsOrientation("vertical")
         : setTabsOrientation("horizontal");
     }
 
-    /** 
-     The event listener that's calling the handleTabsOrientation function when resizing the window.
-    */
+    // Adiciona um ouvinte de evento para redimensionar a janela.
     window.addEventListener("resize", handleTabsOrientation);
 
-    // Call the handleTabsOrientation function to set the state with the initial value.
+    // Chama a função handleTabsOrientation para definir o estado com o valor inicial.
     handleTabsOrientation();
 
-    // Remove event listener on cleanup
+    // Remove o ouvinte de evento ao limpar
     return () => window.removeEventListener("resize", handleTabsOrientation);
   }, [tabsOrientation]);
 
@@ -73,11 +74,7 @@ function Header({ portrait, name, cargo, children }) {
         <Grid container spacing={3} alignItems="center">
           <Grid item>
             <MDAvatar
-              src={
-                portrait.startsWith("http://127.0.0.1:8000")
-                  ? portrait
-                  : `http://127.0.0.1:8000${portrait}`
-              }
+              src={portrait.startsWith(`${BASE_URL}`) ? portrait : `${BASE_URL}${portrait}`}
               size="xl"
               shadow="sm"
             />
@@ -99,14 +96,28 @@ function Header({ portrait, name, cargo, children }) {
   );
 }
 
-// Setting default props for the Header
+/**
+ * Propriedades padrão do componente.
+ * @memberof Header
+ * @property {string} portrait - A URL da imagem do perfil.
+ * @property {string} name - O nome do usuário.
+ * @property {string} cargo - O cargo do usuário.
+ * @property {React.ReactNode} children - Componentes filhos a serem renderizados dentro do cabeçalho.
+ */
 Header.defaultProps = {
   name: "",
   cargo: "",
   children: "",
 };
 
-// Typechecking props for the Header
+/**
+ * Tipos esperados das propriedades do componente.
+ * @memberof Header
+ * @property {string} portrait - A URL da imagem do perfil.
+ * @property {string} name - O nome do usuário.
+ * @property {string} cargo - O cargo do usuário.
+ * @property {React.ReactNode} children - Componentes filhos a serem renderizados dentro do cabeçalho.
+ */
 Header.propTypes = {
   portrait: PropTypes.string,
   name: PropTypes.string,

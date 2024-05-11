@@ -12,6 +12,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar um telefone associado a um transporte.
+ * @module transportes/telefones
+ * @returns {JSX.Element} Componente de visualização de telefone do transporte.
+ */
 function ViewTransporteTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid, telefoneid } = useParams();
@@ -39,11 +44,17 @@ function ViewTransporteTelefone() {
     fetchTelefone();
   }, []);
 
+  /**
+   * Redireciona para a página de edição do telefone.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefone/${telefoneid}/editar`);
   };
 
+  /**
+   * Volta para a página de listagem de telefones do transporte.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefones`);

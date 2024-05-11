@@ -1,9 +1,9 @@
 import { Card, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Audio } from "react-loader-spinner";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { api } from "services/apiClient";
@@ -13,6 +13,11 @@ import MDTypography from "components/MDTypography";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar um novo responsável de aluno.
+ * @module pessoas/alunos/responsaveis
+ * @returns {JSX.Element} JSX para a página de adição de responsável de aluno.
+ */
 function AddAlunoResponsaveis() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,18 +27,33 @@ function AddAlunoResponsaveis() {
   const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Define o valor do CPF.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetCpf = (e) => {
     setCpf(e.target.value);
   };
 
+  /**
+   * Define o valor do nome.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetNome = (e) => {
     setNome(e.target.value);
   };
 
+  /**
+   * Define o valor da observação.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleSetObservacao = (e) => {
     setObservacao(e.target.value);
   };
 
+  /**
+   * Manipula a adição de um novo responsável.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -56,6 +76,9 @@ function AddAlunoResponsaveis() {
     }
   };
 
+  /**
+   * Manipula o cancelamento da adição de um responsável.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/responsaveis`);

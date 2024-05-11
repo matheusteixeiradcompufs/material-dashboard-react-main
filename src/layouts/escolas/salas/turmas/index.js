@@ -1,3 +1,8 @@
+/**
+ * TURMAS. Esse é o layout que renderiza a página que lista as turmas de um sala.
+ * A partir dela é possível também acessar as outras funções do CRUD das turmas.
+ * @file
+ */
 import { Card, Fab, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MDBox from "components/MDBox";
@@ -14,6 +19,11 @@ import MDButton from "components/MDButton";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar e gerenciar as turmas de uma sala.
+ * @module escolas/salas/turmas
+ * @returns {JSX.Element} Componente de visualização e gerenciamento de turmas de uma sala.
+ */
 function EscolaSalaTurmas() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -22,6 +32,10 @@ function EscolaSalaTurmas() {
   const [sala, setSala] = useState(null);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados da sala.
+     * @returns {Promise<void>} Uma promise vazia.
+     */
     const fetchSala = async () => {
       try {
         const response = await api.get(`/escolas/sala/api/v1/${salaid}/`);
@@ -33,7 +47,7 @@ function EscolaSalaTurmas() {
           await fetchSala();
         } else {
           toast.error("Erro ao carregar turmas da sala!");
-          console.log("Erro ao carregar turmas da sala", error);
+          console.error("Erro ao carregar turmas da sala", error);
         }
         setLoading(false);
       }
@@ -41,11 +55,19 @@ function EscolaSalaTurmas() {
     fetchSala();
   }, []);
 
+  /**
+   * Função para lidar com a visualização de uma turma.
+   * @param {string} turmaid O ID da turma a ser visualizada.
+   */
   const handleView = (turmaid) => {
     setLoading(true);
     navigate(`/escola/${escolaid}/sala/${salaid}/turma/${turmaid}/view`);
   };
 
+  /**
+   * Função para lidar com a exclusão de uma turma.
+   * @param {string} turmaid O ID da turma a ser excluída.
+   */
   const handleExcluir = async (turmaid) => {
     setLoading(true);
     try {
@@ -59,7 +81,7 @@ function EscolaSalaTurmas() {
         await handleExcluir(turmaid);
       } else {
         toast.error("Erro ao excluir a turma!");
-        console.log("Erro ao excluir a turma!", error);
+        console.error("Erro ao excluir a turma!", error);
       }
       setLoading(false);
     }

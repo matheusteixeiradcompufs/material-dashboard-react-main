@@ -11,14 +11,26 @@ import MDButton from "components/MDButton";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
+/* Retorna os itens que estão em `a` mas não em `b`. 6*/
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
+/* Retorna a interseção dos itens em `a` e `b`. */
 function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
+/**
+ * Componente para transferir itens entre duas listas.
+ * @module pessoas/funcionarios/turmas/components
+ * @param {Object} props - Propriedades do componente.
+ * @param {Array} props.left - Itens à esquerda.
+ * @param {Array} props.right - Itens à direita.
+ * @param {Function} props.setLeft - Função para atualizar os itens à esquerda.
+ * @param {Function} props.setRight - Função para atualizar os itens à direita.
+ * @returns {JSX.Element} Componente de transferência.
+ */
 export default function Transfer({ left, setLeft, right, setRight }) {
   const [checked, setChecked] = useState([]);
 
@@ -167,6 +179,14 @@ export default function Transfer({ left, setLeft, right, setRight }) {
   );
 }
 
+/**
+ * Propriedades esperadas pelo componente Transfer.
+ * @type {Object}
+ * @property {Array} left - Itens à esquerda.
+ * @property {Array} right - Itens à direita.
+ * @property {Function} setLeft - Função para atualizar os itens à esquerda.
+ * @property {Function} setRight - Função para atualizar os itens à direita.
+ */
 Transfer.propTypes = {
   left: PropTypes.array.isRequired,
   right: PropTypes.array.isRequired,

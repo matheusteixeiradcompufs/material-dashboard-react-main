@@ -12,6 +12,11 @@ import { api } from "services/apiClient";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar um novo telefone associado a um transporte.
+ * @module transportes/telefones
+ * @returns {JSX.Element} Componente para adicionar telefone.
+ */
 function AddTransporteTelefone() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
@@ -19,10 +24,17 @@ function AddTransporteTelefone() {
   const [numero, setNumero] = useState("");
   const navigate = useNavigate();
 
+  /**
+   * Manipulador de evento para alterar o valor do número do telefone.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de mudança.
+   */
   const handleChangeNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Manipulador de evento para adicionar um novo telefone.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -43,6 +55,9 @@ function AddTransporteTelefone() {
     }
   };
 
+  /**
+   * Manipulador de evento para cancelar a adição de telefone e voltar à página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/telefones`);

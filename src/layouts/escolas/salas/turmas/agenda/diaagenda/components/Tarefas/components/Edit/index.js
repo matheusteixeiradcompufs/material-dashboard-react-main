@@ -5,6 +5,23 @@ import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import PropTypes from "prop-types";
 
+/**
+ * Componente para editar uma tarefa existente.
+ * @module escolas/salas/turmas/agenda/diaagenda/components/Tarefas/components
+ * @param {Object} props - As props do componente.
+ * @param {string} props.nome - O nome da tarefa.
+ * @param {Function} props.handleSetNome - Função para definir o nome da tarefa.
+ * @param {string} props.descricao - A descrição da tarefa.
+ * @param {Function} props.handleSetDescricao - Função para definir a descrição da tarefa.
+ * @param {string} props.tipo - O tipo da tarefa (Casa ou Escola).
+ * @param {Function} props.handleSetTipo - Função para definir o tipo da tarefa.
+ * @param {Object} props.dataEntrega - A data de entrega da tarefa.
+ * @param {Function} props.handleSetDataEntrega - Função para definir a data de entrega da tarefa.
+ * @param {Object} props.tarefa - O objeto da tarefa a ser editada.
+ * @param {Function} props.handleEditarTarefa - Função para editar a tarefa.
+ * @param {Function} props.handleOnViewTarefa - Função para cancelar a edição da tarefa e visualizar os detalhes.
+ * @returns {JSX.Element} Retorna o JSX para renderização.
+ */
 function Edit({
   nome,
   handleSetNome,

@@ -13,6 +13,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para editar dados de um transporte.
+ * @module transportes
+ * @returns {JSX.Element} Componente para editar dados de um transporte.
+ */
 function EditarTransportes() {
   const { refreshToken } = useContext(AuthContext);
   const { transporteid } = useParams();
@@ -26,6 +31,9 @@ function EditarTransportes() {
   const [itinerario, setItinerario] = useState("");
 
   useEffect(() => {
+    /**
+     * Função para buscar os dados do transporte.
+     */
     const fetchTransporte = async () => {
       try {
         const response = await api.get(`/pessoas/transporte/api/v1/${transporteid}/`);
@@ -50,30 +58,57 @@ function EditarTransportes() {
     fetchTransporte();
   }, []);
 
+  /**
+   * Atualiza o estado da placa do veículo.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangePlaca = (e) => {
     setPlaca(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do ano do contrato.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeAno = (e) => {
     setAno(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do tipo do veículo.
+   * @param {React.ChangeEvent<{ value: unknown }>} e - O evento de mudança.
+   */
   const handleChangeTipo = (e) => {
     setTipo(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do nome do motorista.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNomeMotorista = (e) => {
     setNomeMotorista(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do nome do auxiliar.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeNomeAuxiliar = (e) => {
     setNomeAuxiliar(e.target.value);
   };
 
+  /**
+   * Atualiza o estado do itinerário do transporte.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleChangeItinerario = (e) => {
     setItinerario(e.target.value);
   };
 
+  /**
+   * Manipula a edição dos dados do transporte.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -98,6 +133,9 @@ function EditarTransportes() {
     }
   };
 
+  /**
+   * Manipula o cancelamento da edição dos dados do transporte.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/transportes/${transporteid}/view`);

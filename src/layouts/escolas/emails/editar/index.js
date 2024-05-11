@@ -12,6 +12,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { api } from "services/apiClient";
 
+/**
+ * Componente para edição de um email da escola.
+ * @module escolas/emails
+ * @returns {JSX.Element} - Componente de edição de emails da escola.
+ */
 function EditarEscolaEmail() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,6 +24,9 @@ function EditarEscolaEmail() {
   const [endereco, setEndereco] = useState("");
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Efeito para carregar os dados do email da escola.
+   */
   useEffect(() => {
     const fetchEscola = async () => {
       try {
@@ -39,10 +47,17 @@ function EditarEscolaEmail() {
     fetchEscola();
   }, []);
 
+  /**
+   * Manipulador de eventos para alterações no campo de endereço do email.
+   * @param {Object} e - O evento de alteração.
+   */
   const handleChangeEndereco = (e) => {
     setEndereco(e.target.value);
   };
 
+  /**
+   * Função para lidar com a edição do email.
+   */
   const handleEditar = async () => {
     setLoading(true);
     try {
@@ -62,6 +77,9 @@ function EditarEscolaEmail() {
     }
   };
 
+  /**
+   * Função para lidar com o cancelamento da edição do email.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/escola/${escolaid}/email/${emailid}/view`);

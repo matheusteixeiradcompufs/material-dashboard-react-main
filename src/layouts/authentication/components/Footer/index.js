@@ -1,33 +1,18 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
-
-// @mui material components
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React base styles
 import typography from "assets/theme/base/typography";
 
+/**
+ * Componente Footer que exibe informações de rodapé.
+ * @module authentication/components
+ * @param {object} props - As props para o componente Footer.
+ * @param {boolean} [props.light=false] - Define se o rodapé deve ter uma aparência clara.
+ * @returns {JSX.Element} Componente Footer.
+ */
 function Footer({ light }) {
   const { size } = typography;
 
@@ -42,6 +27,7 @@ function Footer({ light }) {
           alignItems="center"
           px={1.5}
         >
+          {/* Informações de direitos autorais */}
           <MDBox
             display="flex"
             justifyContent="center"
@@ -50,7 +36,7 @@ function Footer({ light }) {
             color={light ? "white" : "text"}
             fontSize={size.sm}
           >
-            &copy; {new Date().getFullYear()}, made with
+            &copy; {new Date().getFullYear()}, feito com
             <MDBox fontSize={size.md} color={light ? "white" : "dark"} mb={-0.5} mx={0.25}>
               <Icon color="inherit" fontSize="inherit">
                 favorite
@@ -62,8 +48,9 @@ function Footer({ light }) {
                 &nbsp;Creative Tim&nbsp;
               </MDTypography>
             </Link>
-            for a better web.
+            para uma web melhor.
           </MDBox>
+          {/* Links adicionais */}
           <MDBox
             component="ul"
             sx={({ breakpoints }) => ({
@@ -75,7 +62,6 @@ function Footer({ light }) {
               mt: 3,
               mb: 0,
               p: 0,
-
               [breakpoints.up("lg")]: {
                 mt: 0,
               },
@@ -99,7 +85,7 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  About Us
+                  Sobre nós
                 </MDTypography>
               </Link>
             </MDBox>
@@ -121,7 +107,7 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  License
+                  Licença
                 </MDTypography>
               </Link>
             </MDBox>
@@ -132,12 +118,12 @@ function Footer({ light }) {
   );
 }
 
-// Setting default props for the Footer
+// Configurando valores padrão para as props do Footer
 Footer.defaultProps = {
   light: false,
 };
 
-// Typechecking props for the Footer
+// Verificação de tipo para as props do Footer
 Footer.propTypes = {
   light: PropTypes.bool,
 };

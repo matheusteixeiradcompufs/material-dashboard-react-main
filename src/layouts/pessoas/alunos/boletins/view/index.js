@@ -11,10 +11,15 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import Select from "examples/Select";
 import MDInput from "components/MDInput";
-import Menu from "../components/Menu";
+import Menu from "../components/Menu"; // Verifique o caminho correto para o componente Menu
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para visualizar detalhes de matrícula de um aluno em turmas.
+ * @module pessoas/alunos/boletins
+ * @returns {JSX.Element} JSX para a página de visualização de matrícula do aluno.
+ */
 function ViewAlunoBoletim() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -29,6 +34,9 @@ function ViewAlunoBoletim() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Função assíncrona para buscar os dados necessários para a visualização da matrícula.
+     */
     const fetchDados = async () => {
       try {
         const resBoletim = await api.get(`/pessoas/aluno/boletim/api/v1/${boletimid}/`);
@@ -58,6 +66,10 @@ function ViewAlunoBoletim() {
     fetchDados();
   }, []);
 
+  /**
+   * Função para lidar com a mudança na seleção de escola.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeEscola = (e) => {
     setSelectedEscola(e.target.value);
     const escolaView = escolas.find((objeto) => objeto.id === e.target.value);
@@ -67,6 +79,10 @@ function ViewAlunoBoletim() {
     setSelectedTurma("");
   };
 
+  /**
+   * Função para lidar com a mudança na seleção de sala.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeSala = (e) => {
     setSelectedSala(e.target.value);
     const salaView = salas.find((objeto) => objeto.id === e.target.value);
@@ -74,15 +90,25 @@ function ViewAlunoBoletim() {
     setSelectedTurma("");
   };
 
+  /**
+   * Função para lidar com a mudança na seleção de turma.
+   * @param {Event} e - Evento de mudança.
+   */
   const handleChangeTurma = (e) => {
     setSelectedTurma(e.target.value);
   };
 
+  /**
+   * Redireciona para a página de edição da matrícula.
+   */
   const handleOnEditar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletim/${boletimid}/editar`);
   };
 
+  /**
+   * Volta para a página anterior.
+   */
   const handleVoltar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/boletins`);
@@ -206,6 +232,7 @@ function ViewAlunoBoletim() {
         </Grid>
       </MDBox>
       <MDBox pt={2} mb={3} mt={3}>
+        {/* Renderiza o componente de menu */}
         <Menu alunoid={alunoid} boletimid={boletimid} />
       </MDBox>
     </DashboardLayout>

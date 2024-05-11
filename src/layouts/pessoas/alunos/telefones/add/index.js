@@ -13,6 +13,11 @@ import MDInput from "components/MDInput";
 import { AuthContext } from "context/AuthContext";
 import DashboardNavbar from "layouts/dashboard/components/DashboardNavbar";
 
+/**
+ * Componente para adicionar um novo telefone para um aluno.
+ * @module pessoas/alunos/telefones
+ * @returns {JSX.Element} JSX para a página de adição de telefones do aluno.
+ */
 function AddAlunoTelefones() {
   const { refreshToken } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -20,10 +25,17 @@ function AddAlunoTelefones() {
   const [numero, setNumero] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Define o número do telefone conforme o usuário digita.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - O evento de mudança.
+   */
   const handleSetNumero = (e) => {
     setNumero(e.target.value);
   };
 
+  /**
+   * Envia uma requisição para adicionar um novo telefone do aluno.
+   */
   const handleAdd = async () => {
     setLoading(true);
     try {
@@ -44,6 +56,9 @@ function AddAlunoTelefones() {
     }
   };
 
+  /**
+   * Cancela a adição do telefone e redireciona para a página anterior.
+   */
   const handleCancelar = () => {
     setLoading(true);
     navigate(`/pessoas/aluno/${alunoid}/telefones`);
